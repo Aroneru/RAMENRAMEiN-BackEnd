@@ -33,7 +33,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-            {/* Right Side - Login Form */}
+      {/* Login Form */}
       <div className="w-1/2 flex items-center justify-center bg-[#f5f5f0]">
         <div className="w-full max-w-[524px]">
           <h1
