@@ -1,0 +1,43 @@
+.menuSection {
+  width: 100%;
+  padding: 4rem 2rem;
+  background-color: #000000; 
+}
+
+.title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 3rem; 
+}
+
+.highlight {
+  color: #E63946; 
+}
+
+.cardContainer {
+  display: flex;           
+  justify-content: center; 
+  align-items: center;
+  gap: 3rem;               
+  flex-wrap: wrap;         
+}
+
+.card {
+  text-align: center;
+}
+
+.ramenImage {
+  width: 100%;
+  max-width: 400px; 
+  height: auto;     
+  object-fit: cover;
+}
+
+.cardTitle {
+  color: white;
+  margin-top: 1.5rem; 
+  font-size: 1.25rem;
+  font-weight: 600;
+}

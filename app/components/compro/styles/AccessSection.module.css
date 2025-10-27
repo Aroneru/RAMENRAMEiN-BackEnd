@@ -1,0 +1,67 @@
+.accessSection {
+  width: 100%;
+  padding: 4rem 2rem;
+  background-color: #0c0c0c; 
+  color: white;
+  background-image: url('/images/mural.png');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+  padding: 150px;
+  font-family: 'Osnova Pro';
+}
+
+.mainTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
+}
+
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; 
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  background-color: #9a2020; 
+  padding: 2rem;
+  border-radius: 8px;
+  flex: 1; 
+  min-width: 300px; 
+  max-width: 350px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center;
+}
+
+.cardImage {
+  width: 80%;
+  height: auto;
+  margin-bottom: 1.5rem;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.cardSubtitle {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  color: #f0f0f0;
+  opacity: 0.9;
+}
+
+.cardDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #f0f0f0;
+}

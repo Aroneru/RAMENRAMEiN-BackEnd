@@ -1,0 +1,42 @@
+.footer {
+  background-color: #1a1a1a; 
+  color: #a0a0a0;            
+  padding: 2rem 1.5rem;     
+  border-top: 1px solid #333; 
+}
+
+.footerContent {
+  max-width: 1200px;    
+  margin: 0 auto;
+  padding: 60px;
+  display: flex;             
+  flex-direction: column;    
+  align-items: center;       
+  gap: 1.5rem;               
+}
+
+.footerNav {
+  display: flex;
+  gap: 1.5rem;              
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase; 
+}
+
+.footerNav a {
+  color: #fff;               
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerNav a:hover {
+  color: #d4a373;            
+}
+
+.copyright {
+  font-size: 0.8rem;
+}
+
+.footerLogo {
+  margin-top: 1rem;
+}

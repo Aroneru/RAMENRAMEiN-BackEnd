@@ -1,36 +1,36 @@
-"use client";
-import { useState, useRef } from "react";
-import styles from "./HeroSection.module.css";
+"use client"; 
+
+import { useState, useRef } from 'react';
+import styles from './styles/HeroSection.module.css';
 
 export default function HeroSection() {
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handlePlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play();
-      setIsPlaying(true);
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (video) {
+      video.muted = !video.muted; 
+      setIsMuted(video.muted);
     }
   };
 
   return (
     <section className={styles.hero}>
-      {/* Video */}
       <video
         ref={videoRef}
         className={styles.heroVideo}
-        src="/videos/tensai_ramen.mp4"
-        loop
+        src="/videos/ramein-cinematic.mp4"
+        autoPlay  
+        loop     
+        muted    
         playsInline
-        controls={isPlaying}
       />
 
-      {/* Tombol Play */}
-      {!isPlaying && (
-        <button className={styles.playButton} onClick={handlePlay}>
-          ▶
-        </button>
-      )}
+      <button onClick={toggleMute} className={styles.unmuteButton}>
+        {isMuted ? "🔇" : "🔊"}
+      </button>
+
     </section>
   );
 }

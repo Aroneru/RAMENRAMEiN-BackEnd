@@ -1,0 +1,46 @@
+.gallerySection {
+  width: 100%;
+}
+
+.scroller {
+  max-width: 100vw; 
+  overflow: hidden; 
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 10%,
+    black 90%,
+    transparent 100%
+  );
+}
+
+.scrollerTrack {
+  display: flex;
+  width: max-content; 
+  
+  animation: scroll 30s linear infinite; 
+}
+
+.imageContainer {
+  position: relative; 
+  width: 30vw; 
+  height: 400px; 
+  margin-right: 10px; 
+}
+
+@keyframes scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%); 
+  }
+}
