@@ -7,7 +7,7 @@ export default function OwnerSection() {
       <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
         <div className="md:w-2/3">
           <p className="text-gray-300 mb-6">
-            Ade Irawan, sang pendiri RamenRamein, menemukan kecocokannya pada ramen saat berkunjung ke Jepang. Ia yang menyukai berbagai hidangan street food Jepang, 
+            Ade Irawan, sang pendiri RAMENRAMEiN, menemukan kecocokannya pada ramen saat berkunjung ke Jepang. Ia yang menyukai berbagai hidangan street food Jepang, 
             terpikir untuk membuka warung ramen sederhana di tanah airnya.
           </p>
           <p className="text-gray-300 mb-6">
@@ -16,7 +16,7 @@ export default function OwnerSection() {
             food Jepang yang disesuaikan dengan lidah Indonesia dan harga yang tetap terjangkau.
           </p>
           <p className="text-gray-300">
-            Dengan semangat sederhana namun penuh rasa, Mas Ade membangun RamenRamein 
+            Dengan semangat sederhana namun penuh rasa, Mas Ade membangun RAMENRAMEiN
             sebagai tempat di mana orang bisa menikmati ramen lezat tanpa harus jauh-jauh ke 
             Jepang.
           </p>

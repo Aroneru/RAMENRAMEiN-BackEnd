@@ -25,13 +25,44 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-@font-face{
-  font-family: 'Osnova Pro';
-  src: url('/fonts/OsnovaPro.ttf');
+@font-face {
+  font-family: "Osnova Pro";
+  src: url("/fonts/OsnovaPro.ttf");
   font-weight: normal;
   font-style: normal;
 }
 
 .font-osnova {
-  font-family: 'Osnova Pro', Arial, Helvetica, sans-serif;
+  font-family: "Osnova Pro", Arial, Helvetica, sans-serif;
+}
+
+.social-media-bar {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  z-index: 1000;
+  background-color: #8c5a2b;
+  padding: 0.8rem;
+  border-radius: 10px 0 0 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.social-media-bar.scrolling {
+  transform: translateY(-50%) translateX(80%);
+  opacity: 0.5;
+}
+
+.social-media-bar a {
+  color: #fff;
+  font-size: 1.5rem;
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.social-media-bar a:hover {
+  transform: scale(1.2);
 }

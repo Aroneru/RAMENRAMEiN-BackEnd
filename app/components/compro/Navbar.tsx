@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation"; 
 
 export default function Navbar() {
   const navItems = [
@@ -11,6 +12,8 @@ export default function Navbar() {
     { label: 'FAQ', href: '/faq' },
     { label: 'BERITA', href: '/berita' },
   ];
+
+  const pathname = usePathname(); 
 
   return (
     <nav className="flex justify-between items-center px-10 py-5 bg-black text-white">
@@ -24,16 +27,27 @@ export default function Navbar() {
       </div>
 
       <ul className="flex space-x-8 font-semibold">
-        {navItems.map((item) => (
-          <li key={item.label}>
-            <Link
-              href={item.href}
-              className="hover:text-yellow-600 transition-colors duration-200 font-osnova"
-            >
-              {item.label}
-            </Link>
-          </li>
-        ))}
+        {navItems.map((item) => {
+          
+          const isActive = 
+            item.href === '/' 
+              ? pathname === '/' 
+              : pathname.startsWith(item.href); 
+
+          return (
+            <li key={item.label}>
+              <Link
+                href={item.href}
+                className={`
+                  hover:text-yellow-600 transition-colors duration-200 font-osnova
+                  ${isActive ? 'text-yellow-600' : ''} 
+                `}
+              >
+                {item.label}
+              </Link>
+            </li>
+          );
+        })}
       </ul>
     </nav>
   );

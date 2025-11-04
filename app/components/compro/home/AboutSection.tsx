@@ -11,7 +11,7 @@ export default function AboutSection() {
         <div className={styles.leftColumn}>
           <h2>TENTANG KAMI</h2>
           <p>
-            Ramen Ramein adalah sebuah kedai ramen autentik yang berlokasi
+            RAMENRAMEiN adalah sebuah kedai ramen autentik yang berlokasi
             di jantung kota Bogor. Kami menyajikan cita rasa asli Jepang
             dengan sentuhan lokal yang hangat.
           </p>

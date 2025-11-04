@@ -21,7 +21,7 @@ export default function SuasanaSection() {
       <h2 className="text-3xl font-bold mb-12 text-center">SUASANA KAMI</h2>
       <div className="max-w-4xl mx-auto space-y-6">
         <p className="text-gray-300">
-          Setiap sudut RamenRamein mencerminkan kehangatan sejak awal berdirinya. Tempat ini dibangun dengan penuh 
+          Setiap sudut RAMENRAMEiN mencerminkan kehangatan sejak awal berdirinya. Tempat ini dibangun dengan penuh 
           semangat gotong royong bersama teman-teman Mas Ade yang ikut membantu mewujudkan impian sederhana ini — dari pemilihan 
           kayu jati asli Jepang, hingga proses pembangunan dan dekorasi interiornya.
         </p>
@@ -30,7 +30,7 @@ export default function SuasanaSection() {
           gantung hangat, dan lukisan mural karya sahabat-sahabat kami menciptakan atmosfer yang nyaman dan autentik.
         </p>
         <p className="text-gray-300 mb-12">
-          Lebih dari sekadar tempat makan, RamenRamein adalah hasil karya bersama simbol persahabatan, kreativitas, dan cinta terhadap 
+          Lebih dari sekadar tempat makan, RAMENRAMEiN adalah hasil karya bersama simbol persahabatan, kreativitas, dan cinta terhadap 
           kuliner Jepang yang tumbuh dari tangan-tangan orang terdekat.
         </p>
         <div className="grid grid-cols-3 gap-4">

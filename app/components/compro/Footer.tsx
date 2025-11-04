@@ -1,34 +1,48 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import styles from './styles/Footer.module.css';
+"use client";
+
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className={styles.footerContainer} >
-      <div className={styles.footerContent} >
-        
-        <nav className={styles.footerNav}>
-          <Link href="/">HOME</Link>
-          <Link href="/tentang-kami">TENTANG KAMI</Link>
-          <Link href="/menu">MENU</Link>
-          <Link href="/faq">FAQ</Link>
-          <Link href="/berita">BERITA</Link>
+    <footer className="bg-[#010101] text-[#a0a0a0] py-8 px-6 border-t border-[#333]">
+      <div className="max-w-[1200px] mx-auto py-[60px] flex flex-col items-center gap-6">
+        {/* Navigasi */}
+        <nav className="flex gap-6 font-semibold text-[0.9rem] uppercase">
+          <Link href="/" className="text-white hover:text-[#d4a373] transition-colors duration-200">
+            HOME
+          </Link>
+          <Link href="/tentang-kami" className="text-white hover:text-[#d4a373] transition-colors duration-200">
+            TENTANG KAMI
+          </Link>
+          <Link href="/menu" className="text-white hover:text-[#d4a373] transition-colors duration-200">
+            MENU
+          </Link>
+          <Link href="/faq" className="text-white hover:text-[#d4a373] transition-colors duration-200">
+            FAQ
+          </Link>
+          <Link href="/berita" className="text-white hover:text-[#d4a373] transition-colors duration-200">
+            BERITA
+          </Link>
         </nav>
 
+        {/* Copyright */}
         <div>
-          <p className={styles.copyright}>© {new Date().getFullYear()} Ramein Ramen. All rights reserved.</p>
+          <p className="text-[0.8rem] text-[#a0a0a0]">
+            © {new Date().getFullYear()} Ramein Ramen. All rights reserved.
+          </p>
         </div>
 
-        <div className={styles.footerLogo}>
-          <Image 
-            src="/logo_ramenramein.svg" 
+        {/* Logo */}
+        <div className="mt-4">
+          <Image
+            src="/logo_ramenramein.svg"
             alt="Ramein Ramen Logo"
-            width={80} 
+            width={80}
             height={40}
           />
         </div>
-        
       </div>
     </footer>
   );

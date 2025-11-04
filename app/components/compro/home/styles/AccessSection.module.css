@@ -1,0 +1,89 @@
+.accessSection {
+  width: 100%;
+  padding: 4rem 2rem;
+  background-color: #0c0c0c; 
+  color: white;
+  background-image: url('/images/mural.png');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+  padding: 150px;
+  font-family: 'Osnova Pro';
+}
+
+.mainTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 3rem;
+  letter-spacing: 2px;
+}
+
+.cardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: stretch; 
+  gap: 6rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1; 
+  min-width: 300px; 
+  max-width: 600px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  text-align: center;
+  background-image: url('/images/home/torii-gate.svg'); 
+  background-size: 100% 100%; 
+  background-position: center top;
+  background-repeat: no-repeat;
+  padding: 2rem;
+  min-height: 480px; 
+  border-radius: 8px; 
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: -1.5rem;
+  color: white; 
+  margin-top: 160px; 
+}
+
+.cardSubtitle {
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 1rem;
+  color: #f0f0f0;
+  opacity: 0.9;
+}
+
+.cardDescription {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #f0f0f0;
+}
+
+.cardButton {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  margin-top: -0.5rem; /* Sedikit naik agar lebih dekat ke subtitle */
+  margin-bottom: 1.5rem; /* Jarak ke deskripsi */
+  background-color: #f0f0f0; /* Warna dasar tombol */
+  color: #9a2020; /* Warna teks tombol (merah) */
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none; /* Hapus garis bawah link */
+  font-family: 'Osnova Pro', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Efek saat kursor mouse di atas tombol */
+.cardButton:hover {
+  background-color: #ffffff;
+  transform: scale(1.05);
+}

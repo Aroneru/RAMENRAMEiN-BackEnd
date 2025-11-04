@@ -1,4 +1,3 @@
-
 import HeroTentangKami from "../components/compro/tentangkami/HeroTentangKami";
 import SejarahSection from "../components/compro/tentangkami/SejarahSection";
 import OwnerSection from "../components/compro/tentangkami/OwnerSection";
