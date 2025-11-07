@@ -1,8 +1,20 @@
+"use client";
+
 import Image from 'next/image';
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function OwnerSection() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
+
   return (
-    <div className="container mx-auto px-4 py-16 bg-black">
+    <div
+      ref={ref}
+      className={`container mx-auto px-4 py-16 bg-black transition-all duration-[1200ms] ease-out ${
+        isVisible
+          ? 'opacity-100 translate-y-0 delay-150'
+          : 'opacity-0 translate-y-10'
+      }`}
+    >
       <h2 className="text-3xl font-bold mb-12 text-center">KENALAN SAMA OWNER</h2>
       <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
         <div className="md:w-2/3">

@@ -1,8 +1,20 @@
+"use client";
+
 import Image from 'next/image';
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function HeroTentangKami() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
+
   return (
-    <div className="relative h-[400px] w-full">
+    <div
+      ref={ref}
+      className={`relative h-[400px] w-full transition-all duration-[1200ms] ease-out ${
+        isVisible
+          ? 'opacity-100 translate-y-0 delay-150'
+          : 'opacity-0 translate-y-10'
+      }`}
+    >
       <Image
         src="/images/tentangkami/hero_section2.png"
         alt="Tentang Kami Hero"

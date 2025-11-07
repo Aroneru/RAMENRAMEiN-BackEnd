@@ -4,10 +4,12 @@ import Image from 'next/image';
 import { useState } from 'react';
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function SuasanaSection() {
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
   const galleryImages = [
     'suasana_1.jpeg',
     'suasana_2.jpeg',
@@ -17,7 +19,14 @@ export default function SuasanaSection() {
     'suasana_6.jpeg'
   ];
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div
+      ref={ref}
+      className={`container mx-auto px-4 py-16 transition-all duration-[1200ms] ease-out ${
+        isVisible
+          ? 'opacity-100 translate-y-0 delay-150'
+          : 'opacity-0 translate-y-10'
+      }`}
+    >
       <h2 className="text-3xl font-bold mb-12 text-center">SUASANA KAMI</h2>
       <div className="max-w-4xl mx-auto space-y-6">
         <p className="text-gray-300">

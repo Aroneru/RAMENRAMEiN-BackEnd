@@ -1,8 +1,20 @@
+"use client";
+
 import Image from 'next/image';
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function SejarahSection() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
+
   return (
-    <div className="container mx-auto px-4 py-16">
+    <div
+      ref={ref}
+      className={`container mx-auto px-4 py-16 transition-all duration-[1200ms] ease-out ${
+        isVisible
+          ? 'opacity-100 translate-y-0 delay-150'
+          : 'opacity-0 translate-y-10'
+      }`}
+    >
       <h2 className="text-3xl font-bold mb-8 text-center">
         SEJARAH <span className="text-red-600">RAMENRAMEiN</span>
       </h2>
