@@ -1,8 +1,5 @@
-export default function DashboardHomePage() {
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl font-semibold">Dashboard News</h1>
-      <p className="mt-4 text-gray-300">Konten halaman dashboard news.</p>
-    </div>
-  );
+import NewsDashboard from "@/app/components/dashboard/news/news";
+
+export default function DashboardNewsPage() {
+  return <NewsDashboard />;
 }

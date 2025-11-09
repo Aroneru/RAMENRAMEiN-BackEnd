@@ -10,7 +10,7 @@ export default function Sidebar() {
     pathname === href || pathname.startsWith(href + "/");
 
   return (
-    <div className="w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white">
+    <div className="w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0">
       {/* Logo Section */}
       <div className="mt-[40px] flex flex-col items-center w-full">
         <Image

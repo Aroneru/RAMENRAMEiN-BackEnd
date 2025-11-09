@@ -3,47 +3,53 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-interface RouteAccessItem {
+interface NewsItem {
   id: number;
-  accessPoint: string;
-  description: string;
-  estimation: string;
+  thumbnail: string;
+  title: string;
+  body: string;
+  createdAt: string;
 }
 
-export default function HomeDashboard() {
+export default function NewsDashboard() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const routeAccessData: RouteAccessItem[] = [
+  const newsData: NewsItem[] = [
     {
       id: 1,
-      accessPoint: "Keluar Tol Jagorawi",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      estimation: "15 menit",
+      thumbnail: "dashboard/Ramen.png",
+      title: "Grand Opening Ramen RAMEiN",
+      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      createdAt: "2024-01-15",
     },
     {
       id: 2,
-      accessPoint: "Stasiun Bogor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-      estimation: "20 menit",
+      thumbnail: "dashboard/Ramen.png",
+      title: "Menu Baru: Ramen Spicy Tonkotsu",
+      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+      createdAt: "2024-02-20",
     },
     {
       id: 3,
-      accessPoint: "Terminal Baranangsiang",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
-      estimation: "25 menit",
+      thumbnail: "dashboard/Ramen.png",
+      title: "Promo Akhir Tahun",
+      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
+      createdAt: "2024-03-10",
     },
     {
       id: 4,
-      accessPoint: "Bandara Halim Perdanakusuma",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
-      estimation: "45 menit",
+      thumbnail: "dashboard/Ramen.png",
+      title: "Kolaborasi dengan Chef Terkenal",
+      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
+      createdAt: "2024-04-05",
     },
     {
       id: 5,
-      accessPoint: "Keluar Tol Sentul",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.",
-      estimation: "10 menit",
+      thumbnail: "dashboard/Ramen.png",
+      title: "Event Japanese Culture Week",
+      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.",
+      createdAt: "2024-05-12",
     },
   ];
 
@@ -57,7 +63,7 @@ export default function HomeDashboard() {
   };
 
   const renderPagination = () => {
-    const totalPages = Math.ceil(routeAccessData.length / itemsPerPage);
+    const totalPages = Math.ceil(newsData.length / itemsPerPage);
 
     const getPageNumbers = () => {
       const pages = [];
@@ -216,7 +222,7 @@ export default function HomeDashboard() {
   const getPaginatedItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return routeAccessData.slice(startIndex, endIndex);
+    return newsData.slice(startIndex, endIndex);
   };
 
   return (
@@ -239,13 +245,13 @@ export default function HomeDashboard() {
         <div className="flex items-center gap-2 text-[#1D1A1A]">
           <span>Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
-          <Link href="/dashboard-home" className="hover:underline">
-            Home
+          <Link href="/dashboard-news" className="hover:underline">
+            News
           </Link>
         </div>
       </div>
 
-      {/* Route Access Section */}
+      {/* News Section */}
       <div
         style={{
           paddingLeft: "45px",
@@ -266,7 +272,7 @@ export default function HomeDashboard() {
               color: "#1D1A1A",
             }}
           >
-            Route Access
+            News
           </h2>
           <button
             className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
@@ -277,7 +283,7 @@ export default function HomeDashboard() {
               height: "40px",
             }}
           >
-            Add Route
+            Add News
           </button>
         </div>
 
@@ -292,7 +298,7 @@ export default function HomeDashboard() {
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
                     color: "#1D1A1A",
-                    width: "80px",
+                    width: "50px",
                     paddingLeft: "25px",
                   }}
                 >
@@ -304,23 +310,35 @@ export default function HomeDashboard() {
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
                     color: "#1D1A1A",
+                    width: "135px",
+                    paddingLeft: "40px",
+                  }}
+                >
+                  Thumbnail
+                </th>
+                <th
+                  className="text-left font-medium py-3"
+                  style={{
+                    fontFamily: "Helvetica Neue, sans-serif",
+                    fontSize: "18px",
+                    color: "#1D1A1A",
                     width: "250px",
-                    paddingLeft: "25px",
+                    paddingLeft: "40px",
                   }}
                 >
-                  Access Point
+                  Title
                 </th>
                 <th
                   className="text-left font-medium py-3"
                   style={{
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
-                    width: "500px",
+                    width: "400px",
                     color: "#1D1A1A",
-                    paddingLeft: "10px",
+                    paddingLeft: "40px",
                   }}
                 >
-                  Description
+                  Body
                 </th>
                 <th
                   className="text-left font-medium py-3"
@@ -328,11 +346,11 @@ export default function HomeDashboard() {
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
                     color: "#1D1A1A",
-                    width: "700px",
-                    paddingLeft: "70px",
+                    width: "300px",
+                    paddingLeft: "40px",
                   }}
                 >
-                  Estimation
+                  Created At
                 </th>
                 <th
                   className="text-center font-medium py-3"
@@ -341,6 +359,7 @@ export default function HomeDashboard() {
                     fontSize: "18px",
                     color: "#1D1A1A",
                     width: "200px",
+                    paddingLeft: "125px",
                   }}
                 >
                   Action
@@ -370,16 +389,17 @@ export default function HomeDashboard() {
                   >
                     {(currentPage - 1) * itemsPerPage + idx + 1}
                   </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "25px",
-                    }}
-                  >
-                    {item.accessPoint}
+                  <td className="py-4" style={{ paddingLeft: "40px" }}>
+                    <div
+                      className="bg-gray-200 rounded overflow-hidden"
+                      style={{ width: "100px", height: "100px" }}
+                    >
+                      <img
+                        src={item.thumbnail}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   </td>
                   <td
                     className="py-4"
@@ -387,10 +407,10 @@ export default function HomeDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      paddingLeft: "10px",
+                      paddingLeft: "40px",
                     }}
                   >
-                    {truncateText(item.description)}
+                    {item.title}
                   </td>
                   <td
                     className="py-4"
@@ -398,12 +418,23 @@ export default function HomeDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      paddingLeft: "70px",
+                      paddingLeft: "40px",
                     }}
                   >
-                    {item.estimation}
+                    {truncateText(item.body)}
                   </td>
-                  <td className="py-4" style={{}}>
+                  <td
+                    className="py-4"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    {item.createdAt}
+                  </td>
+                  <td className="py-4" style={{ paddingLeft: "125px" }}>
                     <div
                       className="flex items-center justify-center gap-3"
                       style={{ width: "200px", margin: "0 auto" }}

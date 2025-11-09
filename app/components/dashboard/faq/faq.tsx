@@ -3,47 +3,36 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-interface RouteAccessItem {
+interface FAQItem {
   id: number;
-  accessPoint: string;
-  description: string;
-  estimation: string;
+  question: string;
+  answer: string;
 }
 
-export default function HomeDashboard() {
+export default function FAQDashboard() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const routeAccessData: RouteAccessItem[] = [
+  const faqData: FAQItem[] = [
     {
       id: 1,
-      accessPoint: "Keluar Tol Jagorawi",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      estimation: "15 menit",
+      question: "Kapan Buka?",
+      answer: "Test Description",
     },
     {
       id: 2,
-      accessPoint: "Stasiun Bogor",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-      estimation: "20 menit",
+      question: "Weekend buka ga?",
+      answer: "Test Description",
     },
     {
       id: 3,
-      accessPoint: "Terminal Baranangsiang",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
-      estimation: "25 menit",
+      question: "Ramennya bisa di take out ga?",
+      answer: "Test Description",
     },
     {
       id: 4,
-      accessPoint: "Bandara Halim Perdanakusuma",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
-      estimation: "45 menit",
-    },
-    {
-      id: 5,
-      accessPoint: "Keluar Tol Sentul",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.",
-      estimation: "10 menit",
+      question: "Parkir Bayar ga?",
+      answer: "Test Description",
     },
   ];
 
@@ -57,7 +46,7 @@ export default function HomeDashboard() {
   };
 
   const renderPagination = () => {
-    const totalPages = Math.ceil(routeAccessData.length / itemsPerPage);
+    const totalPages = Math.ceil(faqData.length / itemsPerPage);
 
     const getPageNumbers = () => {
       const pages = [];
@@ -216,7 +205,7 @@ export default function HomeDashboard() {
   const getPaginatedItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return routeAccessData.slice(startIndex, endIndex);
+    return faqData.slice(startIndex, endIndex);
   };
 
   return (
@@ -239,13 +228,13 @@ export default function HomeDashboard() {
         <div className="flex items-center gap-2 text-[#1D1A1A]">
           <span>Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
-          <Link href="/dashboard-home" className="hover:underline">
-            Home
+          <Link href="/dashboard-faq" className="hover:underline">
+            FAQ
           </Link>
         </div>
       </div>
 
-      {/* Route Access Section */}
+      {/* FAQ Section */}
       <div
         style={{
           paddingLeft: "45px",
@@ -266,7 +255,7 @@ export default function HomeDashboard() {
               color: "#1D1A1A",
             }}
           >
-            Route Access
+            Frequently Asked Questions (FAQ)
           </h2>
           <button
             className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
@@ -277,7 +266,7 @@ export default function HomeDashboard() {
               height: "40px",
             }}
           >
-            Add Route
+            Add FAQ
           </button>
         </div>
 
@@ -304,23 +293,11 @@ export default function HomeDashboard() {
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
                     color: "#1D1A1A",
-                    width: "250px",
-                    paddingLeft: "25px",
+                    width: "450px",
+                    paddingLeft: "40px",
                   }}
                 >
-                  Access Point
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    width: "500px",
-                    color: "#1D1A1A",
-                    paddingLeft: "10px",
-                  }}
-                >
-                  Description
+                  Question
                 </th>
                 <th
                   className="text-left font-medium py-3"
@@ -328,11 +305,10 @@ export default function HomeDashboard() {
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
                     color: "#1D1A1A",
-                    width: "700px",
-                    paddingLeft: "70px",
+                    paddingLeft: "40px",
                   }}
                 >
-                  Estimation
+                  Answers
                 </th>
                 <th
                   className="text-center font-medium py-3"
@@ -340,7 +316,8 @@ export default function HomeDashboard() {
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
                     color: "#1D1A1A",
-                    width: "200px",
+                    width: "150px",
+                    paddingRight: "25px",
                   }}
                 >
                   Action
@@ -376,10 +353,10 @@ export default function HomeDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      paddingLeft: "25px",
+                      paddingLeft: "40px",
                     }}
                   >
-                    {item.accessPoint}
+                    {item.question}
                   </td>
                   <td
                     className="py-4"
@@ -387,26 +364,15 @@ export default function HomeDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      paddingLeft: "10px",
+                      paddingLeft: "40px",
                     }}
                   >
-                    {truncateText(item.description)}
+                    {truncateText(item.answer)}
                   </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "70px",
-                    }}
-                  >
-                    {item.estimation}
-                  </td>
-                  <td className="py-4" style={{}}>
+                  <td className="py-4" style={{ paddingRight: "25px" }}>
                     <div
                       className="flex items-center justify-center gap-3"
-                      style={{ width: "200px", margin: "0 auto" }}
+                      style={{ width: "150px", margin: "0 auto" }}
                     >
                       <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
                         <Image
