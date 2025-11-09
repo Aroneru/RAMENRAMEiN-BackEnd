@@ -38,7 +38,7 @@ Kami mengundang Anda untuk merasakan pengalaman ramen terbaik di cabang baru kam
 
 Tunggu apa lagi? Mari rasakan kehangatan ramen autentik RAMENRAMEiN di cabang baru kami!`,
     tanggal: "15 Oktober 2025",
-    gambar: "/images/berita/hampers-lebaran.jpg",
+    gambar: "/images/berita/grand_opening.jpg",
   },
 ];
 

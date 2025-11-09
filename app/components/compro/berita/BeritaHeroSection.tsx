@@ -4,7 +4,7 @@ export default function BeritaHeroSection() {
   return (
     <div className="relative h-[400px] w-full mb-8">
       <Image
-        src="/images/berita/hero-berita.jpg"
+        src="/images/berita/buatberita.png"
         alt="Hero Berita"
         fill
         className="object-cover brightness-50"

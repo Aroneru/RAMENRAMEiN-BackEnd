@@ -6,19 +6,17 @@ import { NextResponse } from "next/server";
 const beritaData = [
   {
     id: 1,
-    kategori: "general",
     judul: "Hampers Lebaran Spesial dari RAMENRAMEiN!!!",
     deskripsi: "Edisi hampers lebaran tahun ini masih sama, tidak kurang, tidak lebih tapi pas di kantong.",
     tanggal: "1 Oktober 2025",
-    gambar: "/images/berita/hampers-lebaran.jpg",
+    gambar: "/images/berita/poster_hampers.jpeg",
   },
   {
     id: 2,
-    kategori: "event",
     judul: "Grand Opening Cabang Baru RAMENRAMEiN",
     deskripsi: "Kami dengan bangga mengumumkan pembukaan cabang baru RAMENRAMEiN di lokasi strategis.",
     tanggal: "15 Oktober 2025",
-    gambar: "/images/berita/hampers-lebaran.jpg",
+    gambar: "/images/berita/grand_opening.jpg",
   },
 ];
 

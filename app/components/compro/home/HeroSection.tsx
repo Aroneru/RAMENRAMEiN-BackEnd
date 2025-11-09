@@ -20,7 +20,7 @@ export default function HeroSection() {
       <video
         ref={videoRef}
         className={styles.heroVideo}
-        src="/videos/ramein-cinematic.mp4"
+        src="/videos/ramenramein_video.mp4"
         autoPlay  
         loop     
         muted    

@@ -80,7 +80,7 @@ export default function MenuPage() {
     { name: "SMOKE BEEF", img: "/images/menu/RAMEN/sides/Smoke Beef.png" },
     { name: "TELUR AJITAMA", img: "/images/menu/RAMEN/sides/Ajitama Egg.png" },
     { name: "NORI SEAWEED", img: "/images/menu/RAMEN/sides/Nori Seaweed.png" },
-    { name: "DIMSUM", img: "/images/menu/RAMEN/sides/Dimsum.png" },
+    { name: "DIMSUM", img: "/images/menu/RAMEN/sides/Dimsum.jpeg" },
     { name: "GYOZA", img: "/images/menu/RAMEN/sides/Gyoza.png" },
   ];
 

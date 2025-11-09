@@ -16,7 +16,7 @@ interface BeritaCardListProps {
 
 export default function BeritaCardList({ beritaList }: BeritaCardListProps) {
   return (
-    <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-20">
+    <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-6 mt-12 pb-20">
       {beritaList.map((berita: Berita) => (
         <Link
           key={berita.id}
