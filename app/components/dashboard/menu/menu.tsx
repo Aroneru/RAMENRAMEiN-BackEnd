@@ -369,17 +369,29 @@ export default function MenuDashboard() {
               >
                 {section.title}
               </h2>
-              <button
-                className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
-                style={{
-                  fontFamily: "Helvetica Neue, sans-serif",
-                  fontSize: "18px",
-                  width: "200px",
-                  height: "40px",
-                }}
+              <Link 
+                href={
+                  section.title === "Ramen" 
+                    ? "/dashboard-menu/add-ramen"
+                    : section.title === "Topping"
+                    ? "/dashboard-menu/add-topping"
+                    : section.title === "Nyemil"
+                    ? "/dashboard-menu/add-nyemil"
+                    : "/dashboard-menu/add-minuman"
+                }
               >
-                Add {section.title}
-              </button>
+                <button
+                  className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+                  style={{
+                    fontFamily: "Helvetica Neue, sans-serif",
+                    fontSize: "18px",
+                    width: "200px",
+                    height: "40px",
+                  }}
+                >
+                  Add {section.title}
+                </button>
+              </Link>
             </div>
 
             {/* Table */}

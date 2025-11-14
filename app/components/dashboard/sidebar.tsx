@@ -32,14 +32,6 @@ export default function Sidebar() {
 
         <div className="mt-[0px]" />
         <SidebarButton
-          href="/dashboard-about"
-          iconSrc="/dashboard/about.svg"
-          label="About"
-          active={isActive("/dashboard-about")}
-        />
-
-        <div className="mt-[0px]" />
-        <SidebarButton
           href="/dashboard-menu"
           iconSrc="/dashboard/menu.svg"
           label="Menu"

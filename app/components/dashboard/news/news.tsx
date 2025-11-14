@@ -186,22 +186,19 @@ export default function NewsDashboard() {
         {/* Items per page selector */}
         <select
           value={itemsPerPage}
-          onChange={(e) => {
-            setItemsPerPage(Number(e.target.value));
-            setCurrentPage(1);
-          }}
-          className="ml-4 border border-[#EAEAEA] rounded text-[#1D1A1A] bg-white appearance-none"
+          onChange={(e) => setItemsPerPage(Number(e.target.value))}
+          className="ml-4 border border-[#EAEAEA] rounded text-[#1D1A1A] bg-transparent appearance-none"
           style={{
             fontFamily: "Helvetica Neue, sans-serif",
             fontSize: "18px",
-            width: "80px",
+            width: "100px",
             height: "40px",
             paddingLeft: "12px",
             paddingRight: "32px",
             backgroundImage: `url('/dashboard/dropdown.svg')`,
             backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 10px center",
-            backgroundSize: "12px",
+            backgroundPosition: "right 15px center",
+            backgroundSize: "10px",
           }}
         >
           <option value={5}>5</option>
@@ -274,6 +271,7 @@ export default function NewsDashboard() {
           >
             News
           </h2>
+          <Link href="/dashboard-news/add">
           <button
             className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
             style={{
@@ -285,6 +283,7 @@ export default function NewsDashboard() {
           >
             Add News
           </button>
+          </Link>
         </div>
 
         {/* Table */}
