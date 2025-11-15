@@ -27,15 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-<<<<<<< HEAD
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientNavbar />
         <SocialMediaBar />
-=======
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
->>>>>>> origin/main
         {children}
 
         <Footer />
