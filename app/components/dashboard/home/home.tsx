@@ -13,6 +13,9 @@ interface RouteAccessItem {
 export default function HomeDashboard() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [heroImage, setHeroImage] = useState<File | null>(null);
+  const [heroImagePreview, setHeroImagePreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
   const routeAccessData: RouteAccessItem[] = [
     {
@@ -46,6 +49,48 @@ export default function HomeDashboard() {
       estimation: "10 menit",
     },
   ];
+
+  const handleHeroImageChange = (file: File) => {
+    if (file && file.type.match(/^image\//)) {
+      setHeroImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setHeroImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleHeroImageChange(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleHeroImageChange(file);
+    }
+  };
+
+  const handleUpload = () => {
+    // Handle upload
+    console.log({ heroImage });
+  };
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -242,6 +287,138 @@ export default function HomeDashboard() {
         </div>
       </div>
 
+      {/* Hero Section */}
+      <div
+        style={{
+          paddingLeft: "45px",
+          paddingRight: "45px",
+          marginBottom: "100px",
+        }}
+      >
+        <div
+          className="flex items-center justify-between"
+          style={{ marginBottom: "35px" }}
+        >
+          <h2
+            style={{
+              fontFamily: "Poppins, sans-serif",
+              fontWeight: "500",
+              fontSize: "24px",
+              color: "#1D1A1A",
+            }}
+          >
+            Hero Section
+          </h2>
+          <button
+            onClick={handleUpload}
+            className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+            style={{
+              fontFamily: "Helvetica Neue, sans-serif",
+              fontSize: "18px",
+              width: "200px",
+              height: "40px",
+            }}
+          >
+            Upload
+          </button>
+        </div>
+
+        {/* Hero Image Upload*/}
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`border-2 border-dashed rounded-lg flex flex-col items-center justify-center ${
+            isDragging
+              ? "border-[#4A90E2] bg-blue-50"
+              : "border-[#EAEAEA] bg-white"
+          }`}
+          style={{
+            width: "100%",
+            height: "50vh",
+            transition: "all 0.3s ease",
+            position: "relative",
+          }}
+        >
+          {heroImagePreview ? (
+            <>
+              <img
+                src={heroImagePreview}
+                alt="Hero Preview"
+                className="w-full h-full object-contain p-4"
+              />
+              <button
+                onClick={() => {
+                  setHeroImage(null);
+                  setHeroImagePreview(null);
+                }}
+                className="absolute bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                style={{
+                  top: "10px",
+                  right: "10px",
+                  width: "35px",
+                  height: "35px",
+                  fontSize: "24px",
+                  fontWeight: "bold",
+                  zIndex: 10,
+                }}
+              >
+                ×
+              </button>
+            </>
+          ) : (
+            <>
+              <Image
+                src="/dashboard/upload.svg"
+                alt="Upload"
+                width={60}
+                height={60}
+                className="mb-4"
+              />
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  fontWeight: "500",
+                  marginBottom: "8px",
+                }}
+              >
+                Choose a file or drag & drop it here
+              </p>
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "14px",
+                  color: "#999",
+                  marginBottom: "20px",
+                }}
+              >
+                JPEG, PNG, and JPG formats, up to 10MB
+              </p>
+              <input
+                type="file"
+                id="heroFileInput"
+                accept="image/*"
+                onChange={handleFileInput}
+                className="hidden"
+              />
+              <label
+                htmlFor="heroFileInput"
+                className="px-6 py-2 border border-[#EAEAEA] rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "16px",
+                  color: "#1D1A1A",
+                }}
+              >
+                Browse File
+              </label>
+            </>
+          )}
+        </div>
+      </div>
+
       {/* Route Access Section */}
       <div
         style={{
@@ -265,6 +442,7 @@ export default function HomeDashboard() {
           >
             Route Access
           </h2>
+          <Link href="/dashboard-home/add-route">
           <button
             className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
             style={{
@@ -276,6 +454,7 @@ export default function HomeDashboard() {
           >
             Add Route
           </button>
+          </Link>
         </div>
 
         {/* Table */}
