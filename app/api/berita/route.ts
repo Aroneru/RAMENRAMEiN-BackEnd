@@ -13,10 +13,10 @@ const beritaData = [
   },
   {
     id: 2,
-    judul: "Grand Opening Cabang Baru RAMENRAMEiN",
-    deskripsi: "Kami dengan bangga mengumumkan pembukaan cabang baru RAMENRAMEiN di lokasi strategis.",
+    judul: "Papan Nama RAMENRAMEiN Baru!",
+    deskripsi: "Kami dengan bangga mengumumkan pembaruan papan nama RAMENRAMEiN.",
     tanggal: "15 Oktober 2025",
-    gambar: "/images/berita/grand_opening.jpg",
+    gambar: "/images/berita/papan_nama_baru.jpeg",
   },
 ];
 

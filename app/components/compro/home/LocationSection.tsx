@@ -1,9 +1,16 @@
+"use client";
+
 import React from 'react';
 import styles from './styles/LocationSection.module.css';
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function LocationSection() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
+
   return (
-    <section className={styles.mapSection}>
+    <section
+      ref={ref}
+      className={`${styles.mapSection} transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
       
       <div className={styles.mapContainer}>
         <iframe

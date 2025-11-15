@@ -12,7 +12,7 @@ Dalam satu paket hampers, pelanggan akan mendapatkan:
 • 3 porsi ramen spesial dengan pilihan kuah Miso, Curry, atau kombinasi keduanya
 • Kartu ucapan personal yang dapat disesuaikan dengan nama penerima
 • Bonus berupa aksesoris makan yang dapat digunakan kembali
-• Kemasan besek bambu yang ramah lingkungan dan menampilkan sentuhan elegan khas RamenRamein
+• Kemasan besek bambu yang ramah lingkungan dan menampilkan sentuhan elegan khas RAMENRAMEiN
 
 Seluruh bahan diolah dengan standar higienis tinggi serta dari Miso Aka dan Mie yang juga cita rasa dan kualitas yang menjadi ciri khas kami.
 
@@ -23,22 +23,15 @@ Hampers ini ditawarkan dengan harga Rp 98.000 (belum termasuk ongkos kirim). Pil
   {
     id: 2,
     kategori: "event",
-    judul: "Grand Opening Cabang Baru RAMENRAMEiN",
-    deskripsi: `Kami dengan bangga mengumumkan pembukaan cabang baru RAMENRAMEiN di lokasi strategis yang lebih dekat dengan pelanggan setia kami.
+    judul: "Papan Nama Baru RAMENRAMEiN",
+    deskripsi: `Papan nama baru RAMENRAMEiN menandai babak baru dalam perjalanan kami.
 
-Cabang baru ini hadir dengan konsep yang lebih modern dan nyaman, tetap dengan cita rasa ramen autentik yang menjadi ciri khas RAMENRAMEiN. Kami telah menyiapkan berbagai fasilitas terbaru untuk memberikan pengalaman terbaik bagi setiap pelanggan.
+Dengan desain yang lebih modern namun tetap mempertahankan esensi street food Jepang, papan nama ini mencerminkan komitmen kami untuk terus berkembang sambil menjaga cita rasa autentik yang telah menjadi ciri khas kami sejak awal.
+Kami mengundang semua pelanggan setia dan pengunjung baru untuk datang dan melihat sendiri perubahan ini. Mari rayakan bersama kami babak baru RAMENRAMEiN dengan suasana yang segar dan semangat yang tak pernah padam.
 
-Fasilitas baru yang tersedia:
-• Ruang makan yang lebih luas dan nyaman
-• Area parkir yang lebih luas
-• Sistem pemesanan yang lebih cepat dan efisien
-• Menu spesial pembukaan dengan harga khusus
-
-Kami mengundang Anda untuk merasakan pengalaman ramen terbaik di cabang baru kami. Grand opening akan diadakan pada tanggal 15 Oktober 2025 dengan berbagai acara menarik dan diskon spesial untuk pelanggan pertama.
-
-Tunggu apa lagi? Mari rasakan kehangatan ramen autentik RAMENRAMEiN di cabang baru kami!`,
+Kami tunggu kehadiran Anda di RAMENRAMEiN dengan papan nama baru kami yang penuh semangat ini!`,
     tanggal: "15 Oktober 2025",
-    gambar: "/images/berita/grand_opening.jpg",
+    gambar: "/images/berita/papan_nama_baru.jpeg",
   },
 ];
 

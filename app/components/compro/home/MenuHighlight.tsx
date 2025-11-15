@@ -1,10 +1,17 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import styles from './styles/MenuHighlight.module.css';
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function MenuHighlight() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
+
   return (
-    <section className={styles.menuSection}>
+    <section
+      ref={ref}
+      className={`${styles.menuSection} transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
       
       <h2 className={styles.title}>
         PILIH <span className={styles.highlight}>RAMENMU!</span>

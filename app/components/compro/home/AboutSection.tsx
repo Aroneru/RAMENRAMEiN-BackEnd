@@ -1,11 +1,18 @@
+"use client";
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './styles/AboutSection.module.css'; 
+import { useScrollReveal } from '../../../hooks/useScrollReveal';
 
 export default function AboutSection() {
+  const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
+
   return (
-    <section className={styles.aboutSection}>
+    <section
+      ref={ref}
+      className={`${styles.aboutSection} transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
       <div className={styles.container}>
         
         <div className={styles.leftColumn}>
