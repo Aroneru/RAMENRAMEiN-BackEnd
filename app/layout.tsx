@@ -5,20 +5,37 @@ import ClientNavbar from "./components/ClientNavbar";
 import Footer from "./components/compro/Footer";
 import SocialMediaBar from './components/compro/SocialMediaBar';
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Ramen Ramein",
   description: "Website resmi Ramen Ramein",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
     <html lang="en">
+<<<<<<< HEAD
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ClientNavbar />
         <SocialMediaBar />
+=======
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+>>>>>>> origin/main
         {children}
 
         <Footer />
