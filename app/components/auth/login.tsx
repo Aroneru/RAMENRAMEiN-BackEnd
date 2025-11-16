@@ -2,16 +2,33 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { loginAction } from "@/app/(auth)/login/actions";
 
 export default function LoginForm() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Username:", username);
-    console.log("Password:", password);
+    setError("");
+    setLoading(true);
+
+    try {
+      const result = await loginAction(email, password);
+      
+      if (result?.error) {
+        setError(result.error);
+        setLoading(false);
+      }
+      // If successful, loginAction will redirect automatically
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError("An unexpected error occurred");
+      setLoading(false);
+    }
   };
 
   return (
@@ -43,14 +60,22 @@ export default function LoginForm() {
             Sign in to your account
           </h1>
 
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
+
           <form onSubmit={handleLogin}>
             <div className="relative" style={{ marginBottom: "12px" }}>
               <input
-                type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-[524px] h-[70px] px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3]"
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                disabled={loading}
+                className="w-[524px] h-[70px] px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3] disabled:opacity-50"
               />
               <svg
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -73,7 +98,9 @@ export default function LoginForm() {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-[524px] h-[70px] px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3]"
+                required
+                disabled={loading}
+                className="w-[524px] h-[70px] px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3] disabled:opacity-50"
               />
               <svg
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -112,9 +139,10 @@ export default function LoginForm() {
 
             <button
               type="submit"
-              className="w-full bg-black text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors"
+              disabled={loading}
+              className="w-full bg-black text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign In
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
         </div>

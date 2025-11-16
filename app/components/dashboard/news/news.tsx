@@ -1,57 +1,45 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-interface NewsItem {
-  id: number;
-  thumbnail: string;
-  title: string;
-  body: string;
-  createdAt: string;
-}
+import { fetchNewsList, deleteNews } from "@/lib/news";
+import type { News } from "@/lib/types/database.types";
 
 export default function NewsDashboard() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [newsData, setNewsData] = useState<News[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const newsData: NewsItem[] = [
-    {
-      id: 1,
-      thumbnail: "dashboard/Ramen.png",
-      title: "Grand Opening Ramen RAMEiN",
-      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      createdAt: "2024-01-15",
-    },
-    {
-      id: 2,
-      thumbnail: "dashboard/Ramen.png",
-      title: "Menu Baru: Ramen Spicy Tonkotsu",
-      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-      createdAt: "2024-02-20",
-    },
-    {
-      id: 3,
-      thumbnail: "dashboard/Ramen.png",
-      title: "Promo Akhir Tahun",
-      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
-      createdAt: "2024-03-10",
-    },
-    {
-      id: 4,
-      thumbnail: "dashboard/Ramen.png",
-      title: "Kolaborasi dengan Chef Terkenal",
-      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia.",
-      createdAt: "2024-04-05",
-    },
-    {
-      id: 5,
-      thumbnail: "dashboard/Ramen.png",
-      title: "Event Japanese Culture Week",
-      body: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.",
-      createdAt: "2024-05-12",
-    },
-  ];
+  useEffect(() => {
+    loadNews();
+  }, []);
+
+  const loadNews = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchNewsList();
+      setNewsData(data);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Failed to load news");
+      console.error("Error loading news:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this news?")) return;
+    
+    try {
+      await deleteNews(id);
+      await loadNews();
+    } catch (err: any) {
+      alert("Failed to delete news: " + err.message);
+    }
+  };
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -286,10 +274,28 @@ export default function NewsDashboard() {
           </Link>
         </div>
 
+        {/* Loading/Error States */}
+        {loading && (
+          <div className="text-center py-8">
+            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
+              Loading news...
+            </p>
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-center py-8">
+            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#E53E3E" }}>
+              Error: {error}
+            </p>
+          </div>
+        )}
+
         {/* Table */}
-        <div className="rounded-lg overflow-hidden shadow-sm">
-          <table className="w-full border-collapse">
-            <thead style={{ backgroundColor: "#E4E4E4" }}>
+        {!loading && !error && (
+          <div className="rounded-lg overflow-hidden shadow-sm">
+            <table className="w-full border-collapse">
+              <thead style={{ backgroundColor: "#E4E4E4" }}>
               <tr>
                 <th
                   className="text-left font-medium py-3"
@@ -364,9 +370,16 @@ export default function NewsDashboard() {
                   Action
                 </th>
               </tr>
-            </thead>
-            <tbody style={{ backgroundColor: "transparent" }}>
-              {getPaginatedItems().map((item, idx) => (
+              </thead>
+              <tbody style={{ backgroundColor: "transparent" }}>
+                {newsData.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
+                      No news found. Click "Add News" to create one.
+                    </td>
+                  </tr>
+                ) : (
+                  getPaginatedItems().map((item, idx) => (
                 <tr
                   key={item.id}
                   style={{
@@ -393,11 +406,15 @@ export default function NewsDashboard() {
                       className="bg-gray-200 rounded overflow-hidden"
                       style={{ width: "100px", height: "100px" }}
                     >
-                      <img
-                        src={item.thumbnail}
-                        alt={item.title}
-                        className="w-full h-full object-cover"
-                      />
+                      {item.thumbnail ? (
+                        <img
+                          src={item.thumbnail}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                      )}
                     </div>
                   </td>
                   <td
@@ -431,22 +448,27 @@ export default function NewsDashboard() {
                       paddingLeft: "40px",
                     }}
                   >
-                    {item.createdAt}
+                    {new Date(item.created_at).toLocaleDateString()}
                   </td>
                   <td className="py-4" style={{ paddingLeft: "125px" }}>
                     <div
                       className="flex items-center justify-center gap-3"
                       style={{ width: "200px", margin: "0 auto" }}
                     >
-                      <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
-                        <Image
-                          src="/dashboard/edit.svg"
-                          alt="Edit"
-                          width={28}
-                          height={28}
-                        />
-                      </button>
-                      <button className="p-2 hover:bg-[#FFCDCD] rounded transition-colors">
+                      <Link href={`/dashboard-news/edit/${item.id}`}>
+                        <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
+                          <Image
+                            src="/dashboard/edit.svg"
+                            alt="Edit"
+                            width={28}
+                            height={28}
+                          />
+                        </button>
+                      </Link>
+                      <button 
+                        onClick={() => handleDelete(item.id)}
+                        className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                      >
                         <Image
                           src="/dashboard/delete.svg"
                           alt="Delete"
@@ -457,13 +479,14 @@ export default function NewsDashboard() {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              )))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Pagination */}
-        {renderPagination()}
+        {!loading && !error && newsData.length > 0 && renderPagination()}
       </div>
     </div>
   );

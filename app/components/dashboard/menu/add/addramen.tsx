@@ -2,13 +2,19 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { addMenuItemAction } from "./actions";
 
 export default function AddRamenDashboard() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleImageChange = (file: File) => {
     if (file && file.type.match(/^image\//)) {
@@ -47,9 +53,36 @@ export default function AddRamenDashboard() {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log({ name, description, image });
+  const handleSubmit = async () => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      // Create FormData
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('description', description);
+      formData.append('price', price);
+      if (image) {
+        formData.append('image', image);
+      }
+
+      // Call server action
+      const result = await addMenuItemAction(formData, 'ramen');
+
+      if (result.error) {
+        setError(result.error);
+        setLoading(false);
+        return;
+      }
+
+      // Redirect back to menu dashboard
+      router.push('/dashboard-menu');
+    } catch (err: any) {
+      console.error("Error adding ramen:", err);
+      setError(err.message || "Failed to add ramen");
+      setLoading(false);
+    }
   };
 
   return (
@@ -159,6 +192,33 @@ export default function AddRamenDashboard() {
                 }}
               />
             </div>
+
+            {/* Price Field */}
+            <div className="mb-6">
+              <label
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  display: "block",
+                  marginBottom: "12px",
+                }}
+              >
+                Price (Rp) <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                placeholder="Insert price"
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                }}
+              />
+            </div>
           </div>
 
           {/* Right Side - Image Upload */}
@@ -259,11 +319,33 @@ export default function AddRamenDashboard() {
           </div>
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
         {/* Submit Button */}
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-end mt-8 gap-4">
+          <Link href="/dashboard-menu">
+            <button
+              disabled={loading}
+              className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                height: "45px",
+                minWidth: "150px",
+              }}
+            >
+              Cancel
+            </button>
+          </Link>
           <button
             onClick={handleSubmit}
-            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+            disabled={loading}
+            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50"
             style={{
               fontFamily: "Helvetica Neue, sans-serif",
               fontSize: "18px",
@@ -271,7 +353,7 @@ export default function AddRamenDashboard() {
               minWidth: "150px",
             }}
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </div>

@@ -1,40 +1,45 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-interface FAQItem {
-  id: number;
-  question: string;
-  answer: string;
-}
+import { fetchFAQList, deleteFAQ } from "@/lib/faq";
+import type { FAQ } from "@/lib/types/database.types";
 
 export default function FAQDashboard() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
+  const [faqData, setFaqData] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const faqData: FAQItem[] = [
-    {
-      id: 1,
-      question: "Kapan Buka?",
-      answer: "Test Description",
-    },
-    {
-      id: 2,
-      question: "Weekend buka ga?",
-      answer: "Test Description",
-    },
-    {
-      id: 3,
-      question: "Ramennya bisa di take out ga?",
-      answer: "Test Description",
-    },
-    {
-      id: 4,
-      question: "Parkir Bayar ga?",
-      answer: "Test Description",
-    },
-  ];
+  useEffect(() => {
+    loadFAQ();
+  }, []);
+
+  const loadFAQ = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchFAQList();
+      setFaqData(data);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Failed to load FAQ");
+      console.error("Error loading FAQ:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this FAQ?")) return;
+    
+    try {
+      await deleteFAQ(id);
+      await loadFAQ(); // Reload data
+    } catch (err: any) {
+      alert("Failed to delete FAQ: " + err.message);
+    }
+  };
 
   const truncateText = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -269,62 +274,87 @@ export default function FAQDashboard() {
           </Link>
         </div>
 
+        {/* Loading/Error States */}
+        {loading && (
+          <div className="text-center py-8">
+            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
+              Loading FAQ...
+            </p>
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-center py-8">
+            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#E53E3E" }}>
+              Error: {error}
+            </p>
+          </div>
+        )}
+
         {/* Table */}
-        <div className="rounded-lg overflow-hidden shadow-sm">
-          <table className="w-full border-collapse">
-            <thead style={{ backgroundColor: "#E4E4E4" }}>
-              <tr>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "80px",
-                    paddingLeft: "25px",
-                  }}
-                >
-                  No
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "450px",
-                    paddingLeft: "40px",
-                  }}
-                >
-                  Question
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    paddingLeft: "40px",
-                  }}
-                >
-                  Answers
-                </th>
-                <th
-                  className="text-center font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "150px",
-                    paddingRight: "25px",
-                  }}
-                >
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody style={{ backgroundColor: "transparent" }}>
-              {getPaginatedItems().map((item, idx) => (
+        {!loading && !error && (
+          <div className="rounded-lg overflow-hidden shadow-sm">
+            <table className="w-full border-collapse">
+              <thead style={{ backgroundColor: "#E4E4E4" }}>
+                <tr>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "80px",
+                      paddingLeft: "25px",
+                    }}
+                  >
+                    No
+                  </th>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "450px",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    Question
+                  </th>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    Answers
+                  </th>
+                  <th
+                    className="text-center font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "150px",
+                      paddingRight: "25px",
+                    }}
+                  >
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody style={{ backgroundColor: "transparent" }}>
+                {faqData.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
+                      No FAQ found. Click "Add FAQ" to create one.
+                    </td>
+                  </tr>
+                ) : (
+                  getPaginatedItems().map((item, idx) => (
                 <tr
                   key={item.id}
                   style={{
@@ -373,15 +403,20 @@ export default function FAQDashboard() {
                       className="flex items-center justify-center gap-3"
                       style={{ width: "150px", margin: "0 auto" }}
                     >
-                      <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
-                        <Image
-                          src="/dashboard/edit.svg"
-                          alt="Edit"
-                          width={28}
-                          height={28}
-                        />
-                      </button>
-                      <button className="p-2 hover:bg-[#FFCDCD] rounded transition-colors">
+                      <Link href={`/dashboard-faq/edit/${item.id}`}>
+                        <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
+                          <Image
+                            src="/dashboard/edit.svg"
+                            alt="Edit"
+                            width={28}
+                            height={28}
+                          />
+                        </button>
+                      </Link>
+                      <button 
+                        onClick={() => handleDelete(item.id)}
+                        className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                      >
                         <Image
                           src="/dashboard/delete.svg"
                           alt="Delete"
@@ -392,13 +427,14 @@ export default function FAQDashboard() {
                     </div>
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              )))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Pagination */}
-        {renderPagination()}
+        {!loading && !error && faqData.length > 0 && renderPagination()}
       </div>
     </div>
   );
