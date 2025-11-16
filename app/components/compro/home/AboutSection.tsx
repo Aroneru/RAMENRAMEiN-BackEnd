@@ -28,13 +28,14 @@ export default function AboutSection() {
         </div>
 
         <div className={styles.rightColumn}>
-          <Image
-            src="/images/bangunan_ramen.png" 
-            alt="Foto Kedai Ramein Ramen"
-            width={600}
-            height={400}
-            className={styles.shopImage}
-          />
+<Image
+  src="/images/bangunan_ramen.png"
+  alt="Foto Kedai Ramein Ramen"
+  width={0}
+  height={0}
+  sizes="100vw"
+  className={styles.shopImage}
+/>
         </div>
 
       </div>

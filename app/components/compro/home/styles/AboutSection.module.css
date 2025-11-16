@@ -1,6 +1,6 @@
 .aboutSection {
   width: 100%;
-  background-color: #f4f4f4; 
+  background-color: #f4f4f4;
   font-family: 'Osnova Pro';
 }
 
@@ -13,7 +13,7 @@
 
 .leftColumn {
   flex: 1;
-  min-width: 300px;
+  min-width: 320px;
   padding: 4rem 2rem;
   position: relative;
   background-image: url("/images/mural.png");
@@ -24,12 +24,11 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start; 
-  overflow: hidden; 
+  align-items: flex-start;
+  overflow: hidden;
   border-radius: 8px;
   min-height: 400px;
 }
-
 
 .leftColumn > * {
   position: relative;
@@ -59,20 +58,19 @@
   align-items: center;
   gap: 10px;
   border-radius: 2px;
-  border: 2px solid var(--Secondary-Red-100, #f20b05);
-  background: rgba(23, 23, 23, 0);
+  border: 2px solid #f20b05;
+  background: transparent;
   font-family: "Open Sans", sans-serif;
   font-size: 24px;
-  font-style: normal;
   font-weight: 700;
-  line-height: 100%; 
+  line-height: 100%;
   letter-spacing: 0.12px;
   color: #f20b05;
   margin-left: 80px;
 }
 
 .button:hover {
-  background-color: #f20b05; 
+  background-color: #f20b05;
   color: white;
 }
 
@@ -85,7 +83,57 @@
 
 .shopImage {
   width: 100%;
-  height: 400px; 
+  height: 400px;
   object-fit: cover;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .leftColumn {
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .leftColumn h2 {
+    margin-left: 0;
+    font-size: 2rem;
+  }
+
+  .leftColumn p {
+    margin-left: 0;
+    padding-right: 0;
+    font-size: 0.95rem;
+  }
+
+  .button {
+    margin-left: 0;
+    margin-top: 1rem;
+    font-size: 18px;
+  }
+
+  .shopImage {
+    height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .leftColumn h2 {
+    font-size: 1.8rem;
+  }
+
+  .leftColumn p {
+    font-size: 0.9rem;
+  }
+
+  .button {
+    font-size: 16px;
+    padding: 10px 20px;
+  }
 }

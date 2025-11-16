@@ -56,6 +56,11 @@ export default function MenuPage() {
       desc: "Sup tradisional Jepang dengan kaldu dashi dan pasta miso pilihan, ditambah dengan tahu sutra, wakame, dan daun bawang segar",
       img: "/images/menu/NYEMIL/Miso Soup.png",
     },
+    {
+      name: "Dimsum",
+      desc: "Dimsum kukus berisi daging ayam yang lembut, dibungkus kulit tipis dan disajikan hangat dengan saus pendamping yang gurih.",
+      img: "/images/menu/NYEMIL/Dimsum.png",
+    },
   ];
 
   const minumanMenu = [
