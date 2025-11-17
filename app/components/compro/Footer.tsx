@@ -34,15 +34,22 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Logo */}
-        <div className="mt-4">
+        {/* Logo dan Tombol Login */}
+        <div className="mt-4 flex items-center gap-4">
           <Image
             src="/logo_ramenramein.svg"
             alt="Ramein Ramen Logo"
             width={80}
             height={40}
           />
+          <Link 
+            href="/login" 
+            className="px-4 py-2 border-2 border-white bg-transparent text-white text-sm font-semibold uppercase hover:bg-white hover:text-black transition-all duration-200 rounded"
+          >
+            Login Admin
+          </Link>
         </div>
+        
       </div>
     </footer>
   );
