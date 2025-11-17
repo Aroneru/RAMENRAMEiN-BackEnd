@@ -17,14 +17,25 @@ export default function AddRamenDashboard() {
   const [error, setError] = useState<string | null>(null);
 
   const handleImageChange = (file: File) => {
-    if (file && file.type.match(/^image\//)) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    // Validate file type
+    if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
+      setError("Please upload JPEG, JPG, or PNG image only");
+      return;
     }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Image size must be less than 10MB");
+      return;
+    }
+
+    setError(null);
+    setImage(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,18 +65,34 @@ export default function AddRamenDashboard() {
   };
 
   const handleSubmit = async () => {
+    // Validation
+    if (!name.trim()) {
+      setError("Please enter ramen name");
+      return;
+    }
+    if (!description.trim()) {
+      setError("Please enter description");
+      return;
+    }
+    if (!price || parseFloat(price) <= 0) {
+      setError("Please enter valid price");
+      return;
+    }
+    if (!image) {
+      setError("Please upload an image");
+      return;
+    }
+
     setError(null);
     setLoading(true);
 
     try {
       // Create FormData
       const formData = new FormData();
-      formData.append('name', name);
-      formData.append('description', description);
+      formData.append('name', name.trim());
+      formData.append('description', description.trim());
       formData.append('price', price);
-      if (image) {
-        formData.append('image', image);
-      }
+      formData.append('image', image);
 
       // Call server action
       const result = await addMenuItemAction(formData, 'ramen');
@@ -76,7 +103,8 @@ export default function AddRamenDashboard() {
         return;
       }
 
-      // Redirect back to menu dashboard
+      // Success - redirect
+      alert("Ramen added successfully!");
       router.push('/dashboard-menu');
     } catch (err: any) {
       console.error("Error adding ramen:", err);
@@ -90,6 +118,60 @@ export default function AddRamenDashboard() {
       className="min-h-screen"
       style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
     >
+      {/* Toast Error Notification */}
+      {error && (
+        <div
+          className="fixed z-50 animate-slide-in"
+          style={{
+            top: "24px",
+            right: "24px",
+            width: "400px",
+            maxWidth: "calc(100vw - 48px)",
+          }}
+        >
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 flex-1">
+              <svg
+                className="w-6 h-6 text-red-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "15px",
+                  lineHeight: "1.5",
+                }}
+              >
+                {error}
+              </p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Navigator */}
       <div
         style={{
@@ -156,7 +238,8 @@ export default function AddRamenDashboard() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Insert ramen name"
-                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+                disabled={loading}
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
                   fontSize: "18px",
@@ -183,7 +266,8 @@ export default function AddRamenDashboard() {
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Insert ramen description"
                 rows={6}
-                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y"
+                disabled={loading}
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
                   fontSize: "18px",
@@ -211,7 +295,10 @@ export default function AddRamenDashboard() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="Insert price"
-                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+                disabled={loading}
+                min="0"
+                step="1000"
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
                   fontSize: "18px",
@@ -242,7 +329,7 @@ export default function AddRamenDashboard() {
                 isDragging
                   ? "border-[#4A90E2] bg-blue-50"
                   : "border-[#EAEAEA] bg-white"
-              }`}
+              } ${loading ? "opacity-50 pointer-events-none" : ""}`}
               style={{
                 height: "330px",
                 transition: "all 0.3s ease",
@@ -255,15 +342,17 @@ export default function AddRamenDashboard() {
                     alt="Preview"
                     className="w-full h-full object-contain p-4"
                   />
-                  <button
-                    onClick={() => {
-                      setImage(null);
-                      setImagePreview(null);
-                    }}
-                    className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600"
-                  >
-                    ×
-                  </button>
+                  {!loading && (
+                    <button
+                      onClick={() => {
+                        setImage(null);
+                        setImagePreview(null);
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    >
+                      ×
+                    </button>
+                  )}
                 </div>
               ) : (
                 <>
@@ -298,13 +387,18 @@ export default function AddRamenDashboard() {
                   <input
                     type="file"
                     id="fileInput"
-                    accept="image/*"
+                    accept="image/jpeg,image/jpg,image/png"
                     onChange={handleFileInput}
+                    disabled={loading}
                     className="hidden"
                   />
                   <label
                     htmlFor="fileInput"
-                    className="px-6 py-2 border border-[#EAEAEA] rounded cursor-pointer hover:bg-gray-50 transition-colors"
+                    className={`px-6 py-2 border border-[#EAEAEA] rounded transition-colors ${
+                      loading
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer hover:bg-gray-50"
+                    }`}
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "16px",
@@ -319,19 +413,12 @@ export default function AddRamenDashboard() {
           </div>
         </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-            {error}
-          </div>
-        )}
-
         {/* Submit Button */}
         <div className="flex justify-end mt-8 gap-4">
           <Link href="/dashboard-menu">
             <button
               disabled={loading}
-              className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
+              className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -345,7 +432,7 @@ export default function AddRamenDashboard() {
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50"
+            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{
               fontFamily: "Helvetica Neue, sans-serif",
               fontSize: "18px",
@@ -357,6 +444,23 @@ export default function AddRamenDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Add CSS for animation */}
+      <style jsx>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }

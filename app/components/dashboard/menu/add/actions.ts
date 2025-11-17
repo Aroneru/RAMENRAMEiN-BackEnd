@@ -1,79 +1,38 @@
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
-import { uploadImage } from '@/lib/storage';
-import { insertMenu } from '@/lib/menu';
-import type { MenuCategory } from '@/lib/types/database.types';
+import { insertMenu } from "@/lib/menu";
+import { uploadImage } from "@/lib/storage";
 
-export async function addMenuItemAction(
-  formData: FormData,
-  category: MenuCategory
-) {
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options });
-        },
-        remove(name: string, options: any) {
-          cookieStore.set({ name, value: '', ...options });
-        },
-      },
-    }
-  );
-
-  // Get current user from session
-  const { data: { user }, error: authError } = await supabase.auth.getUser();
-  
-  if (authError || !user) {
-    return { error: 'You must be logged in to add menu items' };
-  }
-
-  // Extract form data
-  const name = formData.get('name') as string;
-  const description = formData.get('description') as string;
-  const price = formData.get('price') as string;
-  const imageFile = formData.get('image') as File;
-
-  // Validation
-  if (!name?.trim()) return { error: 'Name is required' };
-  if (!description?.trim()) return { error: 'Description is required' };
-  if (!price?.trim()) return { error: 'Price is required' };
-  if (!imageFile || imageFile.size === 0) return { error: 'Image is required' };
-
+export async function addMenuItemAction(formData: FormData, category: string) {
   try {
-    // Upload image to local public folder
-    const imageUrl = await uploadImage(imageFile, category);
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+    const price = formData.get("price") as string;
+    const imageFile = formData.get("image") as File;
 
-    // Create menu item - use the authenticated supabase client
-    const { error: insertError } = await supabase
-      .from('menu')
-      .insert({
-        name: name.trim(),
-        description: description.trim(),
-        price: parseFloat(price),
-        category,
-        image_url: imageUrl,
-        is_available: true,
-        created_by: user.id,
-        updated_by: user.id
-      });
-
-    if (insertError) {
-      throw new Error(insertError.message);
+    // Validasi
+    if (!name || !description || !price || !imageFile) {
+      return { error: "Semua field harus diisi" };
     }
+
+    // Upload gambar ke folder public/images/menu
+    const imageUrl = await uploadImage(imageFile, "menu");
+
+    // Simpan data ke database
+    const menuData = {
+      name,
+      description,
+      price: parseFloat(price),
+      image_url: imageUrl,
+      category: category as any,
+      is_available: true,
+    };
+
+    await insertMenu(menuData);
 
     return { success: true };
-  } catch (err: any) {
-    console.error('Error adding menu item:', err);
-    return { error: err.message || 'Failed to add menu item' };
+  } catch (error: any) {
+    console.error("Error:", error);
+    return { error: error.message || "Gagal menambahkan menu" };
   }
 }
