@@ -60,7 +60,7 @@ export async function addNewsItemAction(formData: FormData) {
     // Upload thumbnail to public/images/berita
     const thumbnailUrl = await uploadImage(thumbnailFile, "berita");
 
-    // Save to database
+    // Save to database using authenticated client
     const newsData = {
       title: title.trim(),
       content: content.trim(),
@@ -72,7 +72,16 @@ export async function addNewsItemAction(formData: FormData) {
       updated_by: user.id,
     };
 
-    await insertNews(newsData);
+    const { data, error: insertError } = await supabase
+      .from('news')
+      .insert(newsData)
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("Database insert error:", insertError);
+      throw insertError;
+    }
 
     return { success: true };
   } catch (error: any) {
@@ -143,7 +152,7 @@ export async function updateNewsItemAction(formData: FormData) {
       thumbnailUrl = await uploadImage(thumbnailFile, "berita");
     }
 
-    // Update database
+    // Update database using authenticated client
     const updates = {
       title: title.trim(),
       content: content.trim(),
@@ -154,7 +163,17 @@ export async function updateNewsItemAction(formData: FormData) {
       updated_by: user.id,
     };
 
-    await updateNews(id, updates);
+    const { data, error: updateError } = await supabase
+      .from('news')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error("Database update error:", updateError);
+      throw updateError;
+    }
 
     return { success: true };
   } catch (error: any) {
@@ -205,8 +224,16 @@ export async function deleteNewsItemAction(id: string) {
       }
     }
 
-    // Delete from database
-    await deleteNews(id);
+    // Delete from database using authenticated client
+    const { error: deleteError } = await supabase
+      .from('news')
+      .delete()
+      .eq('id', id);
+
+    if (deleteError) {
+      console.error("Database delete error:", deleteError);
+      throw deleteError;
+    }
 
     return { success: true };
   } catch (error: any) {

@@ -74,7 +74,7 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
       imageUrl = await uploadImage(imageFile, "menu");
     }
 
-    // Update database
+    // Update database using authenticated client
     const updates = {
       name: name.trim(),
       description: description.trim(),
@@ -84,7 +84,17 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
       updated_by: user.id,
     };
 
-    await updateMenu(id, updates);
+    const { data, error: updateError } = await supabase
+      .from('menu')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (updateError) {
+      console.error("Database update error:", updateError);
+      throw updateError;
+    }
 
     return { success: true };
   } catch (error: any) {
@@ -135,8 +145,16 @@ export async function deleteMenuItemAction(id: string) {
       }
     }
 
-    // Delete from database
-    await deleteMenu(id);
+    // Delete from database using authenticated client
+    const { error: deleteError } = await supabase
+      .from('menu')
+      .delete()
+      .eq('id', id);
+
+    if (deleteError) {
+      console.error("Database delete error:", deleteError);
+      throw deleteError;
+    }
 
     return { success: true };
   } catch (error: any) {

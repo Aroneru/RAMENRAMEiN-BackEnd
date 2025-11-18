@@ -49,7 +49,7 @@ export async function addMenuItemAction(formData: FormData, category: string) {
     // Upload image to public/images/menu
     const imageUrl = await uploadImage(imageFile, "menu");
 
-    // Save to database
+    // Save to database using authenticated client
     const menuData = {
       name: name.trim(),
       description: description.trim(),
@@ -61,7 +61,16 @@ export async function addMenuItemAction(formData: FormData, category: string) {
       updated_by: user.id,
     };
 
-    await insertMenu(menuData);
+    const { data, error: insertError } = await supabase
+      .from('menu')
+      .insert(menuData)
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("Database insert error:", insertError);
+      throw insertError;
+    }
 
     return { success: true };
   } catch (error: any) {
