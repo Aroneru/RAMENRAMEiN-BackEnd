@@ -1,67 +1,168 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "@/lib/auth";
 
 export default function Sidebar() {
   const pathname = usePathname() || "";
+  const router = useRouter();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
 
+  const handleLogoutClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowLogoutModal(true);
+  };
+
+  const handleLogoutConfirm = async () => {
+    setLoggingOut(true);
+    try {
+      await signOut();
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout error:', error);
+      setLoggingOut(false);
+      setShowLogoutModal(false);
+    }
+  };
+
+  const handleLogoutCancel = () => {
+    setShowLogoutModal(false);
+  };
+
   return (
-    <div className="w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0">
-      {/* Logo Section */}
-      <div className="mt-[40px] flex flex-col items-center w-full">
-        <Image
-          src="/logo_ramenramein.svg"
-          alt="RAMEiN Logo"
-          width={160}
-          height={60}
-        />
+    <>
+      <div className="w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0">
+        {/* Logo Section */}
+        <div className="mt-[40px] flex flex-col items-center w-full">
+          <Image
+            src="/logo_ramenramein.svg"
+            alt="RAMEiN Logo"
+            width={160}
+            height={60}
+          />
+        </div>
+
+        <div className="mt-[45px]" />
+        <nav className="flex flex-col w-full">
+          <SidebarButton
+            href="/dashboard-home"
+            iconSrc="/dashboard/home.svg"
+            label="Home"
+            active={isActive("/dashboard-home")}
+          />
+
+          <div className="mt-[0px]" />
+          <SidebarButton
+            href="/dashboard-menu"
+            iconSrc="/dashboard/menu.svg"
+            label="Menu"
+            active={isActive("/dashboard-menu")}
+          />
+
+          <div className="mt-[0px]" />
+          <SidebarButton
+            href="/dashboard-faq"
+            iconSrc="/dashboard/faq.svg"
+            label="FAQ"
+            active={isActive("/dashboard-faq")}
+          />
+          <div className="mt-[0px]" />
+          <SidebarButton
+            href="/dashboard-news"
+            iconSrc="/dashboard/news.svg"
+            label="News"
+            active={isActive("/dashboard-news")}
+          />
+        </nav>
+
+        <div className="mt-[35px]" />
+
+        <button
+          onClick={handleLogoutClick}
+          className="flex items-center w-full h-[60px] pl-[45px] pr-6 text-[18px] bg-transparent hover:bg-[#2A2727] transition-colors"
+        >
+          <span className="flex items-center gap-[15px]">
+            <img src="/dashboard/logout.svg" alt="" width={24} height={24} />
+            <span className="font-bold" style={{ fontFamily: "Poppins, sans-serif" }}>
+              Logout
+            </span>
+          </span>
+        </button>
       </div>
 
-      <div className="mt-[45px]" />
-      <nav className="flex flex-col w-full">
-        <SidebarButton
-          href="/dashboard-home"
-          iconSrc="/dashboard/home.svg"
-          label="Home"
-          active={isActive("/dashboard-home")}
-        />
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          onClick={handleLogoutCancel}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl animate-scale-in"
+            style={{ width: "500px", maxWidth: "90vw", padding: "32px" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-center mb-4">
+              <div
+                className="rounded-full bg-yellow-100 flex items-center justify-center"
+                style={{ width: "64px", height: "64px" }}
+              >
+                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+              </div>
+            </div>
+            <h3 className="text-center mb-3" style={{ fontFamily: "Poppins, sans-serif", fontSize: "24px", fontWeight: "600", color: "#1D1A1A" }}>
+              Logout Confirmation
+            </h3>
+            <p className="text-center mb-6" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#666", lineHeight: "1.5" }}>
+              Are you sure you want to logout from your account?
+            </p>
+            <div className="flex gap-3 justify-center">
+              <button 
+                onClick={handleLogoutCancel} 
+                disabled={loggingOut} 
+                className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50" 
+                style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", minWidth: "120px" }}
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleLogoutConfirm} 
+                disabled={loggingOut} 
+                className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50" 
+                style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", minWidth: "120px" }}
+              >
+                {loggingOut ? "Logging out..." : "Logout"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
-        <div className="mt-[0px]" />
-        <SidebarButton
-          href="/dashboard-menu"
-          iconSrc="/dashboard/menu.svg"
-          label="Menu"
-          active={isActive("/dashboard-menu")}
-        />
-
-        <div className="mt-[0px]" />
-        <SidebarButton
-          href="/dashboard-faq"
-          iconSrc="/dashboard/faq.svg"
-          label="FAQ"
-          active={isActive("/dashboard-faq")}
-        />
-        <div className="mt-[0px]" />
-        <SidebarButton
-          href="/dashboard-news"
-          iconSrc="/dashboard/news.svg"
-          label="News"
-          active={isActive("/dashboard-news")}
-        />
-      </nav>
-
-      <div className="mt-[35px]" />
-
-      <SidebarButton
-        href="/login"
-        iconSrc="/dashboard/logout.svg"
-        label="Logout"
-      />
-    </div>
+      <style jsx>{`
+        @keyframes scale-in {
+          from {
+            transform: scale(0.9);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        .animate-scale-in {
+          animation: scale-in 0.2s ease-out;
+        }
+      `}</style>
+    </>
   );
 }
 

@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
-import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 export async function loginAction(email: string, password: string) {
   const cookieStore = await cookies();
@@ -34,5 +34,8 @@ export async function loginAction(email: string, password: string) {
     return { error: error.message };
   }
 
-  redirect('/dashboard-home');
+  // Revalidate cache instead of redirect
+  revalidatePath('/', 'layout');
+  
+  return { success: true };
 }

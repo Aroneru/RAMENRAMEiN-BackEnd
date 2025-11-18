@@ -2,9 +2,11 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { loginAction } from "@/app/(auth)/login/actions";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -22,8 +24,14 @@ export default function LoginForm() {
       if (result?.error) {
         setError(result.error);
         setLoading(false);
+        return;
       }
-      // If successful, loginAction will redirect automatically
+
+      // If successful, redirect to dashboard
+      if (result?.success) {
+        router.push('/dashboard-home');
+        router.refresh(); // Refresh to update auth state
+      }
     } catch (err: any) {
       console.error("Login error:", err);
       setError("An unexpected error occurred");
@@ -33,6 +41,7 @@ export default function LoginForm() {
 
   return (
     <div className="flex h-screen">
+      {/* Left Side - Background */}
       <div className="w-1/2 relative">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -50,7 +59,7 @@ export default function LoginForm() {
         </div>
       </div>
 
-      {/* Login Form */}
+      {/* Right Side - Login Form */}
       <div className="w-1/2 flex items-center justify-center bg-[#f5f5f0]">
         <div className="w-full max-w-[524px]">
           <h1
@@ -88,7 +97,7 @@ export default function LoginForm() {
                   strokeLinejoin="round"
                   strokeWidth={2}
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />aaaa
+                />
               </svg>
             </div>
 
