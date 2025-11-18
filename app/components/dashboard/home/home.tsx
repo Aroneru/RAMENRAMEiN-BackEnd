@@ -366,3 +366,5 @@ export default function HomeDashboard() {
     </div>
   );
 }
+
+// I love Vibe Coding <3
