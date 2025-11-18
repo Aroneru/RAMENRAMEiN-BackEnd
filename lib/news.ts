@@ -82,6 +82,39 @@ export async function fetchBeritaById(id: string): Promise<Berita | null> {
   }
 }
 
+// Fetch previous and next news
+export async function fetchPrevNextNews(currentId: string, currentDate: string) {
+  try {
+    // Get previous news (older than current)
+    const { data: prevData } = await supabase
+      .from('news')
+      .select('*')
+      .eq('is_published', true)
+      .lt('created_at', currentDate)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    // Get next news (newer than current)
+    const { data: nextData } = await supabase
+      .from('news')
+      .select('*')
+      .eq('is_published', true)
+      .gt('created_at', currentDate)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .single();
+
+    return {
+      prev: prevData ? newsToBerita(prevData as News) : null,
+      next: nextData ? newsToBerita(nextData as News) : null,
+    };
+  } catch (error) {
+    console.error('Error fetching prev/next news:', error);
+    return { prev: null, next: null };
+  }
+}
+
 // Insert new news
 export async function insertNews(news: any) {
   const { data, error } = await supabase
