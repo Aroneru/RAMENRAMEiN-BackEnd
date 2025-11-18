@@ -12,6 +12,10 @@ export default function FAQDashboard() {
   const [faqData, setFaqData] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     loadFAQ();
@@ -31,19 +35,54 @@ export default function FAQDashboard() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this FAQ? This action cannot be undone.")) return;
-    
+  const handleDeleteClick = (id: string) => {
+    setDeleteId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteId) return;
+
+    setError(null);
+    setSuccess(null);
+    setDeleting(true);
+
     try {
-      const result = await deleteFaqItemAction(id);
+      const result = await deleteFaqItemAction(deleteId);
+      
       if (result.error) {
-        alert("Failed to delete FAQ: " + result.error);
-      } else {
-        await loadFAQ(); // Reload data
+        setError(result.error);
+        setDeleting(false);
+        setShowDeleteModal(false);
+        setDeleteId(null);
+        return;
       }
+
+      // Success
+      setSuccess("FAQ deleted successfully!");
+      setDeleting(false);
+      setShowDeleteModal(false);
+      setDeleteId(null);
+      
+      // Reload data
+      await loadFAQ();
+      
+      // Auto hide success message after 3 seconds
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
     } catch (err: any) {
-      alert("Failed to delete FAQ: " + err.message);
+      console.error("Error deleting FAQ:", err);
+      setError(err.message || "Failed to delete FAQ");
+      setDeleting(false);
+      setShowDeleteModal(false);
+      setDeleteId(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setDeleteId(null);
   };
 
   const truncateText = (text: string, maxLength: number = 50) => {
@@ -220,6 +259,209 @@ export default function FAQDashboard() {
       className="min-h-screen"
       style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
     >
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
+          onClick={handleDeleteCancel}
+        >
+          <div
+            className="bg-white rounded-lg shadow-xl animate-scale-in"
+            style={{
+              width: "500px",
+              maxWidth: "90vw",
+              padding: "32px",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Icon */}
+            <div className="flex justify-center mb-4">
+              <div
+                className="rounded-full bg-red-100 flex items-center justify-center"
+                style={{ width: "64px", height: "64px" }}
+              >
+                <svg
+                  className="w-8 h-8 text-red-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Title */}
+            <h3
+              className="text-center mb-3"
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "24px",
+                fontWeight: "600",
+                color: "#1D1A1A",
+              }}
+            >
+              Delete FAQ?
+            </h3>
+
+            {/* Message */}
+            <p
+              className="text-center mb-6"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "16px",
+                color: "#666",
+                lineHeight: "1.5",
+              }}
+            >
+              Are you sure you want to delete this FAQ? This action cannot be undone.
+            </p>
+
+            {/* Buttons */}
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={handleDeleteCancel}
+                disabled={deleting}
+                className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors disabled:opacity-50"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "16px",
+                  minWidth: "120px",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={deleting}
+                className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "16px",
+                  minWidth: "120px",
+                }}
+              >
+                {deleting ? "Deleting..." : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Error Notification */}
+      {error && (
+        <div
+          className="fixed z-50 animate-slide-in"
+          style={{
+            top: "24px",
+            right: "24px",
+            width: "400px",
+            maxWidth: "calc(100vw - 48px)",
+          }}
+        >
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 flex-1">
+              <svg
+                className="w-6 h-6 text-red-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "15px",
+                  lineHeight: "1.5",
+                }}
+              >
+                {error}
+              </p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Success Notification */}
+      {success && (
+        <div
+          className="fixed z-50 animate-slide-in"
+          style={{
+            top: "24px",
+            right: "24px",
+            width: "400px",
+            maxWidth: "calc(100vw - 48px)",
+          }}
+        >
+          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 flex-1">
+              <svg
+                className="w-6 h-6 text-green-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "15px",
+                  lineHeight: "1.5",
+                }}
+              >
+                {success}
+              </p>
+            </div>
+            <button
+              onClick={() => setSuccess(null)}
+              className="flex-shrink-0 text-green-500 hover:text-green-700 transition-colors"
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Navigator */}
       <div
         style={{
@@ -288,7 +530,7 @@ export default function FAQDashboard() {
           </div>
         )}
         
-        {error && (
+        {error && !showDeleteModal && (
           <div className="text-center py-8">
             <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#E53E3E" }}>
               Error: {error}
@@ -446,7 +688,7 @@ export default function FAQDashboard() {
                         </button>
                       </Link>
                       <button 
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDeleteClick(item.id)}
                         className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
                       >
                         <Image
@@ -468,6 +710,36 @@ export default function FAQDashboard() {
         {/* Pagination */}
         {!loading && !error && faqData.length > 0 && renderPagination()}
       </div>
+
+      {/* Add CSS for animations */}
+      <style jsx>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        @keyframes scale-in {
+          from {
+            transform: scale(0.9);
+            opacity: 0;
+          }
+          to {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+        .animate-scale-in {
+          animation: scale-in 0.2s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
