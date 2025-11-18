@@ -28,3 +28,9 @@
   margin: 0;
   font-size: 1em; 
 }
+
+.mapIframe {
+  width: 100%;
+  height: 1200px; /* atau tinggi yang Anda inginkan */
+  border: 0;
+}

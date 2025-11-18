@@ -586,6 +586,7 @@ export default function NewsDashboard() {
           </div>
         )}
 
+
         {/* Table */}
         {!loading && !error && (
           <div className="rounded-lg overflow-hidden shadow-sm">
@@ -622,8 +623,8 @@ export default function NewsDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      width: "250px",
-                      paddingLeft: "40px",
+                      width: "350px",
+                      paddingLeft: "65px",
                     }}
                   >
                     Title
@@ -633,7 +634,6 @@ export default function NewsDashboard() {
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
-                      width: "400px",
                       color: "#1D1A1A",
                       paddingLeft: "40px",
                     }}
@@ -646,7 +646,7 @@ export default function NewsDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      width: "200px",
+                      width: "140px",
                       paddingLeft: "40px",
                     }}
                   >
@@ -659,7 +659,7 @@ export default function NewsDashboard() {
                       fontSize: "18px",
                       color: "#1D1A1A",
                       width: "120px",
-                      paddingLeft: "20px",
+                      paddingLeft: "40px",
                     }}
                   >
                     Status
@@ -670,8 +670,8 @@ export default function NewsDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      width: "200px",
-                      paddingLeft: "125px",
+                      width: "150px",
+                      paddingRight: "25px",
                     }}
                   >
                     Action
@@ -681,7 +681,7 @@ export default function NewsDashboard() {
               <tbody style={{ backgroundColor: "transparent" }}>
                 {newsData.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#1D1A1A" }}>
+                    <td colSpan={7} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#1D1A1A"}}>
                       No news found. Click &quot;Add News&quot; to create one.
                     </td>
                   </tr>
@@ -730,7 +730,7 @@ export default function NewsDashboard() {
                           fontFamily: "Helvetica Neue, sans-serif",
                           fontSize: "18px",
                           color: "#1D1A1A",
-                          paddingLeft: "40px",
+                          paddingLeft: "65px",
                         }}
                       >
                         {item.title}
@@ -757,23 +757,25 @@ export default function NewsDashboard() {
                       >
                         {new Date(item.created_at).toLocaleDateString()}
                       </td>
-                      <td className="py-4 text-center">
-                        <span
-                          className="px-3 py-1 rounded-full text-sm font-medium"
-                          style={{
-                            backgroundColor: item.is_published ? "#D4EDDA" : "#F8D7DA",
-                            color: item.is_published ? "#155724" : "#721C24",
-                            fontFamily: "Helvetica Neue, sans-serif",
-                            fontSize: "14px",
-                          }}
-                        >
-                          {item.is_published ? "Published" : "Draft"}
-                        </span>
+                      <td className="py-4" style={{ paddingLeft: "40px" }}>
+                        <div className="flex justify-center">
+                          <span
+                            className="px-3 py-1 rounded-full text-sm font-medium"
+                            style={{
+                              backgroundColor: item.is_published ? "#D4EDDA" : "#F8D7DA",
+                              color: item.is_published ? "#155724" : "#721C24",
+                              fontFamily: "Helvetica Neue, sans-serif",
+                              fontSize: "14px",
+                            }}
+                          >
+                            {item.is_published ? "Published" : "Draft"}
+                          </span>
+                        </div>
                       </td>
-                      <td className="py-4" style={{ paddingLeft: "125px" }}>
+                      <td className="py-4" style={{ paddingRight: "25px" }}>
                         <div
                           className="flex items-center justify-center gap-3"
-                          style={{ width: "200px", margin: "0 auto" }}
+                          style={{ width: "150px", margin: "0 auto" }}
                         >
                           <Link href={`/dashboard-news/edit/${item.id}`}>
                             <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
@@ -805,7 +807,6 @@ export default function NewsDashboard() {
             </table>
           </div>
         )}
-
         {/* Pagination */}
         {!loading && !error && newsData.length > 0 && renderPagination()}
       </div>
