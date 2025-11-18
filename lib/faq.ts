@@ -5,12 +5,23 @@ import { supabase } from './supabase';
 import type { FAQ, FAQData } from './types/database.types';
 import { faqToFAQData } from './types/database.types';
 
-// Fetch all active FAQs
+// Fetch all active FAQs (for public display)
 export async function fetchFAQList() {
   const { data, error } = await supabase
     .from('faq')
     .select('*')
     .eq('is_active', true)
+    .order('display_order');
+
+  if (error) throw error;
+  return data as FAQ[];
+}
+
+// Fetch all FAQs including inactive ones (for dashboard)
+export async function fetchAllFAQList() {
+  const { data, error } = await supabase
+    .from('faq')
+    .select('*')
     .order('display_order');
 
   if (error) throw error;

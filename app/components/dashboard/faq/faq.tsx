@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchFAQList } from "@/lib/faq";
+import { fetchAllFAQList } from "@/lib/faq";
 import { deleteFaqItemAction } from "./edit/actions";
 import type { FAQ } from "@/lib/types/database.types";
 
@@ -20,7 +20,7 @@ export default function FAQDashboard() {
   const loadFAQ = async () => {
     try {
       setLoading(true);
-      const data = await fetchFAQList();
+      const data = await fetchAllFAQList();
       setFaqData(data);
       setError(null);
     } catch (err: any) {
