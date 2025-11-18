@@ -2,18 +2,10 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-
-export interface BeritaDetail {
-  id: number;
-  kategori: string;
-  judul: string;
-  deskripsi: string;
-  tanggal: string;
-  gambar: string;
-}
+import type { Berita } from "@/lib/types/database.types";
 
 interface BeritaDetailContentProps {
-  berita: BeritaDetail;
+  berita: Berita;
 }
 
 export default function BeritaDetailContent({ berita }: BeritaDetailContentProps) {

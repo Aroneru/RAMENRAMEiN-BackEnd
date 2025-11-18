@@ -82,13 +82,29 @@ export interface Berita {
   gambar: string;
 }
 
-// Helper to convert News to Berita format
+// Helper to convert News to Berita format (for list view - uses description/summary)
 export function newsToBerita(news: News): Berita {
   return {
     id: news.id,
     kategori: news.category,
     judul: news.title,
     deskripsi: news.description,
+    tanggal: new Date(news.published_at || news.created_at).toLocaleDateString('id-ID', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }),
+    gambar: news.image_url
+  };
+}
+
+// Helper to convert News to Berita format (for detail view - uses full content)
+export function newsToBeritaDetail(news: News): Berita {
+  return {
+    id: news.id,
+    kategori: news.category,
+    judul: news.title,
+    deskripsi: news.content, // Use full content for detail view
     tanggal: new Date(news.published_at || news.created_at).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',

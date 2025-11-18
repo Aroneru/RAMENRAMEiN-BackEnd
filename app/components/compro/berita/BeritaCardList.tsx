@@ -1,14 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-
-export interface Berita {
-  id: number;
-  kategori: string;
-  judul: string;
-  deskripsi: string;
-  tanggal: string;
-  gambar: string;
-}
+import type { Berita } from "@/lib/types/database.types";
 
 interface BeritaCardListProps {
   beritaList: Berita[];

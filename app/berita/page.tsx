@@ -1,16 +1,11 @@
-"use client";
-import { useState, useEffect } from "react";
 import BeritaHeroSection from "../components/compro/berita/BeritaHeroSection";
-import BeritaCardList, { Berita } from "../components/compro/berita/BeritaCardList";
-import { fetchBeritaList } from "../../lib/berita";
+import BeritaCardList from "../components/compro/berita/BeritaCardList";
+import { fetchBeritaList } from "@/lib/news";
 
-export default function BeritaPage() {
-  const [beritaList, setBeritaList] = useState<Berita[]>([]);
-  
-  // Fetch berita when component mounts
-  useEffect(() => {
-    fetchBeritaList().then(setBeritaList);
-  }, []);
+// This is now a Server Component for better performance
+export default async function BeritaPage() {
+  // Fetch data directly on the server
+  const beritaList = await fetchBeritaList();
 
   return (
     <main className="min-h-screen bg-black text-white">

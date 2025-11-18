@@ -3,7 +3,7 @@
 // ============================================
 import { supabase } from './supabase';
 import type { News, Berita } from './types/database.types';
-import { newsToBerita } from './types/database.types';
+import { newsToBerita, newsToBeritaDetail } from './types/database.types';
 
 // Fetch all active news
 export async function fetchNewsList() {
@@ -60,11 +60,11 @@ export async function fetchNewsBySlug(slug: string) {
   return newsData;
 }
 
-// Fetch news by Berita ID (for compatibility)
+// Fetch news by Berita ID (for compatibility - detail view with full content)
 export async function fetchBeritaById(id: string): Promise<Berita | null> {
   try {
     const news = await fetchNewsById(id);
-    return newsToBerita(news);
+    return newsToBeritaDetail(news); // Use detail version with full content
   } catch (error) {
     console.error('Error fetching berita by id:', error);
     return null;
