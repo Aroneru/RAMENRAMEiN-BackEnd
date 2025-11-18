@@ -3,6 +3,11 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import TextAlign from '@tiptap/extension-text-align';
+import LinkExtension from '@tiptap/extension-link';
 import { getNewsItemAction, updateNewsItemAction, deleteNewsItemAction } from "./actions";
 
 interface EditNewsProps {
@@ -13,7 +18,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [body, setBody] = useState("");
   const [category, setCategory] = useState("general");
   const [isPublished, setIsPublished] = useState(true);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -26,6 +30,28 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [newsContent, setNewsContent] = useState<string>("");
+
+  // TipTap Editor
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+      LinkExtension.configure({
+        openOnClick: false,
+      }),
+    ],
+    content: '<p>Insert full news content</p>',
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] px-4 py-3',
+      },
+    },
+  });
 
   useEffect(() => {
     if (id) {
@@ -35,6 +61,13 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       setLoadingData(false);
     }
   }, [id]);
+
+  // Set editor content when editor is ready and newsContent is available
+  useEffect(() => {
+    if (editor && newsContent && !editor.isDestroyed) {
+      editor.commands.setContent(newsContent);
+    }
+  }, [editor, newsContent]);
 
   const loadNewsData = async () => {
     if (!id) return;
@@ -51,11 +84,15 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       if (result.data) {
         setTitle(result.data.title || "");
         setDescription(result.data.description || "");
-        setBody(result.data.content || "");
         setCategory(result.data.category || "general");
         setIsPublished(result.data.is_published || false);
         setCurrentThumbnail(result.data.image_url || "");
         setThumbnailPreview(result.data.image_url || null);
+        
+        // Store content in state
+        if (result.data.content) {
+          setNewsContent(result.data.content);
+        }
       }
 
       setLoadingData(false);
@@ -67,14 +104,12 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
   };
 
   const handleThumbnailChange = (file: File) => {
-    // Validate file type
     if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
       setError("Please upload JPEG, JPG, or PNG image only");
       setSuccess(null);
       return;
     }
 
-    // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
       setError("Image size must be less than 10MB");
       setSuccess(null);
@@ -126,6 +161,8 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       return;
     }
 
+    const body = editor?.getHTML() || '';
+
     // Validation
     if (!title.trim()) {
       setError("Please enter news title");
@@ -137,7 +174,7 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       setSuccess(null);
       return;
     }
-    if (!body.trim()) {
+    if (!body.trim() || body === '<p>Insert full news content</p>' || body === '<p></p>') {
       setError("Please enter news content");
       setSuccess(null);
       return;
@@ -168,11 +205,9 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
         return;
       }
 
-      // Success
       setSuccess("News updated successfully!");
       setLoading(false);
       
-      // Redirect after 1.5 seconds
       setTimeout(() => {
         router.push('/dashboard-news');
       }, 1500);
@@ -208,12 +243,10 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
         return;
       }
 
-      // Success
       setSuccess("News deleted successfully!");
       setDeleting(false);
       setShowDeleteModal(false);
       
-      // Redirect after 1.5 seconds
       setTimeout(() => {
         router.push('/dashboard-news');
       }, 1500);
@@ -261,7 +294,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Icon */}
             <div className="flex justify-center mb-4">
               <div
                 className="rounded-full bg-red-100 flex items-center justify-center"
@@ -283,7 +315,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
               </div>
             </div>
 
-            {/* Title */}
             <h3
               className="text-center mb-3"
               style={{
@@ -296,7 +327,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
               Delete News?
             </h3>
 
-            {/* Message */}
             <p
               className="text-center mb-6"
               style={{
@@ -309,7 +339,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
               Are you sure you want to delete this news? This action cannot be undone.
             </p>
 
-            {/* Buttons */}
             <div className="flex gap-3 justify-center">
               <button
                 onClick={handleDeleteCancel}
@@ -479,7 +508,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
           paddingBottom: "40px",
         }}
       >
-        {/* Section Title - Centered */}
         <h2
           className="text-center"
           style={{
@@ -493,7 +521,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
           Edit News
         </h2>
         
-        {/* Form Container - Centered with max-width */}
         <div className="mx-auto" style={{ maxWidth: "800px" }}>
           {/* 1. Thumbnail Upload */}
           <div className="mb-6">
@@ -509,7 +536,6 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
               Thumbnail
             </label>
             
-            {/* Hidden File Input */}
             <input
               type="file"
               id="fileInput"
@@ -672,7 +698,7 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
             />
           </div>
 
-          {/* 4. Content Field */}
+          {/* 4. Content Field - TipTap Editor */}
           <div className="mb-6">
             <label
               style={{
@@ -685,20 +711,142 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
             >
               Content <span className="text-red-500">*</span>
             </label>
-            <textarea
-              value={body}
-              onChange={(e) => setBody(e.target.value)}
-              placeholder="Insert full news content"
-              rows={6}
-              disabled={loading || deleting}
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                color: "#1D1A1A",
-                minHeight: "150px",
-              }}
-            />
+            
+            {/* Toolbar */}
+            {editor && (
+              <div className="border border-[#EAEAEA] rounded-t-lg bg-gray-50 p-2 flex flex-wrap gap-1">
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleBold().run()}
+                  disabled={!editor.can().chain().focus().toggleBold().run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('bold') ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  <strong>B</strong>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleItalic().run()}
+                  disabled={!editor.can().chain().focus().toggleItalic().run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('italic') ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  <em>I</em>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleUnderline().run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('underline') ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  <u>U</u>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleStrike().run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('strike') ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  <s>S</s>
+                </button>
+                <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('heading', { level: 1 }) ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  H1
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  H2
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('heading', { level: 3 }) ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  H3
+                </button>
+                <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleBulletList().run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('bulletList') ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  • List
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive('orderedList') ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  1. List
+                </button>
+                <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().setTextAlign('left').run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive({ textAlign: 'left' }) ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  ⬅
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().setTextAlign('center').run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive({ textAlign: 'center' }) ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  ↔
+                </button>
+                <button
+                  type="button"
+                  onClick={() => editor.chain().focus().setTextAlign('right').run()}
+                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                    editor.isActive({ textAlign: 'right' }) ? 'bg-gray-300' : ''
+                  }`}
+                  style={{ color: '#1D1A1A' }}
+                >
+                  ➡
+                </button>
+              </div>
+            )}
+            
+            {/* Editor */}
+            <div className="border border-[#EAEAEA] border-t-0 rounded-b-lg bg-white">
+              <EditorContent editor={editor} />
+            </div>
           </div>
 
           {/* 5. Category Field */}
@@ -800,8 +948,7 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
         </div>
       </div>
 
-      {/* Add CSS for animations */}
-      <style jsx>{`
+      <style jsx global>{`
         @keyframes slide-in {
           from {
             transform: translateX(100%);
@@ -827,6 +974,84 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
         }
         .animate-scale-in {
           animation: scale-in 0.2s ease-out;
+        }
+        
+        .ProseMirror {
+          min-height: 200px;
+          outline: none;
+          font-family: "Helvetica Neue", sans-serif;
+          font-size: 16px;
+          line-height: 1.6;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror p {
+          margin-bottom: 1em;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror h1 {
+          font-size: 2em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror h2 {
+          font-size: 1.5em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror h3 {
+          font-size: 1.25em;
+          font-weight: bold;
+          margin-top: 0.5em;
+          margin-bottom: 0.5em;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror ul {
+          list-style-type: disc;
+          padding-left: 2em;
+          margin-bottom: 1em;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror ol {
+          list-style-type: decimal;
+          padding-left: 2em;
+          margin-bottom: 1em;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror li {
+          color: #1D1A1A;
+          margin-bottom: 0.25em;
+          display: list-item;
+        }
+        
+        .ProseMirror strong {
+          font-weight: bold;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror em {
+          font-style: italic;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror u {
+          text-decoration: underline;
+          color: #1D1A1A;
+        }
+        
+        .ProseMirror s {
+          text-decoration: line-through;
+          color: #1D1A1A;
         }
       `}</style>
     </div>

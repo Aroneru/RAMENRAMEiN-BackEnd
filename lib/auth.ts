@@ -35,10 +35,23 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
-// Sign out
+// Sign out with cache clearing
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
   if (error) throw error;
+  
+  // Clear all local storage and session storage
+  if (typeof window !== 'undefined') {
+    localStorage.clear();
+    sessionStorage.clear();
+    
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+  }
 }
 
 // Get current session

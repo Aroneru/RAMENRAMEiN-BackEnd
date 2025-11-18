@@ -2,12 +2,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "@/lib/auth";
+import { usePathname } from "next/navigation";
+import { logoutAction } from "@/app/(auth)/login/logout-action";
 
 export default function Sidebar() {
   const pathname = usePathname() || "";
-  const router = useRouter();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
@@ -22,9 +21,24 @@ export default function Sidebar() {
   const handleLogoutConfirm = async () => {
     setLoggingOut(true);
     try {
-      await signOut();
-      router.push('/login');
-      router.refresh();
+      // Call server action to logout
+      const result = await logoutAction();
+      
+      if (result?.error) {
+        console.error('Logout error:', result.error);
+        setLoggingOut(false);
+        setShowLogoutModal(false);
+        return;
+      }
+
+      // Clear client-side storage
+      if (typeof window !== 'undefined') {
+        localStorage.clear();
+        sessionStorage.clear();
+      }
+      
+      // Force hard reload to clear all cached data and redirect
+      window.location.href = '/login';
     } catch (error) {
       console.error('Logout error:', error);
       setLoggingOut(false);
@@ -40,7 +54,7 @@ export default function Sidebar() {
     <>
       <div className="w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0">
         {/* Logo Section */}
-        <div className="mt-[40px] flex flex-col items-center w-full">
+        <div className="mt-10 flex flex-col items-center w-full">
           <Image
             src="/logo_ramenramein.svg"
             alt="RAMEiN Logo"
@@ -58,7 +72,7 @@ export default function Sidebar() {
             active={isActive("/dashboard-home")}
           />
 
-          <div className="mt-[0px]" />
+          <div className="mt-0" />
           <SidebarButton
             href="/dashboard-menu"
             iconSrc="/dashboard/menu.svg"
@@ -66,14 +80,14 @@ export default function Sidebar() {
             active={isActive("/dashboard-menu")}
           />
 
-          <div className="mt-[0px]" />
+          <div className="mt-0" />
           <SidebarButton
             href="/dashboard-faq"
             iconSrc="/dashboard/faq.svg"
             label="FAQ"
             active={isActive("/dashboard-faq")}
           />
-          <div className="mt-[0px]" />
+          <div className="mt-0" />
           <SidebarButton
             href="/dashboard-news"
             iconSrc="/dashboard/news.svg"

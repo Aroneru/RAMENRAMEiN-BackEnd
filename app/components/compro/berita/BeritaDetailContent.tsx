@@ -49,14 +49,11 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
         />
       </div>
 
-      {/* Content - paragraphs justified */}
-      <div className="text-gray-300 text-base leading-relaxed text-justify">
-        {berita.deskripsi.split('\n\n').map((paragraph, idx) => (
-          <p key={idx} className="mb-4">
-            {paragraph}
-          </p>
-        ))}
-      </div>
+      {/* Content - Display formatted HTML */}
+      <div 
+        className="prose prose-invert max-w-none text-gray-300 text-base leading-relaxed"
+        dangerouslySetInnerHTML={{ __html: berita.deskripsi }}
+      />
 
       {/* Previous & Next Navigation */}
       {(prevNews || nextNews) && (
@@ -130,7 +127,69 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
           </div>
         </div>
       )}
+
+      <style jsx global>{`
+        .prose-invert p {
+          color: #d1d5db;
+          margin-bottom: 1em;
+        }
+        
+        .prose-invert h1 {
+          color: #ffffff;
+          font-size: 2em;
+          font-weight: bold;
+          margin-top: 1em;
+          margin-bottom: 0.5em;
+        }
+        
+        .prose-invert h2 {
+          color: #ffffff;
+          font-size: 1.5em;
+          font-weight: bold;
+          margin-top: 1em;
+          margin-bottom: 0.5em;
+        }
+        
+        .prose-invert h3 {
+          color: #ffffff;
+          font-size: 1.25em;
+          font-weight: bold;
+          margin-top: 1em;
+          margin-bottom: 0.5em;
+        }
+        
+        .prose-invert strong {
+          color: #ffffff;
+          font-weight: bold;
+        }
+        
+        .prose-invert em {
+          color: #d1d5db;
+          font-style: italic;
+        }
+        
+        .prose-invert u {
+          color: #d1d5db;
+          text-decoration: underline;
+        }
+        
+        .prose-invert s {
+          color: #d1d5db;
+          text-decoration: line-through;
+        }
+        
+        .prose-invert ul,
+        .prose-invert ol {
+          color: #d1d5db;
+          padding-left: 2em;
+          margin-bottom: 1em;
+        }
+        
+        .prose-invert li {
+          color: #d1d5db;
+          margin-bottom: 0.5em;
+        }
+      `}</style>
     </article>
   );
 }
-

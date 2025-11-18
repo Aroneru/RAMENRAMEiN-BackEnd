@@ -1,8 +1,7 @@
 'use server';
 
-import { cookies, headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { createServerClient } from '@supabase/ssr';
-import { redirect } from 'next/navigation';
 
 export async function logoutAction() {
   const cookieStore = await cookies();
@@ -19,59 +18,26 @@ export async function logoutAction() {
           cookieStore.set({ name, value, ...options });
         },
         remove(name: string, options: any) {
-          cookieStore.set({ name, value: '', maxAge: 0, ...options });
+          cookieStore.set({ name, value: '', ...options });
         },
       },
     }
   );
 
-  // Get current user before revocation so we can admin-revoke if available
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // Revoke current session
+  // Sign out from Supabase
   const { error } = await supabase.auth.signOut();
   
   if (error) {
-    console.error('Logout error:', error);
+    return { error: error.message };
   }
 
-  // Manually delete all Supabase auth cookies
+  // Manually clear all Supabase-related cookies
   const allCookies = cookieStore.getAll();
-  const hdrs = await headers();
-  const hostHeader = hdrs.get('host');
-  const domainHost = hostHeader ? hostHeader.split(':')[0] : undefined;
-  for (const cookie of allCookies) {
-    if (cookie.name.startsWith('sb-') || cookie.name.includes('auth-token') || cookie.name.includes('refresh-token')) {
-      // Ensure deletion across the entire site path
-      cookieStore.set({ name: cookie.name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax' });
-      if (domainHost) cookieStore.set({ name: cookie.name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', domain: domainHost });
-      // Also attempt secure variant (in case cookie was set as Secure)
-      cookieStore.set({ name: cookie.name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', secure: true });
-      if (domainHost) cookieStore.set({ name: cookie.name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', secure: true, domain: domainHost });
-      // SameSite=None + Secure for symmetry
-      cookieStore.set({ name: cookie.name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'none', secure: true });
-      if (domainHost) cookieStore.set({ name: cookie.name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'none', secure: true, domain: domainHost });
+  allCookies.forEach((cookie) => {
+    if (cookie.name.includes('sb-') || cookie.name.includes('supabase')) {
+      cookieStore.delete(cookie.name);
     }
-  }
+  });
 
-  // Explicitly target standard Supabase cookie names for this project
-  try {
-    const url = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!);
-    const projectRef = url.hostname.split('.')[0];
-    const targets = [
-      `sb-${projectRef}-auth-token`,
-      `sb-${projectRef}-refresh-token`,
-    ];
-    const domains: (string | undefined)[] = [undefined, domainHost, 'localhost', '127.0.0.1'];
-    for (const name of targets) {
-      for (const domain of domains) {
-        cookieStore.set({ name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', ...(domain ? { domain } : {}) });
-        cookieStore.set({ name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', secure: true, ...(domain ? { domain } : {}) });
-        cookieStore.set({ name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'none', secure: true, ...(domain ? { domain } : {}) });
-      }
-    }
-  } catch {}
-
-  // Redirect to login page
-  redirect('/login');
+  return { success: true };
 }
