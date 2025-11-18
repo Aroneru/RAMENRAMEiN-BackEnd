@@ -22,8 +22,9 @@ export default function NewsDashboard() {
       const data = await fetchNewsList();
       setNewsData(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || "Failed to load news");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to load news";
+      setError(errorMessage);
       console.error("Error loading news:", err);
     } finally {
       setLoading(false);
@@ -36,8 +37,9 @@ export default function NewsDashboard() {
     try {
       await deleteNews(id);
       await loadNews();
-    } catch (err: any) {
-      alert("Failed to delete news: " + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Failed to delete news";
+      alert("Failed to delete news: " + errorMessage);
     }
   };
 
@@ -54,7 +56,7 @@ export default function NewsDashboard() {
     const totalPages = Math.ceil(newsData.length / itemsPerPage);
 
     const getPageNumbers = () => {
-      const pages = [];
+      const pages: (number | string)[] = [];
       const maxVisible = 5;
 
       if (totalPages <= maxVisible) {
@@ -174,8 +176,11 @@ export default function NewsDashboard() {
         {/* Items per page selector */}
         <select
           value={itemsPerPage}
-          onChange={(e) => setItemsPerPage(Number(e.target.value))}
-          className="ml-4 border border-[#EAEAEA] rounded text-[#1D1A1A] bg-transparent appearance-none"
+          onChange={(e) => {
+            setItemsPerPage(Number(e.target.value));
+            setCurrentPage(1);
+          }}
+          className="ml-4 border border-[#EAEAEA] rounded text-[#1D1A1A] bg-white"
           style={{
             fontFamily: "Helvetica Neue, sans-serif",
             fontSize: "18px",
@@ -183,10 +188,6 @@ export default function NewsDashboard() {
             height: "40px",
             paddingLeft: "12px",
             paddingRight: "32px",
-            backgroundImage: `url('/dashboard/dropdown.svg')`,
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "right 15px center",
-            backgroundSize: "10px",
           }}
         >
           <option value={5}>5</option>
@@ -260,17 +261,17 @@ export default function NewsDashboard() {
             News
           </h2>
           <Link href="/dashboard-news/add">
-          <button
-            className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
-            style={{
-              fontFamily: "Helvetica Neue, sans-serif",
-              fontSize: "18px",
-              width: "200px",
-              height: "40px",
-            }}
-          >
-            Add News
-          </button>
+            <button
+              className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                width: "200px",
+                height: "40px",
+              }}
+            >
+              Add News
+            </button>
           </Link>
         </div>
 
@@ -296,190 +297,191 @@ export default function NewsDashboard() {
           <div className="rounded-lg overflow-hidden shadow-sm">
             <table className="w-full border-collapse">
               <thead style={{ backgroundColor: "#E4E4E4" }}>
-              <tr>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "50px",
-                    paddingLeft: "25px",
-                  }}
-                >
-                  No
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "135px",
-                    paddingLeft: "40px",
-                  }}
-                >
-                  Thumbnail
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "250px",
-                    paddingLeft: "40px",
-                  }}
-                >
-                  Title
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    width: "400px",
-                    color: "#1D1A1A",
-                    paddingLeft: "40px",
-                  }}
-                >
-                  Body
-                </th>
-                <th
-                  className="text-left font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "300px",
-                    paddingLeft: "40px",
-                  }}
-                >
-                  Created At
-                </th>
-                <th
-                  className="text-center font-medium py-3"
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                    width: "200px",
-                    paddingLeft: "125px",
-                  }}
-                >
-                  Action
-                </th>
-              </tr>
+                <tr>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "50px",
+                      paddingLeft: "25px",
+                    }}
+                  >
+                    No
+                  </th>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "135px",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    Thumbnail
+                  </th>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "250px",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    Title
+                  </th>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      width: "400px",
+                      color: "#1D1A1A",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    Body
+                  </th>
+                  <th
+                    className="text-left font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "300px",
+                      paddingLeft: "40px",
+                    }}
+                  >
+                    Created At
+                  </th>
+                  <th
+                    className="text-center font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "200px",
+                      paddingLeft: "125px",
+                    }}
+                  >
+                    Action
+                  </th>
+                </tr>
               </thead>
               <tbody style={{ backgroundColor: "transparent" }}>
                 {newsData.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
-                      No news found. Click "Add News" to create one.
+                    <td colSpan={6} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#1D1A1A" }}>
+                      No news found. Click &quot;Add News&quot; to create one.
                     </td>
                   </tr>
                 ) : (
                   getPaginatedItems().map((item, idx) => (
-                <tr
-                  key={item.id}
-                  style={{
-                    backgroundColor: "transparent",
-                    borderBottom:
-                      idx < getPaginatedItems().length - 1
-                        ? "1px solid #EAEAEA"
-                        : "none",
-                  }}
-                >
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "25px",
-                    }}
-                  >
-                    {(currentPage - 1) * itemsPerPage + idx + 1}
-                  </td>
-                  <td className="py-4" style={{ paddingLeft: "40px" }}>
-                    <div
-                      className="bg-gray-200 rounded overflow-hidden"
-                      style={{ width: "100px", height: "100px" }}
+                    <tr
+                      key={item.id}
+                      style={{
+                        backgroundColor: "transparent",
+                        borderBottom:
+                          idx < getPaginatedItems().length - 1
+                            ? "1px solid #EAEAEA"
+                            : "none",
+                      }}
                     >
-                      {item.thumbnail ? (
-                        <img
-                          src={item.thumbnail}
-                          alt={item.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
-                      )}
-                    </div>
-                  </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "40px",
-                    }}
-                  >
-                    {item.title}
-                  </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "40px",
-                    }}
-                  >
-                    {truncateText(item.body)}
-                  </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "40px",
-                    }}
-                  >
-                    {new Date(item.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="py-4" style={{ paddingLeft: "125px" }}>
-                    <div
-                      className="flex items-center justify-center gap-3"
-                      style={{ width: "200px", margin: "0 auto" }}
-                    >
-                      <Link href={`/dashboard-news/edit/${item.id}`}>
-                        <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
-                          <Image
-                            src="/dashboard/edit.svg"
-                            alt="Edit"
-                            width={28}
-                            height={28}
-                          />
-                        </button>
-                      </Link>
-                      <button 
-                        onClick={() => handleDelete(item.id)}
-                        className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                      <td
+                        className="py-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "25px",
+                        }}
                       >
-                        <Image
-                          src="/dashboard/delete.svg"
-                          alt="Delete"
-                          width={26}
-                          height={26}
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )))}
+                        {(currentPage - 1) * itemsPerPage + idx + 1}
+                      </td>
+                      <td className="py-4" style={{ paddingLeft: "40px" }}>
+                        <div
+                          className="bg-gray-200 rounded overflow-hidden"
+                          style={{ width: "100px", height: "100px" }}
+                        >
+                          {item.thumbnail ? (
+                            <img
+                              src={item.thumbnail}
+                              alt={item.title}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400">No image</div>
+                          )}
+                        </div>
+                      </td>
+                      <td
+                        className="py-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "40px",
+                        }}
+                      >
+                        {item.title}
+                      </td>
+                      <td
+                        className="py-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "40px",
+                        }}
+                      >
+                        {truncateText(item.body)}
+                      </td>
+                      <td
+                        className="py-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "40px",
+                        }}
+                      >
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="py-4" style={{ paddingLeft: "125px" }}>
+                        <div
+                          className="flex items-center justify-center gap-3"
+                          style={{ width: "200px", margin: "0 auto" }}
+                        >
+                          <Link href={`/dashboard-news/edit/${item.id}`}>
+                            <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
+                              <Image
+                                src="/dashboard/edit.svg"
+                                alt="Edit"
+                                width={28}
+                                height={28}
+                              />
+                            </button>
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(item.id)}
+                            className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                          >
+                            <Image
+                              src="/dashboard/delete.svg"
+                              alt="Delete"
+                              width={26}
+                              height={26}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

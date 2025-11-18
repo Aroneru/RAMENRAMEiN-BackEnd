@@ -1,15 +1,80 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import L from "leaflet";
+
+// Custom red marker icon
+const redIcon = L.icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Import Leaflet dynamically to avoid SSR issues
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+
+// Import MapClickHandler component
+const MapClickHandler = dynamic(() => import("./MapClickHandler"), {
+  ssr: false,
+});
 
 export default function EditRouteDashboard() {
-  const [accessPoint, setAccessPoint] = useState("");
+  const [title, setTitle] = useState("");
+  const [accessPoint, setAccessPoint] = useState<[number, number] | null>(null);
   const [description, setDescription] = useState("");
   const [estimation, setEstimation] = useState("");
+  const [isClient, setIsClient] = useState(false);
+
+  // Center of Bogor, Indonesia
+  const bogorCenter: [number, number] = [-6.5971, 106.806];
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSubmit = () => {
+    if (!title) {
+      alert("Please enter a title");
+      return;
+    }
+    if (!accessPoint) {
+      alert("Please select a location on the map");
+      return;
+    }
+    if (!description) {
+      alert("Please enter a description");
+      return;
+    }
+    if (!estimation) {
+      alert("Please enter an estimation");
+      return;
+    }
+
     // Handle form submission
-    console.log({ accessPoint, description, estimation });
+    console.log({
+      title,
+      coordinates: {
+        latitude: accessPoint[0],
+        longitude: accessPoint[1],
+      },
+      description,
+      estimation,
+    });
+  };
+
+  const handleDeleteMarker = () => {
+    setAccessPoint(null);
   };
 
   return (
@@ -50,7 +115,34 @@ export default function EditRouteDashboard() {
       >
         {/* Form Container - Center aligned with max width */}
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-          {/* Access Point Field */}
+          {/* Title Field */}
+          <div className="mb-6">
+            <label
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Insert route title (e.g., Dari Stasiun Bogor)"
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+              }}
+            />
+          </div>
+
+          {/* Access Point Field - Map */}
           <div className="mb-6">
             <label
               style={{
@@ -63,18 +155,66 @@ export default function EditRouteDashboard() {
             >
               Access Point <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
-              value={accessPoint}
-              onChange={(e) => setAccessPoint(e.target.value)}
-              placeholder="Insert access point name"
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+            <p
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
-                color: "#1D1A1A",
+                color: "#999",
+                marginBottom: "12px",
               }}
-            />
+            >
+              Click on the map to select location
+            </p>
+
+            {/* Map Container */}
+            {isClient && (
+              <div
+                style={{
+                  height: "400px",
+                  width: "100%",
+                  border: "1px solid #EAEAEA",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  position: "relative",
+                }}
+              >
+                {/* Delete Button */}
+                {accessPoint && (
+                  <button
+                    onClick={handleDeleteMarker}
+                    className="absolute bg-red-500 text-white rounded flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
+                    style={{
+                      top: "10px",
+                      right: "10px",
+                      width: "120px",
+                      height: "35px",
+                      fontSize: "14px",
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontWeight: "500",
+                      zIndex: 1000,
+                    }}
+                  >
+                    Delete Point
+                  </button>
+                )}
+
+                <MapContainer
+                  center={bogorCenter}
+                  zoom={13}
+                  style={{ height: "100%", width: "100%" }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <MapClickHandler
+                    position={accessPoint}
+                    setPosition={setAccessPoint}
+                    icon={redIcon}
+                  />
+                </MapContainer>
+              </div>
+            )}
           </div>
 
           {/* Description Field */}
@@ -122,7 +262,7 @@ export default function EditRouteDashboard() {
               type="text"
               value={estimation}
               onChange={(e) => setEstimation(e.target.value)}
-              placeholder="Insert time estimation (e.g., 15 menit)"
+              placeholder="Insert time estimation (e.g., (15-20 menit))"
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",

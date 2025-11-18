@@ -484,7 +484,7 @@ export default function HomeDashboard() {
                     paddingLeft: "25px",
                   }}
                 >
-                  Access Point
+                  Title
                 </th>
                 <th
                   className="text-left font-medium py-3"

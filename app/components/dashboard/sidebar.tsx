@@ -45,7 +45,6 @@ export default function Sidebar() {
           label="FAQ"
           active={isActive("/dashboard-faq")}
         />
-
         <div className="mt-[0px]" />
         <SidebarButton
           href="/dashboard-news"
