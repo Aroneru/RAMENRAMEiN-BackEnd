@@ -1,5 +1,5 @@
-import EditRamenDashboard from "@/app/components/dashboard/menu/edit/editramen";
+import EditMenu from "@/app/components/dashboard/menu/edit/editmenu";
 
 export default function EditRamenPage() {
-    return <EditRamenDashboard />;
+    return <EditMenu category="ramen" />;
 }   

@@ -343,6 +343,18 @@ export default function FAQDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
+                      width: "120px",
+                      paddingLeft: "20px",
+                    }}
+                  >
+                    Status
+                  </th>
+                  <th
+                    className="text-center font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
                       width: "150px",
                       paddingRight: "25px",
                     }}
@@ -354,7 +366,7 @@ export default function FAQDashboard() {
               <tbody style={{ backgroundColor: "transparent" }}>
                 {faqData.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
+                    <td colSpan={5} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
                       No FAQ found. Click "Add FAQ" to create one.
                     </td>
                   </tr>
@@ -402,6 +414,21 @@ export default function FAQDashboard() {
                     }}
                   >
                     {truncateText(item.answer)}
+                  </td>
+                  <td className="py-4" style={{ paddingLeft: "20px" }}>
+                    <div className="flex justify-center">
+                      <span
+                        className="px-3 py-1 rounded-full text-sm font-medium"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "14px",
+                          backgroundColor: item.is_active ? "#D4EDDA" : "#F8D7DA",
+                          color: item.is_active ? "#155724" : "#721C24",
+                        }}
+                      >
+                        {item.is_active ? "Active" : "Inactive"}
+                      </span>
+                    </div>
                   </td>
                   <td className="py-4" style={{ paddingRight: "25px" }}>
                     <div

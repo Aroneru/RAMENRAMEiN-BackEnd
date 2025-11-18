@@ -1,18 +1,14 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-interface MenuItem {
-  id: number;
-  image: string;
-  name: string;
-  description: string;
-}
+import { fetchAllMenuItems } from "@/lib/menu";
+import { deleteMenuItemAction } from "./edit/actions";
+import type { Menu } from "@/lib/types/database.types";
 
 interface MenuSection {
   title: string;
-  items: MenuItem[];
+  items: Menu[];
 }
 
 export default function MenuDashboard() {
@@ -23,132 +19,65 @@ export default function MenuDashboard() {
     nyemil: 1,
     minuman: 1,
   });
+  const [menuData, setMenuData] = useState<MenuSection[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const menuData: MenuSection[] = [
-    // ...existing code...
-    {
-      title: "Ramen",
-      items: [
-        {
-          id: 1,
-          image: "dashboard/Ramen.png",
-          name: "Ramen Miso",
-          description: "Test Description",
-        },
-        {
-          id: 2,
-          image: "dashboard/Ramen.png",
-          name: "Ramen Kari",
-          description: "Test Description",
-        },
-      ],
-    },
-    {
-      title: "Topping",
-      items: [
-        {
-          id: 1,
-          image: "dashboard/Ramen.png",
-          name: "Smoked Beef",
-          description: "Test Description",
-        },
-        {
-          id: 2,
-          image: "dashboard/Ramen.png",
-          name: "Dimsum",
-          description: "Test Description",
-        },
-        {
-          id: 3,
-          image: "dashboard/Ramen.png",
-          name: "Gyoza",
-          description: "Test Description",
-        },
-        {
-          id: 4,
-          image: "dashboard/Ramen.png",
-          name: "Telur Ajitama",
-          description: "Test Description",
-        },
-        {
-          id: 5,
-          image: "dashboard/Ramen.png",
-          name: "Nori",
-          description: "Test Description",
-        },
-      ],
-    },
-    {
-      title: "Nyemil",
-      items: [
-        {
-          id: 1,
-          image: "dashboard/Ramen.png",
-          name: "Smoked Beef",
-          description: "Test Description",
-        },
-        {
-          id: 2,
-          image: "dashboard/Ramen.png",
-          name: "Dimsum",
-          description: "Test Description",
-        },
-        {
-          id: 3,
-          image: "dashboard/Ramen.png",
-          name: "Gyoza",
-          description: "Test Description",
-        },
-        {
-          id: 4,
-          image: "dashboard/Ramen.png",
-          name: "Telur Ajitama",
-          description: "Test Description",
-        },
-        {
-          id: 5,
-          image: "dashboard/Ramen.png",
-          name: "Nori",
-          description: "Test Description",
-        },
-      ],
-    },
-    {
-      title: "Minuman",
-      items: [
-        {
-          id: 1,
-          image: "dashboard/Ramen.png",
-          name: "Smoked Beef",
-          description: "Test Description",
-        },
-        {
-          id: 2,
-          image: "dashboard/Ramen.png",
-          name: "Dimsum",
-          description: "Test Description",
-        },
-        {
-          id: 3,
-          image: "dashboard/Ramen.png",
-          name: "Gyoza",
-          description: "Test Description",
-        },
-        {
-          id: 4,
-          image: "dashboard/Ramen.png",
-          name: "Telur Ajitama",
-          description: "Test Description",
-        },
-        {
-          id: 5,
-          image: "dashboard/Ramen.png",
-          name: "Nori",
-          description: "Test Description",
-        },
-      ],
-    },
-  ];
+  useEffect(() => {
+    loadMenu();
+  }, []);
+
+  const loadMenu = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchAllMenuItems();
+      
+      // Group menu by category
+      const grouped: Record<string, Menu[]> = {
+        ramen: [],
+        topping: [],
+        nyemil: [],
+        minuman: [],
+      };
+
+      data.forEach((item) => {
+        if (grouped[item.category]) {
+          grouped[item.category].push(item);
+        }
+      });
+
+      // Convert to MenuSection format
+      const sections: MenuSection[] = [
+        { title: "Ramen", items: grouped.ramen },
+        { title: "Topping", items: grouped.topping },
+        { title: "Nyemil", items: grouped.nyemil },
+        { title: "Minuman", items: grouped.minuman },
+      ];
+
+      setMenuData(sections);
+      setError(null);
+    } catch (err: any) {
+      setError(err.message || "Failed to load menu");
+      console.error("Error loading menu:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) return;
+    
+    try {
+      const result = await deleteMenuItemAction(id);
+      if (result.error) {
+        alert("Failed to delete menu: " + result.error);
+      } else {
+        await loadMenu(); // Reload data
+      }
+    } catch (err: any) {
+      alert("Failed to delete menu: " + err.message);
+    }
+  };
 
   const truncateDescription = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
@@ -322,7 +251,7 @@ export default function MenuDashboard() {
     );
   };
 
-  const getPaginatedItems = (items: MenuItem[], sectionKey: string) => {
+  const getPaginatedItems = (items: Menu[], sectionKey: string) => {
     const currentPage = currentPages[sectionKey] || 1;
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
@@ -355,7 +284,23 @@ export default function MenuDashboard() {
 
       {/* Menu Sections */}
       <div style={{ paddingLeft: "45px", paddingRight: "45px", paddingBottom: "40px" }}>
-        {menuData.map((section, index) => (
+        {loading && (
+          <div className="text-center py-8">
+            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
+              Loading menu...
+            </p>
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-center py-8">
+            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#E53E3E" }}>
+              Error: {error}
+            </p>
+          </div>
+        )}
+
+        {!loading && !error && menuData.map((section, index) => (
           <div key={index} style={{ marginBottom: index < menuData.length - 1 ? "125px" : "0" }}>
             {/* Section Header with Title and Add Button */}
             <div className="flex items-center justify-between" style={{ marginBottom: "35px" }}>
@@ -452,6 +397,18 @@ export default function MenuDashboard() {
                         fontFamily: "Helvetica Neue, sans-serif",
                         fontSize: "18px",
                         color: "#1D1A1A",
+                        width: "120px",
+                        paddingLeft: "20px",
+                      }}
+                    >
+                      Status
+                    </th>
+                    <th
+                      className="text-center font-medium py-3"
+                      style={{
+                        fontFamily: "Helvetica Neue, sans-serif",
+                        fontSize: "18px",
+                        color: "#1D1A1A",
                         width: "150px",
                         paddingRight: "25px",
                       }}
@@ -497,11 +454,17 @@ export default function MenuDashboard() {
                           className="bg-gray-200 rounded overflow-hidden"
                           style={{ width: "100px", height: "100px" }}
                         >
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
+                          {item.image_url ? (
+                            <img
+                              src={item.image_url}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                              No Image
+                            </div>
+                          )}
                         </div>
                       </td>
                       <td
@@ -526,20 +489,40 @@ export default function MenuDashboard() {
                       >
                         {truncateDescription(item.description)}
                       </td>
+                      <td className="py-4" style={{ paddingLeft: "20px" }}>
+                        <div className="flex justify-center">
+                          <span
+                            className="px-3 py-1 rounded-full text-sm font-medium"
+                            style={{
+                              fontFamily: "Helvetica Neue, sans-serif",
+                              fontSize: "14px",
+                              backgroundColor: item.is_available ? "#D4EDDA" : "#F8D7DA",
+                              color: item.is_available ? "#155724" : "#721C24",
+                            }}
+                          >
+                            {item.is_available ? "Available" : "Unavailable"}
+                          </span>
+                        </div>
+                      </td>
                       <td className="py-4" style={{ paddingRight: "25px" }}>
                         <div
                           className="flex items-center justify-center gap-3"
                           style={{ width: "150px", margin: "0 auto" }}
                         >
-                          <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
-                            <Image
-                              src="/dashboard/edit.svg"
-                              alt="Edit"
-                              width={28}
-                              height={28}
-                            />
-                          </button>
-                          <button className="p-2 hover:bg-[#FFCDCD] rounded transition-colors">
+                          <Link href={`/dashboard-menu/edit-${section.title.toLowerCase()}?id=${item.id}`}>
+                            <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
+                              <Image
+                                src="/dashboard/edit.svg"
+                                alt="Edit"
+                                width={28}
+                                height={28}
+                              />
+                            </button>
+                          </Link>
+                          <button 
+                            onClick={() => handleDelete(item.id, item.name)}
+                            className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                          >
                             <Image
                               src="/dashboard/delete.svg"
                               alt="Delete"

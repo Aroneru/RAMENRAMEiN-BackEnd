@@ -1,5 +1,5 @@
-import EditToppingDashboard from "@/app/components/dashboard/menu/edit/edittopping";
+import EditMenu from "@/app/components/dashboard/menu/edit/editmenu";
 
 export default function EditToppingPage() {
-    return <EditToppingDashboard />;
+    return <EditMenu category="topping" />;
 }   

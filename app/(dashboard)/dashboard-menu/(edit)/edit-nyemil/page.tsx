@@ -1,5 +1,5 @@
-import EditNyemilDashboard from "@/app/components/dashboard/menu/edit/editnyemil";
+import EditMenu from "@/app/components/dashboard/menu/edit/editmenu";
 
 export default function EditNyemilPage() {
-    return <EditNyemilDashboard />;
+    return <EditMenu category="nyemil" />;
 }

@@ -4,12 +4,24 @@
 import { supabase } from './supabase';
 import type { Menu, MenuInsert, MenuUpdate, MenuCategory } from './types/database.types';
 
-// Fetch all menu items
+// Fetch all available menu items (for public)
 export async function fetchMenuItems() {
   const { data, error } = await supabase
     .from('menu')
     .select('*')
     .eq('is_available', true)
+    .order('name');
+
+  if (error) throw error;
+  return data as Menu[];
+}
+
+// Fetch all menu items including unavailable (for dashboard)
+export async function fetchAllMenuItems() {
+  const { data, error} = await supabase
+    .from('menu')
+    .select('*')
+    .order('category')
     .order('name');
 
   if (error) throw error;

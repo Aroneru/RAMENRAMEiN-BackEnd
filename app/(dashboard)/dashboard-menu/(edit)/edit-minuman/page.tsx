@@ -1,5 +1,5 @@
-import EditMinumanDashboard from "@/app/components/dashboard/menu/edit/editminuman";
+import EditMenu from "@/app/components/dashboard/menu/edit/editmenu";
 
 export default function EditMinumanPage() {
-    return <EditMinumanDashboard />;
+    return <EditMenu category="minuman" />;
 }
