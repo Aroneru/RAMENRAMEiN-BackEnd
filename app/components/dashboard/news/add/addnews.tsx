@@ -1,28 +1,93 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { addFaqItemAction } from "./actions";
+import { addNewsItemAction } from "./actions";
 
-export default function AddFaqDashboard() {
+export default function AddNewsDashboard() {
   const router = useRouter();
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [category, setCategory] = useState("");
-  const [displayOrder, setDisplayOrder] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [body, setBody] = useState("");
+  const [category, setCategory] = useState("general");
+  const [isPublished, setIsPublished] = useState(true);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const handleSubmit = async () => {
-    // Validation
-    if (!question.trim()) {
-      setError("Please enter question");
+  const handleThumbnailChange = (file: File) => {
+    // Validate file type
+    if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
+      setError("Please upload JPEG, JPG, or PNG image only");
       setSuccess(null);
       return;
     }
-    if (!answer.trim()) {
-      setError("Please enter answer");
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Image size must be less than 10MB");
+      setSuccess(null);
+      return;
+    }
+
+    setError(null);
+    setThumbnail(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setThumbnailPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleThumbnailChange(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleThumbnailChange(file);
+    }
+  };
+
+  const handleSubmit = async () => {
+    // Validation
+    if (!title.trim()) {
+      setError("Please enter news title");
+      setSuccess(null);
+      return;
+    }
+    if (!description.trim()) {
+      setError("Please enter description");
+      setSuccess(null);
+      return;
+    }
+    if (!body.trim()) {
+      setError("Please enter news content");
+      setSuccess(null);
+      return;
+    }
+    if (!thumbnail) {
+      setError("Please upload a thumbnail");
       setSuccess(null);
       return;
     }
@@ -32,15 +97,15 @@ export default function AddFaqDashboard() {
     setLoading(true);
 
     try {
-      // Create FormData
       const formData = new FormData();
-      formData.append('question', question.trim());
-      formData.append('answer', answer.trim());
-      formData.append('category', category);
-      formData.append('displayOrder', displayOrder || '0');
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("body", body.trim());
+      formData.append("category", category.trim());
+      formData.append("thumbnail", thumbnail);
+      formData.append('isPublished', isPublished.toString());
 
-      // Call server action
-      const result = await addFaqItemAction(formData);
+      const result = await addNewsItemAction(formData);
 
       if (result.error) {
         setError(result.error);
@@ -49,16 +114,16 @@ export default function AddFaqDashboard() {
       }
 
       // Success
-      setSuccess("FAQ added successfully!");
+      setSuccess("News added successfully!");
       setLoading(false);
       
       // Redirect after 1.5 seconds
       setTimeout(() => {
-        router.push('/dashboard-faq');
+        router.push('/dashboard-news');
       }, 1500);
     } catch (err: any) {
-      console.error("Error adding FAQ:", err);
-      setError(err.message || "Failed to add FAQ");
+      console.error("Error adding news:", err);
+      setError(err.message || "Failed to add news");
       setLoading(false);
     }
   };
@@ -191,15 +256,15 @@ export default function AddFaqDashboard() {
         <div className="flex items-center gap-2 text-[#1D1A1A]">
           <span>Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
-          <Link href="/dashboard-faq" className="hover:underline">
-            FAQ
+          <Link href="/dashboard-news" className="hover:underline">
+            News
           </Link>
           <span className="text-[#1D1A1A]">/</span>
-          <span>Add FAQ</span>
+          <span>Add News</span>
         </div>
       </div>
 
-      {/* Add FAQ Form - Centered */}
+      {/* Add News Form - Centered */}
       <div
         style={{
           paddingLeft: "45px",
@@ -218,12 +283,12 @@ export default function AddFaqDashboard() {
             marginBottom: "35px",
           }}
         >
-          Add Frequently Asked Questions (FAQ)
+          Add News
         </h2>
-        
+
         {/* Form Container - Centered with max-width */}
         <div className="mx-auto" style={{ maxWidth: "800px" }}>
-          {/* Question Field */}
+          {/* 1. Thumbnail Upload */}
           <div className="mb-6">
             <label
               style={{
@@ -234,13 +299,117 @@ export default function AddFaqDashboard() {
                 marginBottom: "12px",
               }}
             >
-              Question <span className="text-red-500">*</span>
+              Thumbnail <span className="text-red-500">*</span>
+            </label>
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              className={`border-2 border-dashed rounded-lg flex flex-col items-center justify-center ${
+                isDragging
+                  ? "border-[#4A90E2] bg-blue-50"
+                  : "border-[#EAEAEA] bg-white"
+              } ${loading ? "opacity-50 pointer-events-none" : ""}`}
+              style={{
+                height: "330px",
+                transition: "all 0.3s ease",
+              }}
+            >
+              {thumbnailPreview ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={thumbnailPreview}
+                    alt="Preview"
+                    className="w-full h-full object-contain p-4"
+                  />
+                  {!loading && (
+                    <button
+                      onClick={() => {
+                        setThumbnail(null);
+                        setThumbnailPreview(null);
+                      }}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Image
+                    src="/dashboard/upload.svg"
+                    alt="Upload"
+                    width={60}
+                    height={60}
+                    className="mb-4"
+                  />
+                  <p
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      fontWeight: "500",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Choose a file or drag & drop it here
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "14px",
+                      color: "#999",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    JPEG, JPG, and PNG formats, up to 10MB
+                  </p>
+                  <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/jpeg,image/jpg,image/png"
+                    onChange={handleFileInput}
+                    disabled={loading}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className={`px-6 py-2 border border-[#EAEAEA] rounded transition-colors ${
+                      loading
+                        ? "cursor-not-allowed opacity-50"
+                        : "cursor-pointer hover:bg-gray-50"
+                    }`}
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "16px",
+                      color: "#1D1A1A",
+                    }}
+                  >
+                    Browse File
+                  </label>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* 2. Title Field */}
+          <div className="mb-6">
+            <label
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Title <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Insert question"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Insert news title"
               disabled={loading}
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
@@ -251,7 +420,7 @@ export default function AddFaqDashboard() {
             />
           </div>
 
-          {/* Answer Field */}
+          {/* 3. Description Field */}
           <div className="mb-6">
             <label
               style={{
@@ -262,12 +431,41 @@ export default function AddFaqDashboard() {
                 marginBottom: "12px",
               }}
             >
-              Answer <span className="text-red-500">*</span>
+              Description <span className="text-red-500">*</span>
             </label>
             <textarea
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Insert answer"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Insert news description (summary)"
+              rows={2}
+              disabled={loading}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                minHeight: "80px",
+              }}
+            />
+          </div>
+
+          {/* 4. Content Field */}
+          <div className="mb-6">
+            <label
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Content <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Insert full news content"
               rows={6}
               disabled={loading}
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
@@ -280,7 +478,7 @@ export default function AddFaqDashboard() {
             />
           </div>
 
-          {/* Category Field */}
+          {/* 5. Category Field */}
           <div className="mb-6">
             <label
               style={{
@@ -291,13 +489,11 @@ export default function AddFaqDashboard() {
                 marginBottom: "12px",
               }}
             >
-              Category (Optional)
+              Category <span className="text-red-500">*</span>
             </label>
-            <input
-              type="text"
+            <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              placeholder="Insert category (e.g., General, Ordering, Payment)"
               disabled={loading}
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
@@ -305,50 +501,37 @@ export default function AddFaqDashboard() {
                 fontSize: "18px",
                 color: "#1D1A1A",
               }}
-            />
+            >
+              <option value="general">General</option>
+              <option value="event">Event</option>
+            </select>
           </div>
 
-          {/* Display Order Field */}
+          {/* 6. Publish Status Checkbox */}
           <div className="mb-6">
-            <label
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                color: "#1D1A1A",
-                display: "block",
-                marginBottom: "12px",
-              }}
-            >
-              Display Order (Optional)
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+                disabled={loading}
+                className="w-5 h-5 rounded border-[#EAEAEA] text-[#4A90E2] focus:ring-[#4A90E2]"
+              />
+              <span
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                }}
+              >
+                Publish this news immediately
+              </span>
             </label>
-            <input
-              type="number"
-              value={displayOrder}
-              onChange={(e) => setDisplayOrder(e.target.value)}
-              placeholder="0"
-              disabled={loading}
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                color: "#1D1A1A",
-              }}
-            />
-            <p
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "14px",
-                color: "#999",
-                marginTop: "8px",
-              }}
-            >
-              Lower numbers appear first (0 = highest priority)
-            </p>
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Buttons */}
           <div className="flex justify-end mt-8 gap-4">
-            <Link href="/dashboard-faq">
+            <Link href="/dashboard-news">
               <button
                 disabled={loading}
                 className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"

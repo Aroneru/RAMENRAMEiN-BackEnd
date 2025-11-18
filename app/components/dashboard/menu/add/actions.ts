@@ -5,7 +5,7 @@ import { createServerClient } from "@supabase/ssr";
 import { insertMenu } from "@/lib/menu";
 import { uploadImage } from "@/lib/storage";
 
-export async function addMenuItemAction(formData: FormData, category: string) {
+export async function addMenuItemAction(formData: FormData) {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -37,6 +37,7 @@ export async function addMenuItemAction(formData: FormData, category: string) {
     const name = formData.get("name") as string;
     const description = formData.get("description") as string;
     const price = formData.get("price") as string;
+    const category = formData.get("category") as string;
     const imageFile = formData.get("image") as File;
     const isAvailable = formData.get("isAvailable") !== 'false';
 
@@ -44,6 +45,7 @@ export async function addMenuItemAction(formData: FormData, category: string) {
     if (!name?.trim()) return { error: "Name is required" };
     if (!description?.trim()) return { error: "Description is required" };
     if (!price || isNaN(parseFloat(price))) return { error: "Valid price is required" };
+    if (!category?.trim()) return { error: "Category is required" };
     if (!imageFile || imageFile.size === 0) return { error: "Image is required" };
 
     // Upload image to public/images/menu

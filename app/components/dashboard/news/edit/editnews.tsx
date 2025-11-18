@@ -3,17 +3,22 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { getMenuItemAction, updateMenuItemAction, deleteMenuItemAction } from "./actions";
+import { getNewsItemAction, updateNewsItemAction, deleteNewsItemAction } from "./actions";
 
-export default function EditRamenDashboard({ id }: { id: string }) {
+interface EditNewsProps {
+  id: string;
+}
+
+export default function EditNewsDashboard({ id }: EditNewsProps) {
   const router = useRouter();
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [isAvailable, setIsAvailable] = useState(true);
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
+  const [body, setBody] = useState("");
+  const [category, setCategory] = useState("general");
+  const [isPublished, setIsPublished] = useState(true);
+  const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [currentThumbnail, setCurrentThumbnail] = useState("");
+  const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -24,18 +29,18 @@ export default function EditRamenDashboard({ id }: { id: string }) {
 
   useEffect(() => {
     if (id) {
-      loadMenuData();
+      loadNewsData();
     } else {
-      setError('No menu ID provided');
+      setError("No news ID provided");
       setLoadingData(false);
     }
   }, [id]);
 
-  const loadMenuData = async () => {
+  const loadNewsData = async () => {
     if (!id) return;
 
     try {
-      const result = await getMenuItemAction(id);
+      const result = await getNewsItemAction(id);
 
       if (result.error) {
         setError(result.error);
@@ -44,25 +49,24 @@ export default function EditRamenDashboard({ id }: { id: string }) {
       }
 
       if (result.data) {
-        setName(result.data.name || '');
-        setDescription(result.data.description || '');
-        setPrice(result.data.price?.toString() || '');
-        setIsAvailable(result.data.is_available ?? true);
-        setCurrentImageUrl(result.data.image_url || null);
-        if (result.data.image_url) {
-          setImagePreview(result.data.image_url);
-        }
+        setTitle(result.data.title || "");
+        setDescription(result.data.description || "");
+        setBody(result.data.content || "");
+        setCategory(result.data.category || "general");
+        setIsPublished(result.data.is_published || false);
+        setCurrentThumbnail(result.data.image_url || "");
+        setThumbnailPreview(result.data.image_url || null);
       }
 
       setLoadingData(false);
     } catch (err: any) {
-      console.error("Error loading menu:", err);
-      setError(err.message || "Failed to load menu");
+      console.error("Error loading news:", err);
+      setError(err.message || "Failed to load news");
       setLoadingData(false);
     }
   };
 
-  const handleImageChange = (file: File) => {
+  const handleThumbnailChange = (file: File) => {
     // Validate file type
     if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
       setError("Please upload JPEG, JPG, or PNG image only");
@@ -78,10 +82,10 @@ export default function EditRamenDashboard({ id }: { id: string }) {
     }
 
     setError(null);
-    setImage(file);
+    setThumbnail(file);
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result as string);
+      setThumbnailPreview(reader.result as string);
     };
     reader.readAsDataURL(file);
   };
@@ -89,12 +93,11 @@ export default function EditRamenDashboard({ id }: { id: string }) {
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleImageChange(file);
+      handleThumbnailChange(file);
     }
   };
 
   const handleEditImageClick = () => {
-    // Trigger file input when edit button clicked
     document.getElementById('fileInput')?.click();
   };
 
@@ -113,19 +116,19 @@ export default function EditRamenDashboard({ id }: { id: string }) {
     setIsDragging(false);
     const file = e.dataTransfer.files?.[0];
     if (file) {
-      handleImageChange(file);
+      handleThumbnailChange(file);
     }
   };
 
   const handleSubmit = async () => {
     if (!id) {
-      setError('No menu ID provided');
+      setError('No news ID provided');
       return;
     }
 
     // Validation
-    if (!name.trim()) {
-      setError("Please enter ramen name");
+    if (!title.trim()) {
+      setError("Please enter news title");
       setSuccess(null);
       return;
     }
@@ -134,8 +137,8 @@ export default function EditRamenDashboard({ id }: { id: string }) {
       setSuccess(null);
       return;
     }
-    if (!price || parseFloat(price) <= 0) {
-      setError("Please enter valid price");
+    if (!body.trim()) {
+      setError("Please enter news content");
       setSuccess(null);
       return;
     }
@@ -145,19 +148,19 @@ export default function EditRamenDashboard({ id }: { id: string }) {
     setLoading(true);
 
     try {
-      // Create FormData
       const formData = new FormData();
-      formData.append('name', name.trim());
-      formData.append('description', description.trim());
-      formData.append('price', price);
-      formData.append('category', 'ramen');
-      formData.append('isAvailable', isAvailable.toString());
-      if (image) {
-        formData.append('image', image);
+      formData.append("id", id);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("body", body.trim());
+      formData.append("category", category.trim());
+      formData.append("isPublished", isPublished.toString());
+      if (thumbnail) {
+        formData.append("thumbnail", thumbnail);
       }
+      formData.append("currentThumbnail", currentThumbnail);
 
-      // Call server action
-      const result = await updateMenuItemAction(id, formData);
+      const result = await updateNewsItemAction(formData);
 
       if (result.error) {
         setError(result.error);
@@ -166,16 +169,16 @@ export default function EditRamenDashboard({ id }: { id: string }) {
       }
 
       // Success
-      setSuccess("Ramen updated successfully!");
+      setSuccess("News updated successfully!");
       setLoading(false);
       
       // Redirect after 1.5 seconds
       setTimeout(() => {
-        router.push('/dashboard-menu');
+        router.push('/dashboard-news');
       }, 1500);
     } catch (err: any) {
-      console.error("Error updating ramen:", err);
-      setError(err.message || "Failed to update ramen");
+      console.error("Error updating news:", err);
+      setError(err.message || "Failed to update news");
       setLoading(false);
     }
   };
@@ -186,7 +189,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
 
   const handleDeleteConfirm = async () => {
     if (!id) {
-      setError('No menu ID provided');
+      setError('No news ID provided');
       setShowDeleteModal(false);
       return;
     }
@@ -196,7 +199,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
     setDeleting(true);
 
     try {
-      const result = await deleteMenuItemAction(id);
+      const result = await deleteNewsItemAction(id);
 
       if (result.error) {
         setError(result.error);
@@ -206,17 +209,17 @@ export default function EditRamenDashboard({ id }: { id: string }) {
       }
 
       // Success
-      setSuccess("Ramen deleted successfully!");
+      setSuccess("News deleted successfully!");
       setDeleting(false);
       setShowDeleteModal(false);
       
       // Redirect after 1.5 seconds
       setTimeout(() => {
-        router.push('/dashboard-menu');
+        router.push('/dashboard-news');
       }, 1500);
     } catch (err: any) {
-      console.error("Error deleting ramen:", err);
-      setError(err.message || "Failed to delete ramen");
+      console.error("Error deleting news:", err);
+      setError(err.message || "Failed to delete news");
       setDeleting(false);
       setShowDeleteModal(false);
     }
@@ -232,7 +235,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
       >
-        <div className="text-xl">Loading menu data...</div>
+        <div className="text-xl">Loading news data...</div>
       </div>
     );
   }
@@ -290,7 +293,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
                 color: "#1D1A1A",
               }}
             >
-              Delete Ramen?
+              Delete News?
             </h3>
 
             {/* Message */}
@@ -303,7 +306,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
                 lineHeight: "1.5",
               }}
             >
-              Are you sure you want to delete this ramen? This action cannot be undone.
+              Are you sure you want to delete this news? This action cannot be undone.
             </p>
 
             {/* Buttons */}
@@ -460,15 +463,15 @@ export default function EditRamenDashboard({ id }: { id: string }) {
         <div className="flex items-center gap-2 text-[#1D1A1A]">
           <span>Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
-          <Link href="/dashboard-menu" className="hover:underline">
-            Menu
+          <Link href="/dashboard-news" className="hover:underline">
+            News
           </Link>
           <span className="text-[#1D1A1A]">/</span>
-          <span>Edit Ramen</span>
+          <span>Edit News</span>
         </div>
       </div>
 
-      {/* Edit Ramen Form - Centered */}
+      {/* Edit News Form - Centered */}
       <div
         style={{
           paddingLeft: "45px",
@@ -487,12 +490,12 @@ export default function EditRamenDashboard({ id }: { id: string }) {
             marginBottom: "35px",
           }}
         >
-          Edit Ramen
+          Edit News
         </h2>
         
         {/* Form Container - Centered with max-width */}
         <div className="mx-auto" style={{ maxWidth: "800px" }}>
-          {/* Name Field */}
+          {/* 1. Thumbnail Upload */}
           <div className="mb-6">
             <label
               style={{
@@ -503,38 +506,10 @@ export default function EditRamenDashboard({ id }: { id: string }) {
                 marginBottom: "12px",
               }}
             >
-              Name <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Insert ramen name"
-              disabled={loading || deleting}
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                color: "#1D1A1A",
-              }}
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div className="mb-6">
-            <label
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                color: "#1D1A1A",
-                display: "block",
-                marginBottom: "12px",
-              }}
-            >
-              Image
+              Thumbnail
             </label>
             
-            {/* Hidden File Input - Always in DOM */}
+            {/* Hidden File Input */}
             <input
               type="file"
               id="fileInput"
@@ -558,10 +533,10 @@ export default function EditRamenDashboard({ id }: { id: string }) {
                 transition: "all 0.3s ease",
               }}
             >
-              {imagePreview ? (
+              {thumbnailPreview ? (
                 <div className="relative w-full h-full">
                   <img
-                    src={imagePreview}
+                    src={thumbnailPreview}
                     alt="Preview"
                     className="w-full h-full object-contain p-4"
                   />
@@ -640,7 +615,35 @@ export default function EditRamenDashboard({ id }: { id: string }) {
             </div>
           </div>
 
-          {/* Description Field */}
+          {/* 2. Title Field */}
+          <div className="mb-6">
+            <label
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Insert news title"
+              disabled={loading || deleting}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+              }}
+            />
+          </div>
+
+          {/* 3. Description Field */}
           <div className="mb-6">
             <label
               style={{
@@ -656,7 +659,36 @@ export default function EditRamenDashboard({ id }: { id: string }) {
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Insert ramen description"
+              placeholder="Insert news description (summary)"
+              rows={2}
+              disabled={loading || deleting}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                minHeight: "80px",
+              }}
+            />
+          </div>
+
+          {/* 4. Content Field */}
+          <div className="mb-6">
+            <label
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                color: "#1D1A1A",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Content <span className="text-red-500">*</span>
+            </label>
+            <textarea
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              placeholder="Insert full news content"
               rows={6}
               disabled={loading || deleting}
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
@@ -669,7 +701,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
             />
           </div>
 
-          {/* Price Field */}
+          {/* 5. Category Field */}
           <div className="mb-6">
             <label
               style={{
@@ -680,86 +712,44 @@ export default function EditRamenDashboard({ id }: { id: string }) {
                 marginBottom: "12px",
               }}
             >
-              Price (Rp) <span className="text-red-500">*</span>
+              Category <span className="text-red-500">*</span>
             </label>
-            <input
-              type="number"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              placeholder="Insert price"
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
               disabled={loading || deleting}
-              min="0"
-              step="1000"
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
                 color: "#1D1A1A",
               }}
-            />
+            >
+              <option value="general">General</option>
+              <option value="event">Event</option>
+            </select>
           </div>
 
-          {/* Availability Status Toggle */}
+          {/* 6. Publish Status Checkbox */}
           <div className="mb-6">
-            <label
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                color: "#1D1A1A",
-                display: "block",
-                marginBottom: "12px",
-              }}
-            >
-              Availability Status
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isPublished}
+                onChange={(e) => setIsPublished(e.target.checked)}
+                disabled={loading || deleting}
+                className="w-5 h-5 rounded border-[#EAEAEA] text-[#4A90E2] focus:ring-[#4A90E2]"
+              />
+              <span
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                }}
+              >
+                Publish this news immediately
+              </span>
             </label>
-            <div className="flex items-center gap-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  checked={isAvailable}
-                  onChange={() => setIsAvailable(true)}
-                  disabled={loading || deleting}
-                  className="w-4 h-4"
-                />
-                <span
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                  }}
-                >
-                  Available
-                </span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  checked={!isAvailable}
-                  onChange={() => setIsAvailable(false)}
-                  disabled={loading || deleting}
-                  className="w-4 h-4"
-                />
-                <span
-                  style={{
-                    fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
-                    color: "#1D1A1A",
-                  }}
-                >
-                  Unavailable
-                </span>
-              </label>
-            </div>
-            <p
-              style={{
-                fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "14px",
-                color: "#999",
-                marginTop: "8px",
-              }}
-            >
-              Unavailable items will not be displayed on the menu
-            </p>
           </div>
 
           {/* Action Buttons */}
@@ -778,7 +768,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
               Delete
             </button>
             <div className="flex gap-4">
-              <Link href="/dashboard-menu">
+              <Link href="/dashboard-news">
                 <button
                   disabled={loading || deleting}
                   className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
