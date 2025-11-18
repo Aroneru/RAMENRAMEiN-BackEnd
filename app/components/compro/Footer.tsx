@@ -30,7 +30,7 @@ export default function Footer() {
         {/* Copyright */}
         <div>
           <p className="text-[0.8rem] text-[#a0a0a0]">
-            © {new Date().getFullYear()} Ramein Ramen. All rights reserved.
+            © {new Date().getFullYear()} RAMENRAMEiN. All rights reserved.
           </p>
         </div>
 

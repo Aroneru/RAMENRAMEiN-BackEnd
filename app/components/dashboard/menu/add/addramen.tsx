@@ -100,10 +100,11 @@ export default function AddRamenDashboard() {
       formData.append('name', name.trim());
       formData.append('description', description.trim());
       formData.append('price', price);
+      formData.append('category', 'ramen'); // TAMBAH INI - Line 103
       formData.append('image', image);
 
-      // Call server action
-      const result = await addMenuItemAction(formData, 'ramen');
+      // Call server action - HAPUS parameter 'ramen'
+      const result = await addMenuItemAction(formData);
 
       if (result.error) {
         setError(result.error);

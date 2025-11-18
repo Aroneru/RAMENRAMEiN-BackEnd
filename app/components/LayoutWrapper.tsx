@@ -14,8 +14,10 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
     setMounted(true);
   }, []);
 
-  // Hide social media bar and footer for dashboard pages.
+  // Hide social media bar and footer for dashboard and auth pages
   const isDashboard = pathname.startsWith("/dashboard") || pathname.startsWith("/dashboard-");
+  const isAuthPage = pathname.startsWith("/login");
+  const hideSocialMediaAndFooter = isDashboard || isAuthPage;
 
   // Render without conditional elements on server to prevent hydration mismatch
   if (!mounted) {
@@ -30,9 +32,9 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
   return (
     <>
       <ClientNavbar />
-      {!isDashboard && <SocialMediaBar />}
+      {!hideSocialMediaAndFooter && <SocialMediaBar />}
       {children}
-      {!isDashboard && <Footer />}
+      {!hideSocialMediaAndFooter && <Footer />}
     </>
   );
 }
