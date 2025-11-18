@@ -108,7 +108,7 @@ export default function AboutSection() {
             <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-orange-600 rounded-3xl opacity-20 group-hover:opacity-30 transition-opacity duration-500" />
             <div className="relative overflow-hidden rounded-3xl shadow-2xl">
               <Image
-                src="/images/bangunan_ramen.png" 
+                src="/images/bangunan_ramen_upscaled.png" 
                 alt="Foto Kedai Ramein Ramen"
                 width={800}
                 height={600}
