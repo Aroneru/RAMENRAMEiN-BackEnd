@@ -15,45 +15,41 @@ export default function AboutSection() {
     >
       {/* Japanese Wood/Wall Elements */}
       {/* Left Side - Vertical Wood Pattern */}
-      <div className="absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-amber-800/40 via-amber-900/30 to-transparent">
-        <div className="absolute inset-0 opacity-60" style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, rgba(101, 67, 33, 0.5), rgba(101, 67, 33, 0.5) 18px, rgba(139, 69, 19, 0.7) 18px, rgba(139, 69, 19, 0.7) 20px)',
-        }} />
-        {/* Wood grain texture */}
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(92, 64, 51, 0.4) 2px, rgba(92, 64, 51, 0.4) 3px)',
-        }} />
-        {/* Red-brown border at top (brown on top, red on bottom) */}
-        <div className="absolute left-0 top-0 w-full h-3">
-          <div className="absolute top-0 w-full h-2/3 bg-amber-900" />
-          <div className="absolute bottom-0 w-full h-1/3 bg-red-600 rounded-b" />
-        </div>
-        {/* Red-brown border at bottom (red on top, brown on bottom) */}
-        <div className="absolute left-0 bottom-0 w-full h-3">
-          <div className="absolute top-0 w-full h-1/3 bg-red-600 rounded-t" />
-          <div className="absolute bottom-0 w-full h-2/3 bg-amber-900" />
-        </div>
+      <div className="absolute left-0 top-0 bottom-0 w-24 z-10  overflow-hidden">
+        <div 
+          className="absolute inset-0" 
+          style={{
+            backgroundImage: 'url(/images/kayu.png)',
+            backgroundSize: 'auto 140px',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'repeat',
+            transform: 'rotate(90deg)',
+            transformOrigin: 'center',
+            width: '100vh',
+            height: '100%',
+            left: '55%',
+            marginLeft: '-50vh'
+          }} 
+        />
       </div>
       
       {/* Right Side - Vertical Wood Pattern */}
-      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-amber-800/40 via-amber-900/30 to-transparent">
-        <div className="absolute inset-0 opacity-60" style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, rgba(101, 67, 33, 0.5), rgba(101, 67, 33, 0.5) 18px, rgba(139, 69, 19, 0.7) 18px, rgba(139, 69, 19, 0.7) 20px)',
-        }} />
-        {/* Wood grain texture */}
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(92, 64, 51, 0.4) 2px, rgba(92, 64, 51, 0.4) 3px)',
-        }} />
-        {/* Red-brown border at top (brown on top, red on bottom) */}
-        <div className="absolute right-0 top-0 w-full h-3">
-          <div className="absolute top-0 w-full h-2/3 bg-amber-900" />
-          <div className="absolute bottom-0 w-full h-1/3 bg-red-600 rounded-b" />
-        </div>
-        {/* Red-brown border at bottom (red on top, brown on bottom) */}
-        <div className="absolute right-0 bottom-0 w-full h-3">
-          <div className="absolute top-0 w-full h-1/3 bg-red-600 rounded-t" />
-          <div className="absolute bottom-0 w-full h-2/3 bg-amber-900" />
-        </div>
+      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 overflow-hidden">
+        <div 
+          className="absolute inset-0" 
+          style={{
+            backgroundImage: 'url(/images/kayu.png)',
+            backgroundSize: 'auto 140px',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'repeat',
+            transform: 'rotate(90deg)',
+            transformOrigin: 'center',
+            width: '100vh',
+            height: '100%',
+            left: '55%',
+            marginLeft: '-50vh'
+          }} 
+        />
       </div>
 
       {/* Decorative Elements */}

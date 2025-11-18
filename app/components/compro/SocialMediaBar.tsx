@@ -41,7 +41,7 @@ export default function SocialMediaBar() {
         <FaInstagram />
       </Link>
       <Link
-        href="https://wa.me/681299771717"
+        href="https://wa.me/+6281219420430"
         target="_blank"
         aria-label="Whatsapp"
         className="text-white text-[1.5rem] transition-transform duration-200 hover:scale-125"
