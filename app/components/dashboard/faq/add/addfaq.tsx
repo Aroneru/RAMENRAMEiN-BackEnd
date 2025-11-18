@@ -12,16 +12,30 @@ export default function AddFaqDashboard() {
   const [displayOrder, setDisplayOrder] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleSubmit = async () => {
+    // Validation
+    if (!question.trim()) {
+      setError("Please enter question");
+      setSuccess(null);
+      return;
+    }
+    if (!answer.trim()) {
+      setError("Please enter answer");
+      setSuccess(null);
+      return;
+    }
+
     setError(null);
+    setSuccess(null);
     setLoading(true);
 
     try {
       // Create FormData
       const formData = new FormData();
-      formData.append('question', question);
-      formData.append('answer', answer);
+      formData.append('question', question.trim());
+      formData.append('answer', answer.trim());
       formData.append('category', category);
       formData.append('displayOrder', displayOrder || '0');
 
@@ -34,8 +48,14 @@ export default function AddFaqDashboard() {
         return;
       }
 
-      // Redirect back to FAQ dashboard
-      router.push('/dashboard-faq');
+      // Success
+      setSuccess("FAQ added successfully!");
+      setLoading(false);
+      
+      // Redirect after 1.5 seconds
+      setTimeout(() => {
+        router.push('/dashboard-faq');
+      }, 1500);
     } catch (err: any) {
       console.error("Error adding FAQ:", err);
       setError(err.message || "Failed to add FAQ");
@@ -48,6 +68,114 @@ export default function AddFaqDashboard() {
       className="min-h-screen"
       style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
     >
+      {/* Toast Error Notification */}
+      {error && (
+        <div
+          className="fixed z-50 animate-slide-in"
+          style={{
+            top: "24px",
+            right: "24px",
+            width: "400px",
+            maxWidth: "calc(100vw - 48px)",
+          }}
+        >
+          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 flex-1">
+              <svg
+                className="w-6 h-6 text-red-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "15px",
+                  lineHeight: "1.5",
+                }}
+              >
+                {error}
+              </p>
+            </div>
+            <button
+              onClick={() => setError(null)}
+              className="flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Toast Success Notification */}
+      {success && (
+        <div
+          className="fixed z-50 animate-slide-in"
+          style={{
+            top: "24px",
+            right: "24px",
+            width: "400px",
+            maxWidth: "calc(100vw - 48px)",
+          }}
+        >
+          <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 flex-1">
+              <svg
+                className="w-6 h-6 text-green-500 flex-shrink-0"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "15px",
+                  lineHeight: "1.5",
+                }}
+              >
+                {success}
+              </p>
+            </div>
+            <button
+              onClick={() => setSuccess(null)}
+              className="flex-shrink-0 text-green-500 hover:text-green-700 transition-colors"
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                width: "24px",
+                height: "24px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Navigator */}
       <div
         style={{
@@ -71,7 +199,7 @@ export default function AddFaqDashboard() {
         </div>
       </div>
 
-      {/* Add FAQ Form */}
+      {/* Add FAQ Form - Centered */}
       <div
         style={{
           paddingLeft: "45px",
@@ -79,8 +207,9 @@ export default function AddFaqDashboard() {
           paddingBottom: "40px",
         }}
       >
-        {/* Section Title */}
+        {/* Section Title - Centered */}
         <h2
+          className="text-center"
           style={{
             fontFamily: "Poppins, sans-serif",
             fontWeight: "500",
@@ -89,11 +218,11 @@ export default function AddFaqDashboard() {
             marginBottom: "35px",
           }}
         >
-          Frequently Asked Questions
+          Add Frequently Asked Questions (FAQ)
         </h2>
         
-        {/* Form Container */}
-        <div className="max-w-4xl">
+        {/* Form Container - Centered with max-width */}
+        <div className="mx-auto" style={{ maxWidth: "800px" }}>
           {/* Question Field */}
           <div className="mb-6">
             <label
@@ -112,7 +241,8 @@ export default function AddFaqDashboard() {
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="Insert question"
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+              disabled={loading}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -139,7 +269,8 @@ export default function AddFaqDashboard() {
               onChange={(e) => setAnswer(e.target.value)}
               placeholder="Insert answer"
               rows={6}
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y"
+              disabled={loading}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -167,7 +298,8 @@ export default function AddFaqDashboard() {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="Insert category (e.g., General, Ordering, Payment)"
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+              disabled={loading}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -194,7 +326,8 @@ export default function AddFaqDashboard() {
               value={displayOrder}
               onChange={(e) => setDisplayOrder(e.target.value)}
               placeholder="0"
-              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+              disabled={loading}
+              className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -212,21 +345,27 @@ export default function AddFaqDashboard() {
               Lower numbers appear first (0 = highest priority)
             </p>
           </div>
-        </div>
 
-        {/* Error Message */}
-        {error && (
-          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded max-w-4xl">
-            {error}
-          </div>
-        )}
-
-        {/* Submit Button */}
-        <div className="flex justify-end mt-8 gap-4 max-w-4xl">
-          <Link href="/dashboard-faq">
+          {/* Submit Button */}
+          <div className="flex justify-end mt-8 gap-4">
+            <Link href="/dashboard-faq">
+              <button
+                disabled={loading}
+                className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  height: "45px",
+                  minWidth: "150px",
+                }}
+              >
+                Cancel
+              </button>
+            </Link>
             <button
+              onClick={handleSubmit}
               disabled={loading}
-              className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
+              className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -234,24 +373,28 @@ export default function AddFaqDashboard() {
                 minWidth: "150px",
               }}
             >
-              Cancel
+              {loading ? "Submitting..." : "Submit"}
             </button>
-          </Link>
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50"
-            style={{
-              fontFamily: "Helvetica Neue, sans-serif",
-              fontSize: "18px",
-              height: "45px",
-              minWidth: "150px",
-            }}
-          >
-            {loading ? "Submitting..." : "Submit"}
-          </button>
+          </div>
         </div>
       </div>
+
+      {/* Add CSS for animation */}
+      <style jsx>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 }
