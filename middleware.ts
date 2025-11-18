@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
 
 // Define protected routes
 const dashboardRoutes = [
@@ -20,105 +19,51 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Create a Supabase client for server-side
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  });
+  // Lightweight auth check using JWT cookie only (avoid Supabase refresh here)
+  let isAuthenticated = false;
+  try {
+    const projectRef = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!).hostname.split('.')[0];
+    const accessCookieName = `sb-${projectRef}-auth-token`;
+    // Presence-only check to avoid any runtime incompatibilities
+    isAuthenticated = !!request.cookies.get(accessCookieName)?.value;
+  } catch {}
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value;
-        },
-        set(name: string, value: string, options: any) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-        },
-        remove(name: string, options: any) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-        },
-      },
-    }
-  );
-
-  // Check authentication
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
-    // Redirect to login if not authenticated
+  if (!isAuthenticated) {
+    // Redirect to login if not authenticated and scrub sb-* cookies on the response
+    console.log('Middleware - No valid session, redirecting to login');
     const redirectUrl = new URL('/login', request.url);
     redirectUrl.searchParams.set('redirectTo', pathname);
-    return NextResponse.redirect(redirectUrl);
+    const res = NextResponse.redirect(redirectUrl);
+
+    try {
+      const url = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL!);
+      const projectRef = url.hostname.split('.')[0];
+      const targets = [
+        `sb-${projectRef}-auth-token`,
+        `sb-${projectRef}-refresh-token`,
+      ];
+      const domainHost = request.nextUrl.hostname;
+      const domains: (string | undefined)[] = [undefined, domainHost, 'localhost', '127.0.0.1'];
+      for (const name of targets) {
+        for (const domain of domains) {
+          // Lax + non-secure and secure
+          res.cookies.set({ name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', ...(domain ? { domain } : {}) });
+          res.cookies.set({ name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'lax', secure: true, ...(domain ? { domain } : {}) });
+          // None (some browsers may require this for deletion symmetry)
+          res.cookies.set({ name, value: '', path: '/', maxAge: 0, expires: new Date(0), sameSite: 'none', secure: true, ...(domain ? { domain } : {}) });
+          // Raw header with Partitioned attribute for CHIPS (best-effort)
+          const base = `${name}=; Path=/; Max-Age=0; Expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+          const dm = domain ? `; Domain=${domain}` : '';
+          res.headers.append('Set-Cookie', `${base}${dm}; SameSite=None; Secure; Partitioned`);
+        }
+      }
+    } catch {}
+
+    return res;
   }
 
-  // Check user role
-  const { data: profile, error: profileError } = await supabase
-    .from('user_profiles')
-    .select('role')
-    .eq('id', session.user.id)
-    .single();
-
-  console.log('Middleware - User:', session.user.email);
-  console.log('Middleware - Profile:', profile);
-  console.log('Middleware - Error:', profileError);
-
-  // If table doesn't exist, redirect to login with warning
-  if (profileError && (profileError.code === 'PGRST116' || profileError.code === '42P01')) {
-    console.warn('user_profiles table not found. Please run supabase-auth-schema.sql');
-    const redirectUrl = new URL('/login', request.url);
-    redirectUrl.searchParams.set('error', 'setup_required');
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // If profile doesn't exist for this user
-  if (profileError || !profile) {
-    console.error('No profile found for user:', session.user.email);
-    const redirectUrl = new URL('/login', request.url);
-    redirectUrl.searchParams.set('error', 'no_profile');
-    return NextResponse.redirect(redirectUrl);
-  }
-
-  // Allow access only for admin and superadmin
-  if (profile.role !== 'admin' && profile.role !== 'superadmin') {
-    console.warn('User role not authorized:', profile.role);
-    return NextResponse.redirect(new URL('/', request.url));
-  }
-
-  console.log('Middleware - Access granted for:', session.user.email, 'Role:', profile.role);
-
-  return response;
+  // Auth looks okay; role checks are enforced server-side in layout
+  return NextResponse.next();
 }
 
 // Configure which routes to run middleware on

@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchFAQList, deleteFAQ } from "@/lib/faq";
+import { fetchFAQList } from "@/lib/faq";
+import { deleteFaqItemAction } from "./edit/actions";
 import type { FAQ } from "@/lib/types/database.types";
 
 export default function FAQDashboard() {
@@ -31,11 +32,15 @@ export default function FAQDashboard() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this FAQ?")) return;
+    if (!confirm("Are you sure you want to delete this FAQ? This action cannot be undone.")) return;
     
     try {
-      await deleteFAQ(id);
-      await loadFAQ(); // Reload data
+      const result = await deleteFaqItemAction(id);
+      if (result.error) {
+        alert("Failed to delete FAQ: " + result.error);
+      } else {
+        await loadFAQ(); // Reload data
+      }
     } catch (err: any) {
       alert("Failed to delete FAQ: " + err.message);
     }

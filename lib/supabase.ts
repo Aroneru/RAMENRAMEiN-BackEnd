@@ -8,8 +8,15 @@ if (!supabaseUrl || !supabaseAnonKey) {
 }
 
 // Client for browser/client-side operations
-// Note: Using untyped client to avoid TypeScript strictness issues with updates
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Disable client persistence so sessions don't linger in localStorage
+// Rely on server actions/middleware with httpOnly cookies for auth
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: true,
+  },
+});
 
 // Server-side client (optional, for API routes)
 export const createServerClient = () => {

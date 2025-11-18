@@ -1,9 +1,10 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { AuthUser } from '@/lib/types/auth.types';
 import { getCurrentUserProfile } from '@/lib/auth';
+import { logoutAction } from '@/app/(auth)/login/logout-action';
 
 interface AuthContextType {
   user: AuthUser | null;
@@ -66,6 +67,58 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     await supabase.auth.signOut();
     setUser(null);
   };
+
+  // ==============================
+  // Idle auto-logout (5 minutes)
+  // ==============================
+  const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const IDLE_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
+
+  useEffect(() => {
+    const resetIdleTimer = () => {
+      if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+      // Only set idle timer when a user is logged in
+      if (user) {
+        idleTimeoutRef.current = setTimeout(async () => {
+          try {
+            // Use server action to ensure httpOnly cookies are cleared
+            await logoutAction();
+          } catch (e) {
+            // Fallback: clear client session
+            await handleSignOut();
+            // Hard redirect to login to avoid any stale state
+            if (typeof window !== 'undefined') window.location.href = '/login';
+          }
+        }, IDLE_LIMIT_MS);
+      }
+    };
+
+    // Activity events that reset the idle timer
+    const activityEvents: (keyof WindowEventMap)[] = [
+      'mousemove',
+      'keydown',
+      'click',
+      'touchstart',
+      'scroll',
+      'focus'
+    ];
+
+    activityEvents.forEach((evt) => window.addEventListener(evt, resetIdleTimer));
+    // Start/refresh timer now
+    resetIdleTimer();
+
+    const handleVisibility = () => {
+      // When user returns to the tab, reset timer
+      if (document.visibilityState === 'visible') resetIdleTimer();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      activityEvents.forEach((evt) => window.removeEventListener(evt, resetIdleTimer));
+      document.removeEventListener('visibilitychange', handleVisibility);
+      if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+    };
+  }, [user]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {

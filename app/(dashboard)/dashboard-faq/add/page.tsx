@@ -1,5 +1,5 @@
-import AddFAQDashboard from "@/app/components/dashboard/faq/addfaq";
+import AddFaqDashboard from "@/app/components/dashboard/faq/add/addfaq";
 
-export default function DashboardAddFAQPage() {
-  return <AddFAQDashboard />;
+export default function DashboardAddFaqPage() {
+  return <AddFaqDashboard />;
 }
