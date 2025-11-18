@@ -521,7 +521,7 @@ export default function MenuDashboard() {
       {/* Menu Sections */}
       <div style={{ paddingLeft: "45px", paddingRight: "45px", paddingBottom: "40px" }}>
         {loading && (
-          <div className="text-center py-8">
+          <div className="text-center py-8" style={{ color: "#1D1A1A" }}>
             <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
               Loading menu...
             </p>

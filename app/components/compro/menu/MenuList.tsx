@@ -24,7 +24,18 @@ export default function MenuList({ category }: MenuListProps) {
     try {
       setLoading(true);
       const data = await fetchMenuByCategory(category);
-      setMenuItems(data);
+      
+      // Sort: Items with name starting with "Ramen" come first
+      const sortedData = data.sort((a, b) => {
+        const aStartsWithRamen = a.name.toLowerCase().startsWith('ramen');
+        const bStartsWithRamen = b.name.toLowerCase().startsWith('ramen');
+        
+        if (aStartsWithRamen && !bStartsWithRamen) return -1;
+        if (!aStartsWithRamen && bStartsWithRamen) return 1;
+        return 0; // Keep original order for items in same category
+      });
+      
+      setMenuItems(sortedData);
       setError(null);
     } catch (err: any) {
       console.error(`Error loading ${category} menu:`, err);

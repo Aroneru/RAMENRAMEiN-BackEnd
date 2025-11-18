@@ -183,7 +183,7 @@ export default function HomeDashboard() {
         className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
       >
-        <div className="text-xl">Loading hero section...</div>
+        <div className="text-xl" style={{ color: "#1D1A1A" }}>Loading hero section...</div>
       </div>
     );
   }

@@ -571,7 +571,7 @@ export default function NewsDashboard() {
 
         {/* Loading/Error States */}
         {loading && (
-          <div className="text-center py-8">
+          <div className="text-center py-8" style={{ color: "#1D1A1A" }}>
             <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
               Loading news...
             </p>
