@@ -1,14 +1,65 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { getNewsItemAction, updateNewsItemAction } from "./actions";
 
-export default function EditNewsDashboard() {
+interface EditNewsProps {
+  id: string;
+}
+
+export default function EditNewsDashboard({ id }: EditNewsProps) {
+  const router = useRouter();
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
+  const [category, setCategory] = useState("general");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
+  const [currentThumbnail, setCurrentThumbnail] = useState("");
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (id) {
+      loadNewsData();
+    } else {
+      setError("No news ID provided");
+      setLoadingData(false);
+    }
+  }, [id]);
+
+  const loadNewsData = async () => {
+    if (!id) return;
+
+    try {
+      const result = await getNewsItemAction(id);
+
+      if (result.error) {
+        setError(result.error);
+        setLoadingData(false);
+        return;
+      }
+
+      if (result.data) {
+        setTitle(result.data.title || "");
+        setDescription(result.data.description || "");
+        setBody(result.data.content || "");
+        setCategory(result.data.category || "general");
+        setCurrentThumbnail(result.data.image_url || "");
+        setThumbnailPreview(result.data.image_url || null);
+      }
+
+      setLoadingData(false);
+    } catch (err: any) {
+      console.error("Error loading news:", err);
+      setError(err.message || "Failed to load news");
+      setLoadingData(false);
+    }
+  };
 
   const handleThumbnailChange = (file: File) => {
     if (file && file.type.match(/^image\//)) {
@@ -47,10 +98,55 @@ export default function EditNewsDashboard() {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log({ title, body, thumbnail });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (!title.trim() || !description.trim() || !body.trim()) {
+      setError("Title, description, and content are required");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("id", id);
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("body", body.trim());
+      formData.append("category", category.trim());
+      if (thumbnail) {
+        formData.append("thumbnail", thumbnail);
+      }
+      formData.append("currentThumbnail", currentThumbnail);
+
+      const result = await updateNewsItemAction(formData);
+
+      if (result.error) {
+        setError(result.error);
+        setLoading(false);
+        return;
+      }
+
+      router.push("/dashboard-news");
+    } catch (err: any) {
+      console.error("Error updating news:", err);
+      setError(err.message || "Failed to update news");
+      setLoading(false);
+    }
   };
+
+  if (loadingData) {
+    return (
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
+      >
+        <p style={{ fontFamily: "Poppins, sans-serif" }}>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -88,6 +184,21 @@ export default function EditNewsDashboard() {
           paddingBottom: "40px",
         }}
       >
+        {error && (
+          <div
+            style={{
+              backgroundColor: "#F8D7DA",
+              color: "#721C24",
+              padding: "12px 16px",
+              borderRadius: "4px",
+              marginBottom: "20px",
+              fontFamily: "Poppins, sans-serif",
+              fontSize: "14px",
+            }}
+          >
+            {error}
+          </div>
+        )}
 
         {/* Form Container */}
         <div className="flex gap-6">
@@ -120,7 +231,7 @@ export default function EditNewsDashboard() {
               />
             </div>
 
-            {/* Body Field */}
+            {/* Description Field */}
             <div className="mb-6">
               <label
                 style={{
@@ -131,12 +242,40 @@ export default function EditNewsDashboard() {
                   marginBottom: "12px",
                 }}
               >
-                Body <span className="text-red-500">*</span>
+                Description <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Insert news description (summary)"
+                rows={2}
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  minHeight: "80px",
+                }}
+              />
+            </div>
+
+            {/* Content Field */}
+            <div className="mb-6">
+              <label
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  display: "block",
+                  marginBottom: "12px",
+                }}
+              >
+                Content <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="News content"
+                placeholder="Insert full news content"
                 rows={6}
                 className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y"
                 style={{
@@ -248,25 +387,52 @@ export default function EditNewsDashboard() {
         </div>
 
         {/* Edit Button */}
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-end gap-4 mt-8">
+          <Link href="/dashboard-news">
+            <button
+              className="px-8 border border-[#EAEAEA] rounded transition-colors"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                height: "45px",
+                minWidth: "150px",
+                color: "#1D1A1A",
+                backgroundColor: "white",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#F5F5F5";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "white";
+              }}
+            >
+              Cancel
+            </button>
+          </Link>
           <button
             onClick={handleSubmit}
+            disabled={loading}
             className="px-8 text-white rounded transition-colors"
             style={{
               fontFamily: "Helvetica Neue, sans-serif",
               fontSize: "18px",
               height: "45px",
               minWidth: "150px",
-              backgroundColor: "#FEB33C",
+              backgroundColor: loading ? "#D3D3D3" : "#FEB33C",
+              cursor: loading ? "not-allowed" : "pointer",
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#E69F2E";
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = "#E69F2E";
+              }
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "#FEB33C";
+              if (!loading) {
+                e.currentTarget.style.backgroundColor = "#FEB33C";
+              }
             }}
           >
-            Edit
+            {loading ? "Updating..." : "Update"}
           </button>
         </div>
       </div>

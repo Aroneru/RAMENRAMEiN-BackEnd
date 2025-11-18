@@ -2,13 +2,20 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { addNewsItemAction } from "./actions";
 
 export default function AddNewsDashboard() {
+  const router = useRouter();
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
+  const [category, setCategory] = useState("general");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleThumbnailChange = (file: File) => {
     if (file && file.type.match(/^image\//)) {
@@ -47,9 +54,47 @@ export default function AddNewsDashboard() {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log({ title, body, thumbnail });
+  const handleSubmit = async () => {
+    // Validation
+    if (!title.trim()) {
+      setError("Please enter news title");
+      return;
+    }
+    if (!body.trim()) {
+      setError("Please enter news content");
+      return;
+    }
+    if (!thumbnail) {
+      setError("Please upload a thumbnail");
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("title", title.trim());
+      formData.append("description", description.trim());
+      formData.append("body", body.trim());
+      formData.append("category", category.trim());
+      formData.append("thumbnail", thumbnail);
+      formData.append('isPublished', 'true');
+
+      const result = await addNewsItemAction(formData);
+
+      if (result.error) {
+        setError(result.error);
+        setLoading(false);
+        return;
+      }
+
+      router.push('/dashboard-news');
+    } catch (err: any) {
+      console.error("Error adding news:", err);
+      setError(err.message || "Failed to add news");
+      setLoading(false);
+    }
   };
 
   return (
@@ -89,6 +134,13 @@ export default function AddNewsDashboard() {
         }}
       >
 
+        {/* Error Message */}
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded max-w-4xl">
+            {error}
+          </div>
+        )}
+
         {/* Form Container */}
         <div className="flex gap-6">
           {/* Left Side - Title and Body */}
@@ -120,7 +172,7 @@ export default function AddNewsDashboard() {
               />
             </div>
 
-            {/* Body Field */}
+            {/* Description Field */}
             <div className="mb-6">
               <label
                 style={{
@@ -131,12 +183,40 @@ export default function AddNewsDashboard() {
                   marginBottom: "12px",
                 }}
               >
-                Body <span className="text-red-500">*</span>
+                Description <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Insert news description (summary)"
+                rows={2}
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  minHeight: "80px",
+                }}
+              />
+            </div>
+
+            {/* Content Field */}
+            <div className="mb-6">
+              <label
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  display: "block",
+                  marginBottom: "12px",
+                }}
+              >
+                Content <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder="Insert news content"
+                placeholder="Insert full news content"
                 rows={6}
                 className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y"
                 style={{
@@ -248,10 +328,25 @@ export default function AddNewsDashboard() {
         </div>
 
         {/* Submit Button */}
-        <div className="flex justify-end mt-8">
+        <div className="flex justify-end mt-8 gap-4">
+          <Link href="/dashboard-news">
+            <button
+              disabled={loading}
+              className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "18px",
+                height: "45px",
+                minWidth: "150px",
+              }}
+            >
+              Cancel
+            </button>
+          </Link>
           <button
             onClick={handleSubmit}
-            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+            disabled={loading}
+            className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50"
             style={{
               fontFamily: "Helvetica Neue, sans-serif",
               fontSize: "18px",
@@ -259,7 +354,7 @@ export default function AddNewsDashboard() {
               minWidth: "150px",
             }}
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </button>
         </div>
       </div>

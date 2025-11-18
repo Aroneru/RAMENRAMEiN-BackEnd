@@ -2,7 +2,8 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchNewsList, deleteNews } from "@/lib/news";
+import { fetchNewsList } from "@/lib/news";
+import { deleteNewsItemAction } from "./actions";
 import type { News } from "@/lib/types/database.types";
 
 export default function NewsDashboard() {
@@ -31,12 +32,16 @@ export default function NewsDashboard() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this news?")) return;
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete "${title}"? This action cannot be undone.`)) return;
     
     try {
-      await deleteNews(id);
-      await loadNews();
+      const result = await deleteNewsItemAction(id);
+      if (result.error) {
+        alert("Failed to delete news: " + result.error);
+      } else {
+        await loadNews();
+      }
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "Failed to delete news";
       alert("Failed to delete news: " + errorMessage);
@@ -344,7 +349,7 @@ export default function NewsDashboard() {
                       paddingLeft: "40px",
                     }}
                   >
-                    Body
+                    Description
                   </th>
                   <th
                     className="text-left font-medium py-3"
@@ -407,9 +412,9 @@ export default function NewsDashboard() {
                           className="bg-gray-200 rounded overflow-hidden"
                           style={{ width: "100px", height: "100px" }}
                         >
-                          {item.thumbnail ? (
+                          {item.image_url ? (
                             <img
-                              src={item.thumbnail}
+                              src={item.image_url}
                               alt={item.title}
                               className="w-full h-full object-cover"
                             />
@@ -438,7 +443,7 @@ export default function NewsDashboard() {
                           paddingLeft: "40px",
                         }}
                       >
-                        {truncateText(item.body)}
+                        {truncateText(item.description || item.content)}
                       </td>
                       <td
                         className="py-4"
@@ -467,7 +472,7 @@ export default function NewsDashboard() {
                             </button>
                           </Link>
                           <button 
-                            onClick={() => handleDelete(item.id)}
+                            onClick={() => handleDelete(item.id, item.title)}
                             className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
                           >
                             <Image
