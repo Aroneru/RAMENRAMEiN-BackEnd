@@ -5,12 +5,23 @@ import { supabase } from './supabase';
 import type { News, Berita } from './types/database.types';
 import { newsToBerita, newsToBeritaDetail } from './types/database.types';
 
-// Fetch all active news
+// Fetch all active news (published only - for public view)
 export async function fetchNewsList() {
   const { data, error } = await supabase
     .from('news')
     .select('*')
     .eq('is_published', true)
+    .order('created_at', { ascending: false });
+
+  if (error) throw error;
+  return data as News[];
+}
+
+// Fetch all news (for dashboard - includes unpublished)
+export async function fetchAllNews() {
+  const { data, error } = await supabase
+    .from('news')
+    .select('*')
     .order('created_at', { ascending: false });
 
   if (error) throw error;

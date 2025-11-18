@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { fetchNewsList } from "@/lib/news";
+import { fetchAllNews } from "@/lib/news";
 import { deleteNewsItemAction } from "./actions";
 import type { News } from "@/lib/types/database.types";
 
@@ -10,6 +10,7 @@ export default function NewsDashboard() {
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [currentPage, setCurrentPage] = useState(1);
   const [newsData, setNewsData] = useState<News[]>([]);
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +21,7 @@ export default function NewsDashboard() {
   const loadNews = async () => {
     try {
       setLoading(true);
-      const data = await fetchNewsList();
+      const data = await fetchAllNews();
       setNewsData(data);
       setError(null);
     } catch (err: unknown) {
@@ -210,10 +211,20 @@ export default function NewsDashboard() {
     );
   };
 
+  const getSortedNews = () => {
+    const sorted = [...newsData].sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+    });
+    return sorted;
+  };
+
   const getPaginatedItems = () => {
+    const sorted = getSortedNews();
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return newsData.slice(startIndex, endIndex);
+    return sorted.slice(startIndex, endIndex);
   };
 
   return (
@@ -265,19 +276,40 @@ export default function NewsDashboard() {
           >
             News
           </h2>
-          <Link href="/dashboard-news/add">
-            <button
-              className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+          <div className="flex items-center gap-4">
+            {/* Sort Dropdown */}
+            <select
+              value={sortOrder}
+              onChange={(e) => {
+                setSortOrder(e.target.value as "asc" | "desc");
+                setCurrentPage(1);
+              }}
+              className="border border-[#EAEAEA] rounded text-[#1D1A1A] bg-white px-4"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
-                width: "200px",
+                fontSize: "16px",
                 height: "40px",
+                minWidth: "180px",
               }}
             >
-              Add News
-            </button>
-          </Link>
+              <option value="desc">Newest First</option>
+              <option value="asc">Oldest First</option>
+            </select>
+            
+            <Link href="/dashboard-news/add">
+              <button
+                className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  width: "200px",
+                  height: "40px",
+                }}
+              >
+                Add News
+              </button>
+            </Link>
+          </div>
         </div>
 
         {/* Loading/Error States */}
@@ -357,11 +389,23 @@ export default function NewsDashboard() {
                       fontFamily: "Helvetica Neue, sans-serif",
                       fontSize: "18px",
                       color: "#1D1A1A",
-                      width: "300px",
+                      width: "200px",
                       paddingLeft: "40px",
                     }}
                   >
                     Created At
+                  </th>
+                  <th
+                    className="text-center font-medium py-3"
+                    style={{
+                      fontFamily: "Helvetica Neue, sans-serif",
+                      fontSize: "18px",
+                      color: "#1D1A1A",
+                      width: "120px",
+                      paddingLeft: "20px",
+                    }}
+                  >
+                    Status
                   </th>
                   <th
                     className="text-center font-medium py-3"
@@ -380,7 +424,7 @@ export default function NewsDashboard() {
               <tbody style={{ backgroundColor: "transparent" }}>
                 {newsData.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#1D1A1A" }}>
+                    <td colSpan={7} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#1D1A1A" }}>
                       No news found. Click &quot;Add News&quot; to create one.
                     </td>
                   </tr>
@@ -455,6 +499,19 @@ export default function NewsDashboard() {
                         }}
                       >
                         {new Date(item.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="py-4 text-center">
+                        <span
+                          className="px-3 py-1 rounded-full text-sm font-medium"
+                          style={{
+                            backgroundColor: item.is_published ? "#D4EDDA" : "#F8D7DA",
+                            color: item.is_published ? "#155724" : "#721C24",
+                            fontFamily: "Helvetica Neue, sans-serif",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {item.is_published ? "Published" : "Draft"}
+                        </span>
                       </td>
                       <td className="py-4" style={{ paddingLeft: "125px" }}>
                         <div

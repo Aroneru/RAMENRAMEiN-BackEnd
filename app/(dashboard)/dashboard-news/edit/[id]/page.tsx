@@ -1,9 +1,10 @@
 import EditNewsDashboard from "@/app/components/dashboard/news/editnews";
 
-export default function DashboardEditNewsPage({
+export default async function DashboardEditNewsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  return <EditNewsDashboard id={params.id} />;
+  const { id } = await params;
+  return <EditNewsDashboard id={id} />;
 }

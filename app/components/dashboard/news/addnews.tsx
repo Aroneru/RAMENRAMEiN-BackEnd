@@ -11,6 +11,7 @@ export default function AddNewsDashboard() {
   const [description, setDescription] = useState("");
   const [body, setBody] = useState("");
   const [category, setCategory] = useState("general");
+  const [isPublished, setIsPublished] = useState(true);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -79,7 +80,7 @@ export default function AddNewsDashboard() {
       formData.append("body", body.trim());
       formData.append("category", category.trim());
       formData.append("thumbnail", thumbnail);
-      formData.append('isPublished', 'true');
+      formData.append('isPublished', isPublished.toString());
 
       const result = await addNewsItemAction(formData);
 
@@ -227,6 +228,34 @@ export default function AddNewsDashboard() {
                 }}
               />
             </div>
+
+            {/* Category Field */}
+            <div className="mb-6">
+              <label
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                  display: "block",
+                  marginBottom: "12px",
+                }}
+              >
+                Category <span className="text-red-500">*</span>
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "18px",
+                  color: "#1D1A1A",
+                }}
+              >
+                <option value="general">General</option>
+                <option value="event">Event</option>
+              </select>
+            </div>
           </div>
 
           {/* Right Side - Thumbnail Upload */}
@@ -323,6 +352,27 @@ export default function AddNewsDashboard() {
                   </label>
                 </>
               )}
+            </div>
+
+            {/* Publish Status */}
+            <div className="mt-6">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isPublished}
+                  onChange={(e) => setIsPublished(e.target.checked)}
+                  className="w-5 h-5 rounded border-[#EAEAEA] text-[#4A90E2] focus:ring-[#4A90E2]"
+                />
+                <span
+                  style={{
+                    fontFamily: "Helvetica Neue, sans-serif",
+                    fontSize: "18px",
+                    color: "#1D1A1A",
+                  }}
+                >
+                  Publish this news immediately
+                </span>
+              </label>
             </div>
           </div>
         </div>
