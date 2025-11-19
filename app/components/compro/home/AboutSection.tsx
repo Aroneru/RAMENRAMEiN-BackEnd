@@ -11,50 +11,8 @@ export default function AboutSection() {
   return (
     <section
       ref={ref}
-      className="relative w-full py-20 px-4 bg-black overflow-hidden"
+      className="relative w-full py-12 md:py-20 px-4 bg-black overflow-hidden"
     >
-      {/* Japanese Wood/Wall Elements */}
-      {/* Left Side - Vertical Wood Pattern */}
-      <div className="absolute left-0 top-0 bottom-0 w-24 z-10  overflow-hidden">
-        <div 
-          className="absolute inset-0" 
-          style={{
-            backgroundImage: 'url(/images/kayu.png)',
-            backgroundSize: 'auto 140px',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'repeat',
-            transform: 'rotate(90deg)',
-            transformOrigin: 'center',
-            width: '100vh',
-            height: '100%',
-            left: '55%',
-            marginLeft: '-50vh'
-          }} 
-        />
-      </div>
-      
-      {/* Right Side - Vertical Wood Pattern */}
-      <div className="absolute right-0 top-0 bottom-0 w-24 z-10 overflow-hidden">
-        <div 
-          className="absolute inset-0" 
-          style={{
-            backgroundImage: 'url(/images/kayu.png)',
-            backgroundSize: 'auto 140px',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'repeat',
-            transform: 'rotate(90deg)',
-            transformOrigin: 'center',
-            width: '100vh',
-            height: '100%',
-            left: '55%',
-            marginLeft: '-50vh'
-          }} 
-        />
-      </div>
-
-      {/* Decorative Elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-red-600 rounded-full blur-3xl opacity-10 -z-10" />
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-600 rounded-full blur-3xl opacity-10 -z-10" />
 
       <div 
         className={`max-w-7xl mx-auto transition-all duration-1000 ease-out ${
@@ -66,10 +24,10 @@ export default function AboutSection() {
           {/* Left Column - Content */}
           <div className="space-y-6 lg:pr-8">
             <div className="inline-block">
-              <span className="text-red-500 font-semibold text-sm tracking-wider uppercase mb-2 block">
+              <span className="text-red-500 font-semibold text-xs md:text-sm tracking-wider uppercase mb-2 block">
                 Discover Our Story
               </span>
-              <h2 className="text-5xl lg:text-6xl font-bold text-white leading-tight">
+              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight">
                 TENTANG
                 <span className="block bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent mt-2">KAMI</span>
               </h2>
@@ -77,7 +35,7 @@ export default function AboutSection() {
             
             <div className="w-20 h-1 bg-gradient-to-r from-red-500 to-orange-500 rounded-full" />
             
-            <p className="text-lg text-gray-300 leading-relaxed">
+            <p className="text-base md:text-lg text-gray-300 leading-relaxed">
               RAMENRAMEiN adalah sebuah kedai ramen Jepang yang berlokasi
               di jantung kota Bogor. Kami menyajikan gabungan cita rasa Jepang
               dengan sentuhan lokal yang hangat.
@@ -118,14 +76,14 @@ export default function AboutSection() {
             </div>
             
             {/* Floating Badge */}
-            <div className="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 transform group-hover:scale-110 transition-transform duration-300">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-2xl">🍜</span>
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:-left-6 md:-bottom-6 bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-4 md:p-6 group-hover:scale-110 transition-transform duration-300 max-w-[90%] md:max-w-none">
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-red-600 to-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                  <span className="text-white text-xl md:text-2xl">🍜</span>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold text-gray-900">Affordable</p>
-                  <p className="text-sm text-gray-600">Japanese-Indonesian Ramen</p>
+                <div className="min-w-0">
+                  <p className="text-lg md:text-2xl font-bold text-gray-900 whitespace-nowrap">Affordable</p>
+                  <p className="text-xs md:text-sm text-gray-600 whitespace-nowrap">Japanese-Indonesian Ramen</p>
                 </div>
               </div>
             </div>

@@ -30,7 +30,7 @@ const accessData = [
 export default function AccessSection() {
   return (
     <section className={styles.accessSection}>
-      <h2 className={styles.mainTitle}>AKSES</h2>
+      <h2 className={styles.mainTitle}>RUTE AKSES</h2>
 
       <div className={styles.cardContainer}>
         {accessData.map((item, index) => (

@@ -44,3 +44,16 @@
     transform: translateX(-50%); 
   }
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .imageContainer {
+    width: 70vw; /* Larger images on mobile */
+    height: 250px; /* Shorter height */
+    margin-right: 8px;
+  }
+
+  .scrollerTrack {
+    animation: scroll 20s linear infinite; /* Faster scroll on mobile */
+  }
+}

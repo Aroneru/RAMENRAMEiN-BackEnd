@@ -245,17 +245,12 @@ export default function EditToppingDashboard({ id }: { id: string }) {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white rounded-lg shadow-xl animate-scale-in"
-            style={{
-              width: "500px",
-              maxWidth: "90vw",
-              padding: "32px",
-            }}
+            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}

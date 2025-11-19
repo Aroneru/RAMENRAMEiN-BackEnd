@@ -293,21 +293,16 @@ export default function MenuDashboard() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}>
+    <div className="min-h-screen lg:ml-[256px] ml-0" style={{ backgroundColor: "#FFFDF7" }}>
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white rounded-lg shadow-xl animate-scale-in"
-            style={{
-              width: "500px",
-              maxWidth: "90vw",
-              padding: "32px",
-            }}
+            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
@@ -499,14 +494,11 @@ export default function MenuDashboard() {
 
       {/* Navigator */}
       <div
+        className="px-4 md:px-[45px] pt-12 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
-          fontSize: "24px",
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingTop: "60px",
-          marginBottom: "75px",
+          fontSize: "clamp(18px, 4vw, 24px)",
         }}
       >
         <div className="flex items-center gap-2 text-[#1D1A1A]">
@@ -519,7 +511,7 @@ export default function MenuDashboard() {
       </div>
 
       {/* Menu Sections */}
-      <div style={{ paddingLeft: "45px", paddingRight: "45px", paddingBottom: "40px" }}>
+      <div className="px-4 md:px-[45px] pb-10">
         {loading && (
           <div className="text-center py-8" style={{ color: "#1D1A1A" }}>
             <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
@@ -531,12 +523,12 @@ export default function MenuDashboard() {
         {!loading && menuData.map((section, index) => (
           <div key={index} style={{ marginBottom: index < menuData.length - 1 ? "125px" : "0" }}>
             {/* Section Header with Title and Add Button */}
-            <div className="flex items-center justify-between" style={{ marginBottom: "35px" }}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-[35px]">
               <h2
+                className="text-xl md:text-2xl"
                 style={{
                   fontFamily: "Poppins, sans-serif",
                   fontWeight: "500",
-                  fontSize: "24px",
                   color: "#1D1A1A",
                 }}
               >
@@ -567,8 +559,8 @@ export default function MenuDashboard() {
               </Link>
             </div>
 
-            {/* Table */}
-            <div className="rounded-lg overflow-hidden shadow-sm">
+            {/* Desktop Table - Hidden on mobile */}
+            <div className="hidden md:block rounded-lg overflow-hidden shadow-sm">
               <table className="w-full border-collapse">
                 <thead style={{ backgroundColor: "#E4E4E4" }}>
                   <tr>
@@ -765,6 +757,36 @@ export default function MenuDashboard() {
                   ))}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card Layout */}
+            <div className="md:hidden space-y-4">
+              {getPaginatedItems(section.items, section.title.toLowerCase()).map((item, idx) => (
+                <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-[#EAEAEA]">
+                  <div className="flex gap-4">
+                    <div className="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+                      {item.image_url ? (
+                        <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-[#1D1A1A] text-base mb-1 truncate" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>{item.name}</h3>
+                      <p className="text-[#1D1A1A] text-sm mb-2 line-clamp-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>{truncateDescription(item.description, 60)}</p>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ fontFamily: "Helvetica Neue, sans-serif", backgroundColor: item.is_available ? "#D4EDDA" : "#F8D7DA", color: item.is_available ? "#155724" : "#721C24" }}>
+                          {item.is_available ? "Available" : "Unavailable"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <Link href={section.title === "Ramen" ? `/dashboard-menu/edit-ramen/${item.id}` : section.title === "Topping" ? `/dashboard-menu/edit-topping/${item.id}` : section.title === "Nyemil" ? `/dashboard-menu/edit-nyemil/${item.id}` : `/dashboard-menu/edit-minuman/${item.id}`} className="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-center text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Edit</Link>
+                    <button onClick={() => handleDeleteClick(item.id, item.name)} className="flex-1 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Delete</button>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Pagination */}

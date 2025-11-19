@@ -9,6 +9,7 @@ export default function Sidebar() {
   const pathname = usePathname() || "";
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
@@ -52,7 +53,32 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0">
+      {/* Mobile Menu Button */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#1D1A1A] rounded-md text-white"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {isMobileMenuOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Overlay for mobile */}
+      {isMobileMenuOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div className={`w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0 z-40 transition-transform duration-300 ${
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
         {/* Logo Section */}
         <div className="mt-10 flex flex-col items-center w-full">
           <Image
@@ -114,13 +140,12 @@ export default function Sidebar() {
       {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleLogoutCancel}
         >
           <div
-            className="bg-white rounded-lg shadow-xl animate-scale-in"
-            style={{ width: "500px", maxWidth: "90vw", padding: "32px" }}
+            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center mb-4">

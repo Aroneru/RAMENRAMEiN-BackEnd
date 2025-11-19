@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="bg-[#010101] text-[#a0a0a0] py-8 px-6 border-t border-[#333]">
       <div className="max-w-[1200px] mx-auto py-[60px] flex flex-col items-center gap-6">
         {/* Navigasi */}
-        <nav className="flex gap-6 font-semibold text-[0.9rem] uppercase">
+        <nav className="flex flex-col md:flex-row gap-4 md:gap-6 font-semibold text-[0.9rem] uppercase text-center">
           <Link href="/" className="text-white hover:text-[#d4a373] transition-colors duration-200">
             HOME
           </Link>

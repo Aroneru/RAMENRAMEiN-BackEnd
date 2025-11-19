@@ -256,23 +256,18 @@ export default function FAQDashboard() {
 
   return (
     <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
+      className="min-h-screen lg:ml-64 ml-0"
+      style={{ backgroundColor: "#FFFDF7" }}
     >
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center"
+          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white rounded-lg shadow-xl animate-scale-in"
-            style={{
-              width: "500px",
-              maxWidth: "90vw",
-              padding: "32px",
-            }}
+            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
@@ -464,14 +459,11 @@ export default function FAQDashboard() {
 
       {/* Navigator */}
       <div
+        className="px-4 md:px-[45px] pt-12 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
-          fontSize: "24px",
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingTop: "60px",
-          marginBottom: "75px",
+          fontSize: "clamp(18px, 4vw, 24px)",
         }}
       >
         <div className="flex items-center gap-2 text-[#1D1A1A]">
@@ -484,23 +476,17 @@ export default function FAQDashboard() {
       </div>
 
       {/* FAQ Section */}
-      <div
-        style={{
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingBottom: "40px",
-        }}
-      >
+      <div className="px-4 md:px-[45px] pb-10">
+
         {/* Section Header with Title and Add Button */}
         <div
-          className="flex items-center justify-between"
-          style={{ marginBottom: "35px" }}
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-[35px]"
         >
           <h2
+            className="text-xl md:text-2xl"
             style={{
               fontFamily: "Poppins, sans-serif",
               fontWeight: "500",
-              fontSize: "24px",
               color: "#1D1A1A",
             }}
           >

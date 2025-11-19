@@ -34,3 +34,20 @@
   height: 1200px; /* atau tinggi yang Anda inginkan */
   border: 0;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .mapContainer {
+    height: 300px;
+  }
+
+  .addressBar {
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+  }
+
+  .addressBar h2 {
+    font-size: 0.9em;
+    line-height: 1.4;
+  }
+}
