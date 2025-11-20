@@ -8,13 +8,14 @@ import type { Menu, MenuCategory } from "@/lib/types/database.types";
 
 interface MenuListProps {
   category: MenuCategory;
+  openMenuId?: string | null;
 }
 
 interface ExtendedMenu extends Menu {
   selectedToppings?: string[];
 }
 
-export default function MenuList({ category }: MenuListProps) {
+export default function MenuList({ category, openMenuId }: MenuListProps) {
   const { ref, isVisible } = useScrollReveal<HTMLDivElement>({ threshold: 0.1, once: false });
   const [menuItems, setMenuItems] = useState<Menu[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +31,16 @@ export default function MenuList({ category }: MenuListProps) {
     loadPopupSetting();
     loadShowPriceSetting();
   }, [category]);
+
+  // Open popup when openMenuId is provided
+  useEffect(() => {
+    if (openMenuId && menuItems.length > 0 && popupEnabled === true) {
+      const item = menuItems.find(m => m.id === openMenuId);
+      if (item) {
+        setSelectedItem({ ...item, selectedToppings: [] });
+      }
+    }
+  }, [openMenuId, menuItems, popupEnabled]);
 
   const loadPopupSetting = async () => {
     try {

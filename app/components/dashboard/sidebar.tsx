@@ -89,14 +89,14 @@ export default function Sidebar() {
         </button>
 
         {/* Logo Section */}
-        <div className="mt-10 flex flex-col items-center w-full">
+        <Link href="/home" className="mt-10 flex flex-col items-center w-full cursor-pointer hover:opacity-80 transition-opacity">
           <Image
             src="/logo_ramenramein.svg"
             alt="RAMEiN Logo"
             width={160}
             height={60}
           />
-        </div>
+        </Link>
 
         <div className="mt-[45px]" />
         

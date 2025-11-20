@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useScrollReveal } from '../../../hooks/useScrollReveal';
+import { fetchMenuByCategory } from '@/lib/menu';
+import type { Menu } from '@/lib/types/database.types';
 
 interface MenuPopup {
   isOpen: boolean;
@@ -11,6 +13,7 @@ interface MenuPopup {
   name: string;
   description: string;
   image: string;
+  menuId: string;
 }
 
 export default function MenuHighlight() {
@@ -20,11 +23,32 @@ export default function MenuHighlight() {
     position: 'left',
     name: '',
     description: '',
-    image: ''
+    image: '',
+    menuId: ''
   });
+  const [specialRamen, setSpecialRamen] = useState<Menu[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const openPopup = (position: 'left' | 'right', name: string, description: string, image: string) => {
-    setPopup({ isOpen: true, position, name, description, image });
+  useEffect(() => {
+    loadSpecialRamen();
+  }, []);
+
+  const loadSpecialRamen = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchMenuByCategory('ramen');
+      // Filter only special ramen and limit to 2
+      const special = data.filter(item => item.is_special_ramen).slice(0, 2);
+      setSpecialRamen(special);
+    } catch (error) {
+      console.error('Error loading special ramen:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openPopup = (position: 'left' | 'right', name: string, description: string, image: string, menuId: string) => {
+    setPopup({ isOpen: true, position, name, description, image, menuId });
   };
 
   const closePopup = () => {
@@ -42,45 +66,39 @@ export default function MenuHighlight() {
 
       <div className="flex justify-center items-center gap-8 md:gap-12 flex-wrap max-w-6xl mx-auto">
 
-        {/* Left Menu Item */}
-        <div 
-          className="group text-center cursor-pointer transform transition-all duration-500 hover:scale-105 w-full sm:w-auto"
-          onClick={() => openPopup('left', 'Ramen Miso', 'Ramen dengan kuah miso yang kaya rasa, dilengkapi dengan irisan daging babi chashu, telur ramen, dan sayuran segar.', '/images/foto-ramen.png')}
-        >
-          <div className="relative overflow-hidden rounded-2xl shadow-2xl max-w-sm mx-auto">
-            <Image
-              src="/images/foto-ramen.png" 
-              alt="Ramen Miso"
-              width={400} 
-              height={400} 
-              className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-          <h3 className="text-white mt-4 md:mt-6 text-lg md:text-xl font-semibold underline transition-colors duration-300 group-hover:text-red-500" style={{ fontFamily: 'Osnova Pro' }}>
-            Ramen Miso
-          </h3>
-        </div>
-
-        {/* Right Menu Item */}
-        <div 
-          className="group text-center cursor-pointer transform transition-all duration-500 hover:scale-105 w-full sm:w-auto"
-          onClick={() => openPopup('right', 'Ramen Kari', 'Ramen dengan kuah kari Jepang yang creamy dan pedas, disajikan dengan ayam goreng crispy, telur ramen, dan taburan daun bawang.', '/images/foto-ramen.png')}
-        >
-          <div className="relative overflow-hidden rounded-2xl shadow-2xl max-w-sm mx-auto">
-            <Image
-              src="/images/foto-ramen.png" 
-              alt="Ramen Kari"
-              width={400} 
-              height={400} 
-              className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
-          <h3 className="text-white mt-4 md:mt-6 text-lg md:text-xl font-semibold underline transition-colors duration-300 group-hover:text-red-500" style={{ fontFamily: 'Osnova Pro' }}>
-            Ramen Kari
-          </h3>
-        </div>
+        {loading ? (
+          <div className="text-white text-center py-8">Loading...</div>
+        ) : specialRamen.length === 0 ? (
+          <div className="text-white text-center py-8">No special ramen available</div>
+        ) : (
+          specialRamen.map((item, index) => (
+            <div 
+              key={item.id}
+              className="group text-center cursor-pointer transform transition-all duration-500 hover:scale-105 w-full sm:w-auto"
+              onClick={() => openPopup(
+                index === 0 ? 'left' : 'right', 
+                item.name, 
+                item.description || '', 
+                item.image_for_max_price || item.image_url || '/images/foto-ramen.png',
+                item.id
+              )}
+            >
+              <div className="relative overflow-hidden rounded-2xl shadow-2xl max-w-sm mx-auto">
+                <Image
+                  src={item.image_for_max_price || item.image_url || '/images/foto-ramen.png'}
+                  alt={item.name}
+                  width={400} 
+                  height={400} 
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </div>
+              <h3 className="text-white mt-4 md:mt-6 text-lg md:text-xl font-semibold transition-colors duration-300 group-hover:text-red-500" style={{ fontFamily: 'Osnova Pro' }}>
+                {item.name}
+              </h3>
+            </div>
+          ))
+        )}
 
       </div>
 
@@ -136,7 +154,7 @@ export default function MenuHighlight() {
               
               <div className="pt-2 md:pt-4 pb-4">
                 <Link
-                  href="/menu"
+                  href={`/menu?open=${popup.menuId}`}
                   className="inline-flex items-center justify-center w-full gap-2 px-5 md:px-6 py-2.5 md:py-3 text-sm md:text-base bg-gradient-to-r from-red-500 to-orange-500 text-white font-semibold rounded-xl hover:from-red-600 hover:to-orange-600 transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   Lihat Harga
