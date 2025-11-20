@@ -74,7 +74,7 @@ export async function getCurrentUser() {
     
     // Return user from session instead of calling getUser() which throws error
     return session.user;
-  } catch (error) {
+  } catch {
     // Silently return null if there's no session
     return null;
   }
@@ -132,7 +132,7 @@ export async function getCurrentUserProfile(): Promise<AuthUser | null> {
       full_name: profile.full_name,
       avatar_url: profile.avatar_url
     };
-  } catch (error) {
+  } catch {
     // Silently return null on any error
     return null;
   }

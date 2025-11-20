@@ -151,7 +151,7 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
     }
 
     // Prepare update data
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       name: name.trim(),
       description: description.trim(),
       price: parseFloat(price),

@@ -2,7 +2,6 @@
 
 import { cookies } from "next/headers";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
-import { insertMenu } from "@/lib/menu";
 import { uploadImage } from "@/lib/storage";
 
 export async function addMenuItemAction(formData: FormData) {
@@ -72,12 +71,12 @@ export async function addMenuItemAction(formData: FormData) {
     }
 
     // Save to database using authenticated client
-    const menuData: any = {
+    const menuData: Record<string, unknown> = {
       name: name.trim(),
       description: description.trim(),
       price: parseFloat(price),
       image_url: imageUrl,
-      category: category as any,
+      category: category,
       is_available: isAvailable,
       created_by: user.id,
       updated_by: user.id,
@@ -94,7 +93,7 @@ export async function addMenuItemAction(formData: FormData) {
       }
     }
 
-    const { data, error: insertError } = await supabase
+    const { error: insertError } = await supabase
       .from('menu')
       .insert(menuData)
       .select()

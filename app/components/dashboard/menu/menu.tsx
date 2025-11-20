@@ -364,7 +364,7 @@ export default function MenuDashboard() {
                 lineHeight: "1.5",
               }}
             >
-              Are you sure you want to delete "{itemToDelete?.name}"? This action cannot be undone.
+              Are you sure you want to delete &ldquo;{itemToDelete?.name}&rdquo;? This action cannot be undone.
             </p>
 
             {/* Buttons */}

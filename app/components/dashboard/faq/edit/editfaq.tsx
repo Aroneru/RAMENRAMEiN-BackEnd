@@ -26,6 +26,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
       setError('No FAQ ID provided');
       setLoadingData(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadFaqData = async () => {

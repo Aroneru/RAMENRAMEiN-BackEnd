@@ -37,6 +37,7 @@ export default function EditRamenDashboard({ id }: { id: string }) {
       setError('No menu ID provided');
       setLoadingData(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const loadMenuData = async () => {

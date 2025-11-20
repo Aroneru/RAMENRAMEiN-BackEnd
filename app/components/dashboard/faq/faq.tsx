@@ -707,7 +707,7 @@ export default function FAQDashboard() {
                 </p>
               </div>
             ) : (
-              getPaginatedItems().map((item, _idx) => (
+              getPaginatedItems().map((item) => (
                 <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-[#EAEAEA]">
                   <div className="mb-3">
                     <h3 className="font-semibold text-[#1D1A1A] text-base mb-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
