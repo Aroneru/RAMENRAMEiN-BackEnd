@@ -334,7 +334,7 @@ export default function MenuList({ category }: MenuListProps) {
                               />
                               <span className="text-white">{topping.name}</span>
                             </div>
-                            <span className="text-red-200 text-sm font-semibold">
+                            <span className="text-white text-sm font-semibold">
                               +Rp {(topping.price || 0).toLocaleString('id-ID')}
                             </span>
                           </label>

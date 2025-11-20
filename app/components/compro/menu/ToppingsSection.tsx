@@ -154,7 +154,7 @@ export default function ToppingsSection() {
               {/* Price Section */}
               {showPrice === true && selectedTopping.price && (
                 <div className="mb-6">
-                  <span className="text-2xl font-bold text-red-500">
+                  <span className="text-2xl font-bold text-red-300">
                     Rp {selectedTopping.price.toLocaleString('id-ID')}
                   </span>
                 </div>
