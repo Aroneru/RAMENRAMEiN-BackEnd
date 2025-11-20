@@ -8,6 +8,9 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+// Bucket name - all images stored in single bucket with folder structure
+const BUCKET_NAME = 'images';
+
 export async function uploadImage(
   file: File,
   folder: string = 'menu'
@@ -21,7 +24,7 @@ export async function uploadImage(
   
   // Upload to Supabase Storage
   const { error } = await supabase.storage
-    .from('menu-images')
+    .from(BUCKET_NAME)
     .upload(filePath, file, {
       contentType: file.type,
       upsert: false
@@ -34,7 +37,7 @@ export async function uploadImage(
 
   // Get public URL
   const { data } = supabase.storage
-    .from('menu-images')
+    .from(BUCKET_NAME)
     .getPublicUrl(filePath);
 
   return data.publicUrl;
@@ -44,13 +47,14 @@ export async function deleteImage(url: string): Promise<void> {
   try {
     // Extract file path from Supabase URL
     const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split('/menu-images/');
-    if (pathParts.length < 2) return;
+    // Match pattern: /storage/v1/object/public/{bucket}/{path}
+    const pathMatch = urlObj.pathname.match(/\/object\/public\/[^/]+\/(.+)/);
+    if (!pathMatch || pathMatch.length < 2) return;
     
-    const filePath = pathParts[1];
+    const filePath = pathMatch[1];
     
     const { error } = await supabase.storage
-      .from('menu-images')
+      .from(BUCKET_NAME)
       .remove([filePath]);
 
     if (error) {
