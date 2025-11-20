@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Berita } from "@/lib/types/database.types";
+import { incrementNewsViewAction } from "./increment-view-action";
 
 interface BeritaDetailContentProps {
   berita: Berita;
@@ -13,6 +15,11 @@ interface BeritaDetailContentProps {
 
 export default function BeritaDetailContent({ berita, prevNews, nextNews }: BeritaDetailContentProps) {
   const router = useRouter();
+
+  useEffect(() => {
+    // Increment view count when component mounts
+    incrementNewsViewAction(berita.id);
+  }, [berita.id]);
 
   return (
     <article className="max-w-4xl mx-auto px-4 pb-20">
@@ -27,16 +34,6 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
         </button>
 
         <p className="text-sm text-gray-400 text-left m-0">{berita.tanggal}</p>
-        
-        {berita.views_count !== undefined && (
-          <div className="flex items-center gap-1 text-sm text-gray-400">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-            </svg>
-            <span>{berita.views_count.toLocaleString('id-ID')}</span>
-          </div>
-        )}
       </div>
 
       {/* Title */}

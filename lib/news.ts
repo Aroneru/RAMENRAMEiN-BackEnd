@@ -47,9 +47,6 @@ export async function fetchNewsById(id: string) {
 
   if (error) throw error;
 
-  // Increment views count
-  await incrementNewsViews(id);
-
   return data as News;
 }
 
@@ -64,11 +61,7 @@ export async function fetchNewsBySlug(slug: string) {
 
   if (error) throw error;
 
-  const newsData = data as News;
-  // Increment views count
-  await incrementNewsViews(newsData.id);
-
-  return newsData;
+  return data as News;
 }
 
 // Fetch news by Berita ID (for compatibility - detail view with full content)
