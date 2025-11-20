@@ -51,7 +51,7 @@ export default function ToppingsSection() {
       setError(null);
     } catch (err: unknown) {
       console.error("Error loading toppings:", err);
-      setError(err.message || "Failed to load toppings");
+      setError((err as Error).message || "Failed to load toppings");
     } finally {
       setLoading(false);
     }
