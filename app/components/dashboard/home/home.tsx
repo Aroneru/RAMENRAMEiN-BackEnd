@@ -73,7 +73,6 @@ export default function HomeDashboard() {
   };
 
   const handleEditImageClick = () => {
-    // Trigger file input when edit button clicked
     document.getElementById('heroFileInput')?.click();
   };
 
@@ -196,12 +195,12 @@ export default function HomeDashboard() {
       {/* Delete Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
+            className="bg-white rounded-lg shadow-xl animate-scale-in overflow-hidden w-full max-w-[400px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center mb-4">
@@ -262,7 +261,7 @@ export default function HomeDashboard() {
       )}
 
       {/* Navigator */}
-      <div className="px-4 md:px-[45px] pt-12 md:pt-[60px] mb-8 md:mb-[75px]" style={{ fontFamily: "Poppins, sans-serif", fontWeight: "700", fontSize: "clamp(18px, 4vw, 24px)" }}>
+      <div className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]" style={{ fontFamily: "Poppins, sans-serif", fontWeight: "700", fontSize: "clamp(18px, 4vw, 24px)" }}>
         <div className="flex items-center gap-2 text-[#1D1A1A]">
           <span>Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
@@ -274,26 +273,26 @@ export default function HomeDashboard() {
       <div className="px-4 md:px-[45px] pb-10">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-[35px]">
           <h2 className="text-xl md:text-2xl" style={{ fontFamily: "Poppins, sans-serif", fontWeight: "500", color: "#1D1A1A" }}>Hero Section</h2>
-          <div className="flex gap-4">
+          <div className="flex gap-2 w-full sm:w-auto">
             {currentHeroUrl && (
-              <button onClick={handleDeleteClick} disabled={loading || deleting} className="px-6 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", width: "200px", height: "40px" }}>
+              <button onClick={handleDeleteClick} disabled={loading || deleting} className="flex-1 sm:flex-none px-4 sm:px-6 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", height: "40px", minWidth: "100px" }}>
                 Delete
               </button>
             )}
-            <button onClick={handleUpload} disabled={loading || deleting || !heroImage} className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", width: "200px", height: "40px" }}>
+            <button onClick={handleUpload} disabled={loading || deleting || !heroImage} className="flex-1 sm:flex-none px-4 sm:px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", height: "40px", minWidth: "100px" }}>
               {loading ? "Uploading..." : "Upload"}
             </button>
           </div>
         </div>
 
-        <p className="mb-4" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#666" }}>
+        <p className="mb-4 text-sm md:text-base" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
           {currentHeroUrl ? "Current Hero Section is displayed. Delete it to use the default video." : "No custom hero image. Default video will be used on the homepage."}
         </p>
 
         {/* Hidden File Input - Always in DOM */}
         <input type="file" id="heroFileInput" accept="image/jpeg,image/jpg,image/png" onChange={handleFileInput} disabled={loading || deleting} className="hidden" />
         
-        <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} className={`border-2 border-dashed rounded-lg flex flex-col items-center justify-center ${isDragging ? "border-[#4A90E2] bg-blue-50" : "border-[#EAEAEA] bg-white"} ${loading || deleting ? "opacity-50 pointer-events-none" : ""}`} style={{ width: "100%", height: "50vh", transition: "all 0.3s ease", position: "relative" }}>
+        <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop} className={`border-2 border-dashed rounded-lg flex flex-col items-center justify-center ${isDragging ? "border-[#4A90E2] bg-blue-50" : "border-[#EAEAEA] bg-white"} ${loading || deleting ? "opacity-50 pointer-events-none" : ""}`} style={{ width: "100%", height: "50vh", minHeight: "300px", transition: "all 0.3s ease", position: "relative" }}>
           {heroImagePreview ? (
             <div className="relative w-full h-full">
               <img src={heroImagePreview} alt="Hero Preview" className="w-full h-full object-contain p-4" />
@@ -326,8 +325,8 @@ export default function HomeDashboard() {
           ) : (
             <>
               <Image src="/dashboard/upload.svg" alt="Upload" width={60} height={60} className="mb-4" />
-              <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#1D1A1A", fontWeight: "500", marginBottom: "8px" }}>Choose a file or drag & drop it here</p>
-              <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "14px", color: "#999", marginBottom: "20px" }}>JPEG, JPG, and PNG formats, up to 10MB</p>
+              <p className="text-center px-4" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#1D1A1A", fontWeight: "500", marginBottom: "8px" }}>Choose a file or drag & drop it here</p>
+              <p className="text-center px-4" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "14px", color: "#999", marginBottom: "20px" }}>JPEG, JPG, and PNG formats, up to 10MB</p>
               <label htmlFor="heroFileInput" className={`px-6 py-2 border border-[#EAEAEA] rounded transition-colors ${loading || deleting ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-gray-50"}`} style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#1D1A1A" }}>Browse File</label>
             </>
           )}
@@ -365,5 +364,3 @@ export default function HomeDashboard() {
     </div>
   );
 }
-
-// I love Vibe Coding <3 123123123

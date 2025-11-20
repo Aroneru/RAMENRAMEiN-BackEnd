@@ -59,26 +59,35 @@ export default function Sidebar() {
         className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-[#1D1A1A] rounded-md text-white"
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          {isMobileMenuOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          )}
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
 
-      {/* Overlay for mobile */}
+      {/* Overlay for mobile - dengan opacity yang lebih ringan */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="lg:hidden fixed inset-0 z-40"
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.3)" }}
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`w-[256px] h-screen bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0 z-40 transition-transform duration-300 ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
+      <div 
+        className={`w-[256px] bg-[#1D1A1A] flex flex-col items-start text-white fixed left-0 top-0 bottom-0 z-50 transition-transform duration-300 overflow-y-auto ${
+          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+        }`}
+      >
+        {/* Close Button - Mobile Only */}
+        <button
+          onClick={() => setIsMobileMenuOpen(false)}
+          className="lg:hidden absolute top-4 right-4 p-2 text-white hover:bg-[#2A2727] rounded transition-colors z-10"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
         {/* Logo Section */}
         <div className="mt-10 flex flex-col items-center w-full">
           <Image
@@ -90,12 +99,15 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-[45px]" />
+        
+        {/* Navigation */}
         <nav className="flex flex-col w-full">
           <SidebarButton
             href="/dashboard-home"
             iconSrc="/dashboard/home.svg"
             label="Home"
             active={isActive("/dashboard-home")}
+            onClick={() => setIsMobileMenuOpen(false)}
           />
 
           <div className="mt-0" />
@@ -104,6 +116,7 @@ export default function Sidebar() {
             iconSrc="/dashboard/menu.svg"
             label="Menu"
             active={isActive("/dashboard-menu")}
+            onClick={() => setIsMobileMenuOpen(false)}
           />
 
           <div className="mt-0" />
@@ -112,18 +125,22 @@ export default function Sidebar() {
             iconSrc="/dashboard/faq.svg"
             label="FAQ"
             active={isActive("/dashboard-faq")}
+            onClick={() => setIsMobileMenuOpen(false)}
           />
+          
           <div className="mt-0" />
           <SidebarButton
             href="/dashboard-news"
             iconSrc="/dashboard/news.svg"
             label="News"
             active={isActive("/dashboard-news")}
+            onClick={() => setIsMobileMenuOpen(false)}
           />
         </nav>
 
         <div className="mt-[35px]" />
 
+        {/* Logout Button - Posisi tetap seperti semula */}
         <button
           onClick={handleLogoutClick}
           className="flex items-center w-full h-[60px] pl-[45px] pr-6 text-[18px] bg-transparent hover:bg-[#2A2727] transition-colors"
@@ -140,12 +157,12 @@ export default function Sidebar() {
       {/* Logout Confirmation Modal */}
       {showLogoutModal && (
         <div
-          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleLogoutCancel}
         >
           <div
-            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
+            className="bg-white rounded-lg shadow-xl animate-scale-in overflow-hidden w-full max-w-[400px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-center mb-4">
@@ -210,12 +227,14 @@ interface SidebarButtonProps {
   iconSrc: string;
   label: string;
   active?: boolean;
+  onClick?: () => void;
 }
 
-function SidebarButton({ href, iconSrc, label, active }: SidebarButtonProps) {
+function SidebarButton({ href, iconSrc, label, active, onClick }: SidebarButtonProps) {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className={`flex items-center w-full h-[60px] pl-[45px] pr-6 text-[18px] ${
         active ? "bg-[#3A3737]" : "bg-transparent hover:bg-[#2A2727]"
       } transition-colors`}

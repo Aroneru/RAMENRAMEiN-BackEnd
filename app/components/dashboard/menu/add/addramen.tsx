@@ -146,7 +146,7 @@ export default function AddRamenDashboard() {
           <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
             <div className="flex items-start gap-3 flex-1">
               <svg
-                className="w-6 h-6 text-red-500 flex-shrink-0"
+                className="w-6 h-6 text-red-500 shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -168,7 +168,7 @@ export default function AddRamenDashboard() {
             </div>
             <button
               onClick={() => setError(null)}
-              className="flex-shrink-0 text-red-500 hover:text-red-700 transition-colors"
+              className="shrink-0 text-red-500 hover:text-red-700 transition-colors"
               style={{
                 fontSize: "20px",
                 fontWeight: "bold",
@@ -200,7 +200,7 @@ export default function AddRamenDashboard() {
           <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg flex items-start justify-between gap-3">
             <div className="flex items-start gap-3 flex-1">
               <svg
-                className="w-6 h-6 text-green-500 flex-shrink-0"
+                className="w-6 h-6 text-green-500 shrink-0"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -222,7 +222,7 @@ export default function AddRamenDashboard() {
             </div>
             <button
               onClick={() => setSuccess(null)}
-              className="flex-shrink-0 text-green-500 hover:text-green-700 transition-colors"
+              className="shrink-0 text-green-500 hover:text-green-700 transition-colors"
               style={{
                 fontSize: "20px",
                 fontWeight: "bold",
