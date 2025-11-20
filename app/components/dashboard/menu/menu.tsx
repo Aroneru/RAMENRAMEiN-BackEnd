@@ -50,6 +50,15 @@ export default function MenuDashboard() {
         }
       });
 
+      // Sort each category: special ramen first
+      Object.keys(grouped).forEach((category) => {
+        grouped[category].sort((a, b) => {
+          if (a.is_special_ramen && !b.is_special_ramen) return -1;
+          if (!a.is_special_ramen && b.is_special_ramen) return 1;
+          return 0;
+        });
+      });
+
       // Convert to MenuSection format
       const sections: MenuSection[] = [
         { title: "Ramen", items: grouped.ramen },
@@ -641,6 +650,17 @@ export default function MenuDashboard() {
                         fontFamily: "Helvetica Neue, sans-serif",
                         fontSize: "18px",
                         color: "#1D1A1A",
+                        width: "100px",
+                      }}
+                    >
+                      Special
+                    </th>
+                    <th
+                      className="text-center font-medium py-3"
+                      style={{
+                        fontFamily: "Helvetica Neue, sans-serif",
+                        fontSize: "18px",
+                        color: "#1D1A1A",
                         width: "150px",
                         paddingRight: "25px",
                       }}
@@ -736,6 +756,15 @@ export default function MenuDashboard() {
                           </span>
                         </div>
                       </td>
+                      <td className="py-4">
+                        <div className="flex justify-center">
+                          {item.is_special_ramen ? (
+                            <span className="text-red-600 font-bold text-2xl">★</span>
+                          ) : (
+                            <span className="text-gray-300 text-xl">−</span>
+                          )}
+                        </div>
+                      </td>
                       <td className="py-4" style={{ paddingRight: "25px" }}>
                         <div
                           className="flex items-center justify-center gap-3"
@@ -790,6 +819,11 @@ export default function MenuDashboard() {
                         <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ fontFamily: "Helvetica Neue, sans-serif", backgroundColor: item.is_available ? "#D4EDDA" : "#F8D7DA", color: item.is_available ? "#155724" : "#721C24" }}>
                           {item.is_available ? "Available" : "Unavailable"}
                         </span>
+                        {item.is_special_ramen && (
+                          <span className="px-2 py-1 rounded-full text-sm font-bold bg-red-100 text-red-600" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                            ★ SPECIAL
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>

@@ -40,6 +40,11 @@ export async function addMenuItemAction(formData: FormData) {
     const category = formData.get("category") as string;
     const imageFile = formData.get("image") as File;
     const isAvailable = formData.get("isAvailable") !== 'false';
+    
+    // Special ramen fields
+    const isSpecialRamen = formData.get("isSpecialRamen") === 'true';
+    const priceForMaxPrice = formData.get("priceForMaxPrice") as string;
+    const imageForMaxPriceFile = formData.get("imageForMaxPrice") as File | null;
 
     // Validation
     if (!name?.trim()) return { error: "Name is required" };
@@ -47,12 +52,27 @@ export async function addMenuItemAction(formData: FormData) {
     if (!price || isNaN(parseFloat(price))) return { error: "Valid price is required" };
     if (!category?.trim()) return { error: "Category is required" };
     if (!imageFile || imageFile.size === 0) return { error: "Image is required" };
+    
+    // Validate max price if provided
+    if (priceForMaxPrice && parseFloat(priceForMaxPrice) < parseFloat(price)) {
+      return { error: "Maximum price must be greater than or equal to base price" };
+    }
+    
+    if (priceForMaxPrice && (!imageForMaxPriceFile || imageForMaxPriceFile.size === 0)) {
+      return { error: "Image for maximum price variant is required" };
+    }
 
     // Upload image to public/images/menu
     const imageUrl = await uploadImage(imageFile, "menu");
+    
+    // Upload max price image if provided
+    let imageForMaxPriceUrl = null;
+    if (imageForMaxPriceFile && imageForMaxPriceFile.size > 0) {
+      imageForMaxPriceUrl = await uploadImage(imageForMaxPriceFile, "menu");
+    }
 
     // Save to database using authenticated client
-    const menuData = {
+    const menuData: any = {
       name: name.trim(),
       description: description.trim(),
       price: parseFloat(price),
@@ -62,6 +82,17 @@ export async function addMenuItemAction(formData: FormData) {
       created_by: user.id,
       updated_by: user.id,
     };
+    
+    // Add special ramen fields only if category is ramen
+    if (category === 'ramen') {
+      menuData.is_special_ramen = isSpecialRamen;
+      if (priceForMaxPrice) {
+        menuData.price_for_max_price = parseFloat(priceForMaxPrice);
+      }
+      if (imageForMaxPriceUrl) {
+        menuData.image_for_max_price = imageForMaxPriceUrl;
+      }
+    }
 
     const { data, error: insertError } = await supabase
       .from('menu')

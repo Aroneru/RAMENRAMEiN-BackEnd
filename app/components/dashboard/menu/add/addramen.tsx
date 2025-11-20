@@ -16,8 +16,15 @@ export default function AddRamenDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  
+  // New special ramen fields
+  const [isSpecialRamen, setIsSpecialRamen] = useState(false);
+  const [priceForMaxPrice, setPriceForMaxPrice] = useState("");
+  const [imageForMaxPrice, setImageForMaxPrice] = useState<File | null>(null);
+  const [imageForMaxPricePreview, setImageForMaxPricePreview] = useState<string | null>(null);
+  const [isDraggingMaxPrice, setIsDraggingMaxPrice] = useState(false);
 
-  const handleImageChange = (file: File) => {
+  const handleImageChange = (file: File, isMaxPrice: boolean = false) => {
     // Validate file type
     if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
       setError("Please upload JPEG, JPG, or PNG image only");
@@ -33,37 +40,59 @@ export default function AddRamenDashboard() {
     }
 
     setError(null);
-    setImage(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleImageChange(file);
+    
+    if (isMaxPrice) {
+      setImageForMaxPrice(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageForMaxPricePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
+  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>, isMaxPrice: boolean = false) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleImageChange(file, isMaxPrice);
+    }
   };
 
-  const handleDragLeave = (e: React.DragEvent) => {
+  const handleDragOver = (e: React.DragEvent, isMaxPrice: boolean = false) => {
     e.preventDefault();
-    setIsDragging(false);
+    if (isMaxPrice) {
+      setIsDraggingMaxPrice(true);
+    } else {
+      setIsDragging(true);
+    }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDragLeave = (e: React.DragEvent, isMaxPrice: boolean = false) => {
     e.preventDefault();
-    setIsDragging(false);
+    if (isMaxPrice) {
+      setIsDraggingMaxPrice(false);
+    } else {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent, isMaxPrice: boolean = false) => {
+    e.preventDefault();
+    if (isMaxPrice) {
+      setIsDraggingMaxPrice(false);
+    } else {
+      setIsDragging(false);
+    }
     const file = e.dataTransfer.files?.[0];
     if (file) {
-      handleImageChange(file);
+      handleImageChange(file, isMaxPrice);
     }
   };
 
@@ -89,6 +118,19 @@ export default function AddRamenDashboard() {
       setSuccess(null);
       return;
     }
+    
+    // Validate max price fields if provided
+    if (priceForMaxPrice && parseFloat(priceForMaxPrice) < parseFloat(price)) {
+      setError("Maximum price must be greater than or equal to base price");
+      setSuccess(null);
+      return;
+    }
+    
+    if (priceForMaxPrice && !imageForMaxPrice) {
+      setError("Please upload image for maximum price variant");
+      setSuccess(null);
+      return;
+    }
 
     setError(null);
     setSuccess(null);
@@ -102,6 +144,15 @@ export default function AddRamenDashboard() {
       formData.append('price', price);
       formData.append('category', 'ramen');
       formData.append('image', image);
+      
+      // Add special ramen fields
+      formData.append('isSpecialRamen', isSpecialRamen.toString());
+      if (priceForMaxPrice) {
+        formData.append('priceForMaxPrice', priceForMaxPrice);
+      }
+      if (imageForMaxPrice) {
+        formData.append('imageForMaxPrice', imageForMaxPrice);
+      }
 
       // Call server action
       const result = await addMenuItemAction(formData);
@@ -467,6 +518,202 @@ export default function AddRamenDashboard() {
                 color: "#1D1A1A",
               }}
             />
+          </div>
+
+          {/* Special Ramen Toggle */}
+          <div className="mb-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isSpecialRamen}
+                onChange={(e) => setIsSpecialRamen(e.target.checked)}
+                disabled={loading}
+                className="w-5 h-5 cursor-pointer"
+              />
+              <span
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "clamp(16px, 3vw, 18px)",
+                  color: "#1D1A1A",
+                }}
+              >
+                Mark as Special Ramen (Featured)
+              </span>
+            </label>
+            <p
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "clamp(12px, 2.5vw, 14px)",
+                color: "#999",
+                marginTop: "8px",
+                marginLeft: "32px",
+              }}
+            >
+              Special ramen will be highlighted on the menu
+            </p>
+          </div>
+
+          {/* Maximum Price Variant Section */}
+          <div className="mb-6 p-6 border-2 border-dashed border-[#EAEAEA] rounded-lg">
+            <h3
+              className="mb-4"
+              style={{
+                fontFamily: "Poppins, sans-serif",
+                fontSize: "clamp(16px, 3vw, 18px)",
+                fontWeight: "600",
+                color: "#1D1A1A",
+              }}
+            >
+              Maximum Price Variant (Optional)
+            </h3>
+            <p
+              className="mb-4"
+              style={{
+                fontFamily: "Helvetica Neue, sans-serif",
+                fontSize: "clamp(12px, 2.5vw, 14px)",
+                color: "#666",
+              }}
+            >
+              Add details for a larger size or premium variant with a higher price
+            </p>
+
+            {/* Max Price */}
+            <div className="mb-4">
+              <label
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "clamp(16px, 3vw, 18px)",
+                  color: "#1D1A1A",
+                  display: "block",
+                  marginBottom: "12px",
+                }}
+              >
+                Maximum Price (Rp)
+              </label>
+              <input
+                type="number"
+                value={priceForMaxPrice}
+                onChange={(e) => setPriceForMaxPrice(e.target.value)}
+                placeholder="Insert maximum price (optional)"
+                disabled={loading}
+                min="0"
+                step="1000"
+                className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
+                style={{
+                  fontFamily: "Helvetica Neue, sans-serif",
+                  fontSize: "clamp(16px, 3vw, 18px)",
+                  color: "#1D1A1A",
+                }}
+              />
+            </div>
+
+            {/* Max Price Image Upload */}
+            {priceForMaxPrice && (
+              <div>
+                <label
+                  style={{
+                    fontFamily: "Helvetica Neue, sans-serif",
+                    fontSize: "clamp(16px, 3vw, 18px)",
+                    color: "#1D1A1A",
+                    display: "block",
+                    marginBottom: "12px",
+                  }}
+                >
+                  Image for Maximum Price <span className="text-red-500">*</span>
+                </label>
+                <div
+                  onDragOver={(e) => handleDragOver(e, true)}
+                  onDragLeave={(e) => handleDragLeave(e, true)}
+                  onDrop={(e) => handleDrop(e, true)}
+                  className={`border-2 border-dashed rounded-lg flex flex-col items-center justify-center ${
+                    isDraggingMaxPrice
+                      ? "border-[#4A90E2] bg-blue-50"
+                      : "border-[#EAEAEA] bg-white"
+                  } ${loading ? "opacity-50 pointer-events-none" : ""}`}
+                  style={{
+                    height: "clamp(200px, 40vw, 280px)",
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  {imageForMaxPricePreview ? (
+                    <div className="relative w-full h-full">
+                      <img
+                        src={imageForMaxPricePreview}
+                        alt="Max Price Preview"
+                        className="w-full h-full object-contain p-4"
+                      />
+                      {!loading && (
+                        <button
+                          onClick={() => {
+                            setImageForMaxPrice(null);
+                            setImageForMaxPricePreview(null);
+                          }}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-red-600 transition-colors"
+                        >
+                          ×
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      <Image
+                        src="/dashboard/upload.svg"
+                        alt="Upload"
+                        width={50}
+                        height={50}
+                        className="mb-3"
+                      />
+                      <p
+                        className="text-center px-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "clamp(14px, 3vw, 16px)",
+                          color: "#1D1A1A",
+                          fontWeight: "500",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        Choose a file or drag & drop it here
+                      </p>
+                      <p
+                        className="text-center px-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "clamp(12px, 2.5vw, 14px)",
+                          color: "#999",
+                          marginBottom: "16px",
+                        }}
+                      >
+                        JPEG, JPG, and PNG formats, up to 10MB
+                      </p>
+                      <input
+                        type="file"
+                        id="fileInputMaxPrice"
+                        accept="image/jpeg,image/jpg,image/png"
+                        onChange={(e) => handleFileInput(e, true)}
+                        disabled={loading}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="fileInputMaxPrice"
+                        className={`px-6 py-2 border border-[#EAEAEA] rounded transition-colors ${
+                          loading
+                            ? "cursor-not-allowed opacity-50"
+                            : "cursor-pointer hover:bg-gray-50"
+                        }`}
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "clamp(14px, 2.5vw, 16px)",
+                          color: "#1D1A1A",
+                        }}
+                      >
+                        Browse File
+                      </label>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Submit Button */}

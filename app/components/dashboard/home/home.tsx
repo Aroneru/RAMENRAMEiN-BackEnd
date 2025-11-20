@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { getHeroSectionAction, updateHeroSectionAction, deleteHeroSectionAction } from "./actions";
+import { getSettingAction, updateSettingAction } from "./settings-actions";
 
 export default function HomeDashboard() {
   const [heroImage, setHeroImage] = useState<File | null>(null);
@@ -15,10 +16,88 @@ export default function HomeDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [menuPopupEnabled, setMenuPopupEnabled] = useState(true);
+  const [loadingPopupSetting, setLoadingPopupSetting] = useState(false);
+  const [showPrice, setShowPrice] = useState(true);
+  const [loadingPriceSetting, setLoadingPriceSetting] = useState(false);
 
   useEffect(() => {
     loadHeroSection();
+    loadMenuPopupSetting();
+    loadShowPriceSetting();
   }, []);
+
+  const loadMenuPopupSetting = async () => {
+    try {
+      const result = await getSettingAction('menu_popup_enabled');
+      if (result.data) {
+        setMenuPopupEnabled(result.data.value === 'true');
+      }
+    } catch (err: any) {
+      console.error("Error loading menu popup setting:", err);
+    }
+  };
+
+  const loadShowPriceSetting = async () => {
+    try {
+      const result = await getSettingAction('menu_show_price');
+      if (result.data) {
+        setShowPrice(result.data.value === 'true');
+      }
+    } catch (err: any) {
+      console.error("Error loading show price setting:", err);
+    }
+  };
+
+  const handleMenuPopupToggle = async () => {
+    setLoadingPopupSetting(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const newValue = !menuPopupEnabled;
+      const result = await updateSettingAction('menu_popup_enabled', newValue.toString());
+
+      if (result.error) {
+        setError(result.error);
+        setLoadingPopupSetting(false);
+        return;
+      }
+
+      setMenuPopupEnabled(newValue);
+      setSuccess(`Menu popup ${newValue ? 'enabled' : 'disabled'} successfully!`);
+      setLoadingPopupSetting(false);
+    } catch (err: any) {
+      console.error("Error updating menu popup setting:", err);
+      setError(err.message || "Failed to update menu popup setting");
+      setLoadingPopupSetting(false);
+    }
+  };
+
+  const handleShowPriceToggle = async () => {
+    setLoadingPriceSetting(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const newValue = !showPrice;
+      const result = await updateSettingAction('menu_show_price', newValue.toString());
+
+      if (result.error) {
+        setError(result.error);
+        setLoadingPriceSetting(false);
+        return;
+      }
+
+      setShowPrice(newValue);
+      setSuccess(`Menu prices ${newValue ? 'shown' : 'hidden'} successfully!`);
+      setLoadingPriceSetting(false);
+    } catch (err: any) {
+      console.error("Error updating show price setting:", err);
+      setError(err.message || "Failed to update show price setting");
+      setLoadingPriceSetting(false);
+    }
+  };
 
   const loadHeroSection = async () => {
     try {
@@ -266,6 +345,79 @@ export default function HomeDashboard() {
           <span>Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
           <Link href="/dashboard-home" className="hover:underline">Home</Link>
+        </div>
+      </div>
+
+      {/* Menu Settings Toggles */}
+      <div className="px-4 md:px-[45px] pb-8">
+        <div className="bg-white rounded-lg shadow-sm border border-[#EAEAEA] divide-y divide-gray-200">
+          {/* Menu Popup Toggle */}
+          <div className="p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-1" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
+                  Menu Popup
+                </h3>
+                <p className="text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
+                  Enable or disable popup details when clicking menu items on the company profile menu page
+                </p>
+              </div>
+              <button
+                onClick={handleMenuPopupToggle}
+                disabled={loadingPopupSetting}
+                className={`relative inline-flex h-10 w-20 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
+                  menuPopupEnabled ? 'bg-[#4A90E2]' : 'bg-gray-300'
+                } ${loadingPopupSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              >
+                <span
+                  className={`inline-block h-8 w-8 transform rounded-full bg-white shadow-lg transition-transform ${
+                    menuPopupEnabled ? 'translate-x-11' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                menuPopupEnabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+              }`} style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                {menuPopupEnabled ? 'Enabled' : 'Disabled'}
+              </span>
+            </div>
+          </div>
+
+          {/* Show Price Toggle */}
+          <div className="p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-1" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
+                  Show Menu Prices
+                </h3>
+                <p className="text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
+                  Display or hide prices for menu items on the company profile menu page
+                </p>
+              </div>
+              <button
+                onClick={handleShowPriceToggle}
+                disabled={loadingPriceSetting}
+                className={`relative inline-flex h-10 w-20 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
+                  showPrice ? 'bg-[#4A90E2]' : 'bg-gray-300'
+                } ${loadingPriceSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+              >
+                <span
+                  className={`inline-block h-8 w-8 transform rounded-full bg-white shadow-lg transition-transform ${
+                    showPrice ? 'translate-x-11' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+            <div className="mt-3 flex items-center gap-2">
+              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                showPrice ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+              }`} style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                {showPrice ? 'Visible' : 'Hidden'}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 

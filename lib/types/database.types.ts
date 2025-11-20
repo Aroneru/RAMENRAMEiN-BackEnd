@@ -27,6 +27,9 @@ export interface Menu extends BaseTimestamps, BaseUserTracking {
   price: number | null;
   image_url: string | null;
   is_available: boolean;
+  is_special_ramen?: boolean;
+  price_for_max_price?: number | null;
+  image_for_max_price?: string | null;
 }
 
 export interface MenuInsert extends Partial<BaseTimestamps>, Partial<BaseUserTracking> {
@@ -37,6 +40,9 @@ export interface MenuInsert extends Partial<BaseTimestamps>, Partial<BaseUserTra
   price?: number | null;
   image_url?: string | null;
   is_available?: boolean;
+  is_special_ramen?: boolean;
+  price_for_max_price?: number | null;
+  image_for_max_price?: string | null;
 }
 
 export interface MenuUpdate extends Partial<MenuInsert> {}

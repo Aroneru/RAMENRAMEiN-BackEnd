@@ -78,17 +78,29 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
   const imageFile = formData.get('image') as File | null;
   const category = formData.get('category') as string;
   const isAvailable = formData.get('isAvailable') === 'true';
+  
+  // Special ramen fields
+  const isSpecialRamen = formData.get('isSpecialRamen') === 'true';
+  const priceForMaxPrice = formData.get('priceForMaxPrice') as string;
+  const imageForMaxPriceFile = formData.get('imageForMaxPrice') as File | null;
+  const clearPriceForMaxPrice = formData.get('clearPriceForMaxPrice') === 'true';
+  const clearImageForMaxPrice = formData.get('clearImageForMaxPrice') === 'true';
 
   // Validation
   if (!name?.trim()) return { error: 'Name is required' };
   if (!description?.trim()) return { error: 'Description is required' };
   if (!price || isNaN(parseFloat(price))) return { error: 'Valid price is required' };
+  
+  // Validate max price if provided
+  if (priceForMaxPrice && parseFloat(priceForMaxPrice) < parseFloat(price)) {
+    return { error: 'Maximum price must be greater than or equal to base price' };
+  }
 
   try {
-    // Get current menu item to get old image URL
+    // Get current menu item to get old image URLs
     const { data: currentMenu, error: fetchError } = await supabase
       .from('menu')
-      .select('image_url')
+      .select('image_url, image_for_max_price')
       .eq('id', id)
       .single();
 
@@ -112,18 +124,65 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
       imageUrl = await uploadImage(imageFile, 'menu');
     }
 
+    // Handle max price image
+    let imageForMaxPriceUrl = currentMenu?.image_for_max_price || null;
+    
+    if (clearImageForMaxPrice) {
+      // Delete existing max price image if clearing
+      if (currentMenu?.image_for_max_price) {
+        try {
+          await deleteImage(currentMenu.image_for_max_price);
+        } catch (err) {
+          console.error('Error deleting old max price image:', err);
+        }
+      }
+      imageForMaxPriceUrl = null;
+    } else if (imageForMaxPriceFile && imageForMaxPriceFile.size > 0) {
+      // Delete old max price image if exists
+      if (currentMenu?.image_for_max_price) {
+        try {
+          await deleteImage(currentMenu.image_for_max_price);
+        } catch (err) {
+          console.error('Error deleting old max price image:', err);
+        }
+      }
+      // Upload new max price image
+      imageForMaxPriceUrl = await uploadImage(imageForMaxPriceFile, 'menu');
+    }
+
+    // Prepare update data
+    const updateData: any = {
+      name: name.trim(),
+      description: description.trim(),
+      price: parseFloat(price),
+      image_url: imageUrl,
+      category: category?.trim() || null,
+      is_available: isAvailable,
+      updated_by: user.id
+    };
+
+    // Add special ramen fields only if category is ramen
+    if (category === 'ramen') {
+      updateData.is_special_ramen = isSpecialRamen;
+      
+      if (clearPriceForMaxPrice) {
+        updateData.price_for_max_price = null;
+      } else if (priceForMaxPrice) {
+        updateData.price_for_max_price = parseFloat(priceForMaxPrice);
+      }
+      
+      updateData.image_for_max_price = imageForMaxPriceUrl;
+    } else {
+      // If category changed from ramen to something else, clear special fields
+      updateData.is_special_ramen = false;
+      updateData.price_for_max_price = null;
+      updateData.image_for_max_price = null;
+    }
+
     // Update menu item
     const { error: updateError } = await supabase
       .from('menu')
-      .update({
-        name: name.trim(),
-        description: description.trim(),
-        price: parseFloat(price),
-        image_url: imageUrl,
-        category: category?.trim() || null,
-        is_available: isAvailable,
-        updated_by: user.id
-      })
+      .update(updateData)
       .eq('id', id);
 
     if (updateError) {
@@ -166,21 +225,31 @@ export async function deleteMenuItemAction(id: string) {
   }
 
   try {
-    // Get menu item to get image URL
+    // Get menu item to get image URLs
     const { data: menu, error: fetchError } = await supabase
       .from('menu')
-      .select('image_url')
+      .select('image_url, image_for_max_price')
       .eq('id', id)
       .single();
 
     if (fetchError) throw new Error(fetchError.message);
 
-    // Delete image if exists
+    // Delete main image if exists
     if (menu?.image_url) {
       try {
         await deleteImage(menu.image_url);
       } catch (err) {
         console.error('Error deleting image:', err);
+        // Continue even if delete fails
+      }
+    }
+
+    // Delete max price image if exists
+    if (menu?.image_for_max_price) {
+      try {
+        await deleteImage(menu.image_for_max_price);
+      } catch (err) {
+        console.error('Error deleting max price image:', err);
         // Continue even if delete fails
       }
     }
