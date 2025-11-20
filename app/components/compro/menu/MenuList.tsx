@@ -96,7 +96,7 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
       setError(null);
     } catch (err: unknown) {
       console.error(`Error loading ${category} menu:`, err);
-      setError(err.message || `Failed to load ${category} menu`);
+      setError((err as Error).message || `Failed to load ${category} menu`);
     } finally {
       setLoading(false);
     }
