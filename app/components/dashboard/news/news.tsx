@@ -283,12 +283,12 @@ export default function NewsDashboard() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
+            className="bg-white rounded-lg shadow-xl animate-scale-in overflow-hidden w-full max-w-[400px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
@@ -480,7 +480,7 @@ export default function NewsDashboard() {
 
       {/* Navigator */}
       <div
-        className="px-4 md:px-[45px] pt-12 md:pt-[60px] mb-8 md:mb-[75px]"
+        className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
@@ -497,47 +497,38 @@ export default function NewsDashboard() {
       </div>
 
       {/* News Section */}
-      <div
-        className="px-4 md:px-[45px] pb-10"
-        style={{
-          paddingRight: "45px",
-          paddingBottom: "40px",
-        }}
-      >
-        {/* Section Header with Title and Add Button */}
-        <div
-          className="flex items-center justify-between"
-          style={{ marginBottom: "35px" }}
-        >
+      <div className="px-4 md:px-[45px] pb-10">
+        {/* Section Header with Title and Controls */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-[35px]">
           <h2
+            className="text-xl md:text-2xl"
             style={{
               fontFamily: "Poppins, sans-serif",
               fontWeight: "500",
-              fontSize: "24px",
               color: "#1D1A1A",
             }}
           >
             News
           </h2>
-          <div className="flex items-center gap-4">
-            {/* Sort Dropdown - Updated format */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            {/* Sort Dropdown */}
             <select
               value={sortOrder}
               onChange={(e) => {
                 setSortOrder(e.target.value as "asc" | "desc");
                 setCurrentPage(1);
               }}
-              className="border border-[#EAEAEA] rounded text-[#1D1A1A] bg-transparent appearance-none"
+              className="flex-1 sm:flex-none border border-[#EAEAEA] rounded text-[#1D1A1A] bg-transparent appearance-none"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "16px",
                 height: "40px",
-                minWidth: "180px",
+                minWidth: "140px",
                 paddingLeft: "12px",
                 paddingRight: "32px",
                 backgroundImage: `url('/dashboard/dropdown.svg')`,
                 backgroundRepeat: "no-repeat",
-                backgroundPosition: "right 15px center",
+                backgroundPosition: "right 12px center",
                 backgroundSize: "10px",
               }}
             >
@@ -545,9 +536,10 @@ export default function NewsDashboard() {
               <option value="asc">Oldest First</option>
             </select>
             
-            <Link href="/dashboard-news/add">
+            <Link href="/dashboard-news/add" className="shrink-0">
+              {/* Desktop Button */}
               <button
-                className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+                className="hidden md:block px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
                   fontSize: "18px",
@@ -556,6 +548,17 @@ export default function NewsDashboard() {
                 }}
               >
                 Add News
+              </button>
+              {/* Mobile Button - Plus Icon Only */}
+              <button
+                className="md:hidden flex items-center justify-center bg-[#4A90E2] text-white rounded-full hover:bg-[#357ABD] transition-colors"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  fontSize: "24px",
+                }}
+              >
+                +
               </button>
             </Link>
           </div>
@@ -569,19 +572,10 @@ export default function NewsDashboard() {
             </p>
           </div>
         )}
-        
-        {error && !showDeleteModal && (
-          <div className="text-center py-8">
-            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#E53E3E" }}>
-              Error: {error}
-            </p>
-          </div>
-        )}
 
-
-        {/* Table */}
-        {!loading && !error && (
-          <div className="rounded-lg overflow-hidden shadow-sm">
+        {/* Desktop Table - Hidden on mobile */}
+        {!loading && (
+          <div className="hidden md:block rounded-lg overflow-hidden shadow-sm">
             <table className="w-full border-collapse">
               <thead style={{ backgroundColor: "#E4E4E4" }}>
                 <tr>
@@ -781,7 +775,8 @@ export default function NewsDashboard() {
                           </Link>
                           <button 
                             onClick={() => handleDeleteClick(item.id, item.title)}
-                            className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                            disabled={deleting}
+                            className="p-2 hover:bg-[#FFCDCD] rounded transition-colors disabled:opacity-50"
                           >
                             <Image
                               src="/dashboard/delete.svg"
@@ -799,8 +794,52 @@ export default function NewsDashboard() {
             </table>
           </div>
         )}
+
+        {/* Mobile Card Layout */}
+        {!loading && (
+          <div className="md:hidden space-y-4">
+            {newsData.length === 0 ? (
+              <div className="text-center py-8 bg-white rounded-lg border border-[#EAEAEA]">
+                <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#666" }}>
+                  No news found. Click &quot;+&quot; to create one.
+                </p>
+              </div>
+            ) : (
+              getPaginatedItems().map((item, idx) => (
+                <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-[#EAEAEA]">
+                  <div className="flex gap-4">
+                    <div className="w-20 h-20 bg-gray-200 rounded overflow-hidden shrink-0">
+                      {item.image_url ? (
+                        <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-semibold text-[#1D1A1A] text-base mb-1 truncate" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>{item.title}</h3>
+                      <p className="text-[#1D1A1A] text-sm mb-2 line-clamp-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>{truncateText(item.description || item.content, 60)}</p>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="px-2 py-1 rounded-full text-xs font-medium" style={{ fontFamily: "Helvetica Neue, sans-serif", backgroundColor: item.is_published ? "#D4EDDA" : "#F8D7DA", color: item.is_published ? "#155724" : "#721C24" }}>
+                          {item.is_published ? "Published" : "Draft"}
+                        </span>
+                        <span className="text-xs text-gray-500" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                          {new Date(item.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <Link href={`/dashboard-news/edit/${item.id}`} className="flex-1 px-3 py-2 bg-[#F59E0B] text-white rounded hover:bg-[#D97706] text-center text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Edit</Link>
+                    <button onClick={() => handleDeleteClick(item.id, item.title)} disabled={deleting} className="flex-1 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm disabled:opacity-50" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Delete</button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
         {/* Pagination */}
-        {!loading && !error && newsData.length > 0 && renderPagination()}
+        {!loading && newsData.length > 0 && renderPagination()}
       </div>
 
       {/* Add CSS for animations */}

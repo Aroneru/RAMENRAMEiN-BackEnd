@@ -293,16 +293,16 @@ export default function MenuDashboard() {
   };
 
   return (
-    <div className="min-h-screen lg:ml-[256px] ml-0" style={{ backgroundColor: "#FFFDF7" }}>
+    <div className="min-h-screen lg:ml-64 ml-0" style={{ backgroundColor: "#FFFDF7" }}>
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
+            className="bg-white rounded-lg shadow-xl animate-scale-in overflow-hidden w-full max-w-[400px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
@@ -494,7 +494,7 @@ export default function MenuDashboard() {
 
       {/* Navigator */}
       <div
-        className="px-4 md:px-[45px] pt-12 md:pt-[60px] mb-8 md:mb-[75px]"
+        className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
@@ -523,7 +523,7 @@ export default function MenuDashboard() {
         {!loading && menuData.map((section, index) => (
           <div key={index} style={{ marginBottom: index < menuData.length - 1 ? "125px" : "0" }}>
             {/* Section Header with Title and Add Button */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-[35px]">
+            <div className="flex items-center justify-between gap-3 mb-6 md:mb-[35px]">
               <h2
                 className="text-xl md:text-2xl"
                 style={{
@@ -545,8 +545,9 @@ export default function MenuDashboard() {
                     : "/dashboard-menu/add-minuman"
                 }
               >
+                {/* Desktop Button */}
                 <button
-                  className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+                  className="hidden md:block px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
                   style={{
                     fontFamily: "Helvetica Neue, sans-serif",
                     fontSize: "18px",
@@ -555,6 +556,17 @@ export default function MenuDashboard() {
                   }}
                 >
                   Add {section.title}
+                </button>
+                {/* Mobile Button - Plus Icon Only */}
+                <button
+                  className="md:hidden flex items-center justify-center bg-[#4A90E2] text-white rounded-full hover:bg-[#357ABD] transition-colors"
+                  style={{
+                    width: "40px",
+                    height: "40px",
+                    fontSize: "24px",
+                  }}
+                >
+                  +
                 </button>
               </Link>
             </div>
@@ -764,7 +776,7 @@ export default function MenuDashboard() {
               {getPaginatedItems(section.items, section.title.toLowerCase()).map((item, idx) => (
                 <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-[#EAEAEA]">
                   <div className="flex gap-4">
-                    <div className="w-20 h-20 bg-gray-200 rounded overflow-hidden flex-shrink-0">
+                    <div className="w-20 h-20 bg-gray-200 rounded overflow-hidden shrink-0">
                       {item.image_url ? (
                         <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                       ) : (
@@ -782,7 +794,7 @@ export default function MenuDashboard() {
                     </div>
                   </div>
                   <div className="flex gap-2 mt-3">
-                    <Link href={section.title === "Ramen" ? `/dashboard-menu/edit-ramen/${item.id}` : section.title === "Topping" ? `/dashboard-menu/edit-topping/${item.id}` : section.title === "Nyemil" ? `/dashboard-menu/edit-nyemil/${item.id}` : `/dashboard-menu/edit-minuman/${item.id}`} className="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-center text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Edit</Link>
+                    <Link href={section.title === "Ramen" ? `/dashboard-menu/edit-ramen/${item.id}` : section.title === "Topping" ? `/dashboard-menu/edit-topping/${item.id}` : section.title === "Nyemil" ? `/dashboard-menu/edit-nyemil/${item.id}` : `/dashboard-menu/edit-minuman/${item.id}`} className="flex-1 px-3 py-2 bg-[#F59E0B] text-white rounded hover:bg-[#D97706] text-center text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Edit</Link>
                     <button onClick={() => handleDeleteClick(item.id, item.name)} className="flex-1 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>Delete</button>
                   </div>
                 </div>

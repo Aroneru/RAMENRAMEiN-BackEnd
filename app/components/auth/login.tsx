@@ -40,9 +40,9 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="flex h-screen">
-      {/* Left Side - Background */}
-      <div className="w-1/2 relative">
+    <div className="flex flex-col lg:flex-row h-screen">
+      {/* Left Side - Background (Hidden on mobile, shown on desktop) */}
+      <div className="hidden lg:block lg:w-1/2 relative">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/auth/bg_login.png')" }}
@@ -60,23 +60,34 @@ export default function LoginForm() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="w-1/2 flex items-center justify-center bg-[#f5f5f0]">
+      <div className="flex-1 flex items-center justify-center bg-[#f5f5f0] p-4 lg:p-8">
         <div className="w-full max-w-[524px]">
+          {/* Logo for mobile */}
+          <div className="flex justify-center mb-8 lg:hidden">
+            <Image
+              src="/auth/logohitam.png"
+              alt="RAMEIN Logo"
+              width={120}
+              height={120}
+              priority
+            />
+          </div>
+
           <h1
-            className="text-5xl font-bold text-black text-center"
-            style={{ fontFamily: "Poppins, sans-serif", marginBottom: "70px" }}
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-black text-center mb-8 lg:mb-[70px]"
+            style={{ fontFamily: "Poppins, sans-serif" }}
           >
             Sign in to your account
           </h1>
 
           {error && (
-            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg text-sm sm:text-base">
               {error}
             </div>
           )}
 
           <form onSubmit={handleLogin}>
-            <div className="relative" style={{ marginBottom: "12px" }}>
+            <div className="relative mb-3 sm:mb-4">
               <input
                 type="email"
                 placeholder="Enter your email"
@@ -84,10 +95,10 @@ export default function LoginForm() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={loading}
-                className="w-[524px] h-[70px] px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3] disabled:opacity-50"
+                className="w-full h-[60px] sm:h-[70px] px-10 sm:px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3] disabled:opacity-50 text-sm sm:text-base"
               />
               <svg
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -101,7 +112,7 @@ export default function LoginForm() {
               </svg>
             </div>
 
-            <div className="relative" style={{ marginBottom: "25px" }}>
+            <div className="relative mb-5 sm:mb-[25px]">
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
@@ -109,10 +120,10 @@ export default function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={loading}
-                className="w-[524px] h-[70px] px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3] disabled:opacity-50"
+                className="w-full h-[60px] sm:h-[70px] px-10 sm:px-12 border-2 border-black rounded-lg focus:outline-none focus:border-black text-black placeholder-[#B4B3B3] disabled:opacity-50 text-sm sm:text-base"
               />
               <svg
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
+                className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -129,7 +140,7 @@ export default function LoginForm() {
                 type="button"
                 aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
               >
                 {showPassword ? (
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -149,7 +160,7 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-black text-white py-3 sm:py-4 rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>

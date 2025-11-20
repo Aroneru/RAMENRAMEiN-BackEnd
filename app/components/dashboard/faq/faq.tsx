@@ -262,12 +262,12 @@ export default function FAQDashboard() {
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
+          className="fixed inset-0 z-60 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
+            className="bg-white rounded-lg shadow-xl animate-scale-in overflow-hidden w-full max-w-[400px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
@@ -459,7 +459,7 @@ export default function FAQDashboard() {
 
       {/* Navigator */}
       <div
-        className="px-4 md:px-[45px] pt-12 md:pt-[60px] mb-8 md:mb-[75px]"
+        className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
@@ -479,9 +479,7 @@ export default function FAQDashboard() {
       <div className="px-4 md:px-[45px] pb-10">
 
         {/* Section Header with Title and Add Button */}
-        <div
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6 md:mb-[35px]"
-        >
+        <div className="flex items-center justify-between gap-3 mb-6 md:mb-[35px]">
           <h2
             className="text-xl md:text-2xl"
             style={{
@@ -493,8 +491,9 @@ export default function FAQDashboard() {
             Frequently Asked Questions (FAQ)
           </h2>
           <Link href="/dashboard-faq/add">
+            {/* Desktop Button */}
             <button
-              className="px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
+              className="hidden md:block px-6 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
                 fontSize: "18px",
@@ -503,6 +502,17 @@ export default function FAQDashboard() {
               }}
             >
               Add FAQ
+            </button>
+            {/* Mobile Button - Plus Icon Only */}
+            <button
+              className="md:hidden flex items-center justify-center bg-[#4A90E2] text-white rounded-full hover:bg-[#357ABD] transition-colors"
+              style={{
+                width: "40px",
+                height: "40px",
+                fontSize: "24px",
+              }}
+            >
+              +
             </button>
           </Link>
         </div>
@@ -515,18 +525,10 @@ export default function FAQDashboard() {
             </p>
           </div>
         )}
-        
-        {error && !showDeleteModal && (
-          <div className="text-center py-8">
-            <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px", color: "#E53E3E" }}>
-              Error: {error}
-            </p>
-          </div>
-        )}
 
-        {/* Table */}
-        {!loading && !error && (
-          <div className="rounded-lg overflow-hidden shadow-sm">
+        {/* Desktop Table - Hidden on mobile */}
+        {!loading && (
+          <div className="hidden md:block rounded-lg overflow-hidden shadow-sm">
             <table className="w-full border-collapse">
               <thead style={{ backgroundColor: "#E4E4E4" }}>
                 <tr>
@@ -600,101 +602,158 @@ export default function FAQDashboard() {
                   </tr>
                 ) : (
                   getPaginatedItems().map((item, idx) => (
-                <tr
-                  key={item.id}
-                  style={{
-                    backgroundColor: "transparent",
-                    borderBottom:
-                      idx < getPaginatedItems().length - 1
-                        ? "1px solid #EAEAEA"
-                        : "none",
-                  }}
-                >
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "25px",
-                    }}
-                  >
-                    {(currentPage - 1) * itemsPerPage + idx + 1}
-                  </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "40px",
-                    }}
-                  >
-                    {item.question}
-                  </td>
-                  <td
-                    className="py-4"
-                    style={{
-                      fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
-                      color: "#1D1A1A",
-                      paddingLeft: "40px",
-                    }}
-                  >
-                    {truncateText(item.answer)}
-                  </td>
-                  <td className="py-4" style={{ paddingLeft: "20px" }}>
-                    <div className="flex justify-center">
-                      <span
-                        className="px-3 py-1 rounded-full text-sm font-medium"
+                    <tr
+                      key={item.id}
+                      style={{
+                        backgroundColor: "transparent",
+                        borderBottom:
+                          idx < getPaginatedItems().length - 1
+                            ? "1px solid #EAEAEA"
+                            : "none",
+                      }}
+                    >
+                      <td
+                        className="py-4"
                         style={{
                           fontFamily: "Helvetica Neue, sans-serif",
-                          fontSize: "14px",
-                          backgroundColor: item.is_active ? "#D4EDDA" : "#F8D7DA",
-                          color: item.is_active ? "#155724" : "#721C24",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "25px",
                         }}
                       >
-                        {item.is_active ? "Active" : "Inactive"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-4" style={{ paddingRight: "25px" }}>
-                    <div
-                      className="flex items-center justify-center gap-3"
-                      style={{ width: "150px", margin: "0 auto" }}
-                    >
-                      <Link href={`/dashboard-faq/edit/${item.id}`}>
-                        <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
-                          <Image
-                            src="/dashboard/edit.svg"
-                            alt="Edit"
-                            width={28}
-                            height={28}
-                          />
-                        </button>
-                      </Link>
-                      <button 
-                        onClick={() => handleDeleteClick(item.id)}
-                        className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                        {(currentPage - 1) * itemsPerPage + idx + 1}
+                      </td>
+                      <td
+                        className="py-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "40px",
+                        }}
                       >
-                        <Image
-                          src="/dashboard/delete.svg"
-                          alt="Delete"
-                          width={26}
-                          height={26}
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              )))}
+                        {item.question}
+                      </td>
+                      <td
+                        className="py-4"
+                        style={{
+                          fontFamily: "Helvetica Neue, sans-serif",
+                          fontSize: "18px",
+                          color: "#1D1A1A",
+                          paddingLeft: "40px",
+                        }}
+                      >
+                        {truncateText(item.answer)}
+                      </td>
+                      <td className="py-4" style={{ paddingLeft: "20px" }}>
+                        <div className="flex justify-center">
+                          <span
+                            className="px-3 py-1 rounded-full text-sm font-medium"
+                            style={{
+                              fontFamily: "Helvetica Neue, sans-serif",
+                              fontSize: "14px",
+                              backgroundColor: item.is_active ? "#D4EDDA" : "#F8D7DA",
+                              color: item.is_active ? "#155724" : "#721C24",
+                            }}
+                          >
+                            {item.is_active ? "Active" : "Inactive"}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-4" style={{ paddingRight: "25px" }}>
+                        <div
+                          className="flex items-center justify-center gap-3"
+                          style={{ width: "150px", margin: "0 auto" }}
+                        >
+                          <Link href={`/dashboard-faq/edit/${item.id}`}>
+                            <button className="p-2 hover:bg-[#FFECCD] rounded transition-colors">
+                              <Image
+                                src="/dashboard/edit.svg"
+                                alt="Edit"
+                                width={28}
+                                height={28}
+                              />
+                            </button>
+                          </Link>
+                          <button 
+                            onClick={() => handleDeleteClick(item.id)}
+                            className="p-2 hover:bg-[#FFCDCD] rounded transition-colors"
+                            disabled={deleting}
+                          >
+                            <Image
+                              src="/dashboard/delete.svg"
+                              alt="Delete"
+                              width={26}
+                              height={26}
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
         )}
 
+        {/* Mobile Card Layout */}
+        {!loading && (
+          <div className="md:hidden space-y-4">
+            {faqData.length === 0 ? (
+              <div className="text-center py-8 bg-white rounded-lg border border-[#EAEAEA]">
+                <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#666" }}>
+                  No FAQ found. Click "+" to create one.
+                </p>
+              </div>
+            ) : (
+              getPaginatedItems().map((item, idx) => (
+                <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-[#EAEAEA]">
+                  <div className="mb-3">
+                    <h3 className="font-semibold text-[#1D1A1A] text-base mb-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      {item.question}
+                    </h3>
+                    <p className="text-[#1D1A1A] text-sm mb-2 line-clamp-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      {truncateText(item.answer, 80)}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span 
+                        className="px-2 py-1 rounded-full text-xs font-medium" 
+                        style={{ 
+                          fontFamily: "Helvetica Neue, sans-serif", 
+                          backgroundColor: item.is_active ? "#D4EDDA" : "#F8D7DA", 
+                          color: item.is_active ? "#155724" : "#721C24" 
+                        }}
+                      >
+                        {item.is_active ? "Active" : "Inactive"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Link 
+                      href={`/dashboard-faq/edit/${item.id}`} 
+                      className="flex-1 px-3 py-2 bg-[#F59E0B] text-white rounded hover:bg-[#D97706] text-center text-sm" 
+                      style={{ fontFamily: "Helvetica Neue, sans-serif" }}
+                    >
+                      Edit
+                    </Link>
+                    <button 
+                      onClick={() => handleDeleteClick(item.id)} 
+                      disabled={deleting}
+                      className="flex-1 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 text-sm disabled:opacity-50" 
+                      style={{ fontFamily: "Helvetica Neue, sans-serif" }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
         {/* Pagination */}
-        {!loading && !error && faqData.length > 0 && renderPagination()}
+        {!loading && faqData.length > 0 && renderPagination()}
       </div>
 
       {/* Add CSS for animations */}
