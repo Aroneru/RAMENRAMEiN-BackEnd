@@ -8,8 +8,8 @@
 }
 
 .heroVideo {
-  height: auto; /* maintain aspect ratio on small screens (no crop) */
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 }
 
@@ -43,7 +43,23 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: auto; /* follow video height on mobile */
+    /* Maintain landscape aspect ratio on mobile */
+    height: auto;
+    aspect-ratio: 16 / 9; /* or adjust to your preferred ratio */
+    min-height: 250px; /* minimum height for very small screens */
+  }
+
+  .heroVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* show entire video without cropping */
+  }
+
+  .heroImage {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
   }
   
   .unmuteButton {
