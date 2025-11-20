@@ -1,13 +1,12 @@
 .accessSection {
   width: 100%;
-  padding: 4rem 2rem;
-  background-color: #0c0c0c; 
+  padding: 150px 2rem;
+  background-color: #0c0c0c;
   color: white;
   background-image: url('/images/mural.png');
   background-size: cover;
   background-position: center;
   background-blend-mode: overlay;
-  padding: 150px;
   font-family: 'Osnova Pro';
 }
 
@@ -21,121 +20,128 @@
 
 .cardContainer {
   display: flex;
-  justify-content: center;
-  align-items: stretch; 
-  gap: 6rem;
+  gap: 2rem;
   flex-wrap: wrap;
+  justify-content: center;
+}
+
+.cardWrapper {
+  position: relative; 
+  display: flex;
+  justify-content: center;
+  margin-top: 6rem;
 }
 
 .card {
-  flex: 1; 
-  min-width: 300px; 
-  max-width: 600px; 
-  display: flex;
-  flex-direction: column;
-  align-items: center; 
-  text-align: center;
-  background-image: url('/images/home/torii-gate.svg'); 
-  background-size: 100% auto; 
-  background-position: center top;
-  background-repeat: no-repeat;
-  padding: 2rem 3rem;
-  min-height: 480px; 
-  border-radius: 8px;
   position: relative;
+  z-index: 2;   
+  background-color: #9a2020;
+  padding: 2rem;
+  padding-top: 6rem; 
+  border-radius: 8px;
+  min-width: 260px;
+  max-width: 360px;
+  min-height: 460px;
+  text-align: center;
+}
+
+.torii {
+  position: absolute;
+  top: -90px; 
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  z-index: 1; 
+  pointer-events: none;
 }
 
 .cardTitle {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: -1.5rem;
-  color: white; 
-  margin-top: 120px;
-  width: 100%;
-  padding: 0 1rem;
-  word-wrap: break-word;
+  color: white;
+  margin-bottom: -0.5rem;
 }
 
 .cardSubtitle {
   font-size: 0.9rem;
   font-style: italic;
-  margin-bottom: 1rem;
   color: #f0f0f0;
   opacity: 0.9;
+  margin-bottom: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.cardButton {
+  display: inline-block;
+  text-align: center;
   width: 100%;
-  padding: 0 1rem;
+  max-width: 200px;
+
+  padding: 0.6rem 1.2rem;
+  margin: 1rem auto 2rem auto;
+
+  background-color: #f0f0f0;
+  color: #9a2020;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cardButton:hover {
+  background-color: #ffffff;
+  transform: scale(1.05);
 }
 
 .cardDescription {
   font-size: 0.9rem;
   line-height: 1.6;
   color: #f0f0f0;
-  width: 100%;
-  padding: 0 1rem;
-  word-wrap: break-word;
 }
 
-.cardButton {
-  display: inline-block;
-  padding: 0.6rem 1.2rem;
-  margin-top: -0.5rem;
-  margin-bottom: 1.5rem;
-  background-color: #f0f0f0;
-  color: #9a2020;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
-  font-family: 'Osnova Pro', sans-serif;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.95rem;
-  white-space: nowrap;
-}
 
-/* Efek saat kursor mouse di atas tombol */
-.cardButton:hover {
-  background-color: #ffffff;
-  transform: scale(1.05);
-}
+/* Torii responsif */
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .accessSection {
-    padding: 3rem 1rem;
-  }
-
-  .mainTitle {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-  }
-
-  .cardContainer {
-    gap: 2rem;
-    flex-direction: column;
+@media (max-width: 768px) { 
+  .torii {
+    width: 80%;
+    top: -100px; 
   }
 
   .card {
-    max-width: 100%;
-    min-height: 400px;
-    padding: 1.5rem;
+    padding-top: 90px; 
+  }
+}
+
+@media (max-width: 480px) { 
+  .torii {
+    width: 85%;
+    top: -100px;
   }
 
-  .cardTitle {
-    font-size: 1.25rem;
-    margin-top: 120px;
+  .card {
+    padding-top: 80px; 
+    min-width: 260px;
   }
 
-  .cardSubtitle {
-    font-size: 0.8rem;
+  .cardWrapper {
+    margin-top: 5rem; 
+  }
+}
+
+@media (max-width: 370px) { 
+  .torii {
+    width: 82%;
+    top: -80px;
   }
 
-  .cardDescription {
-    font-size: 0.85rem;
+  .card {
+    padding-top: 80px; 
+    min-width: 260px;
   }
 
-  .cardButton {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+  .cardWrapper {
+    margin-top: 5rem; 
   }
 }
