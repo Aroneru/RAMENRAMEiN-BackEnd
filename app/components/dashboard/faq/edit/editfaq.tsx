@@ -148,8 +148,8 @@ export default function EditFaqDashboard({ id }: { id: string }) {
   if (loadingData) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
+        className="min-h-screen lg:ml-64 ml-0 flex items-center justify-center"
+        style={{ backgroundColor: "#FFFDF7" }}
       >
         <div className="text-xl">Loading FAQ data...</div>
       </div>
@@ -158,18 +158,18 @@ export default function EditFaqDashboard({ id }: { id: string }) {
 
   return (
     <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
+      className="min-h-screen lg:ml-64 ml-0"
+      style={{ backgroundColor: "#FFFDF7" }}
     >
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
         <div
-          className="fixed inset-0 z-50 md:flex md:items-center md:justify-center"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
           style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
           onClick={handleDeleteCancel}
         >
           <div
-            className="bg-white h-full md:h-auto md:rounded-lg shadow-xl animate-scale-in overflow-y-auto md:max-w-[500px] w-full p-6 md:p-8"
+            className="bg-white rounded-lg shadow-xl animate-scale-in overflow-hidden w-full max-w-[400px] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Icon */}
@@ -361,44 +361,33 @@ export default function EditFaqDashboard({ id }: { id: string }) {
 
       {/* Navigator */}
       <div
+        className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
-          fontSize: "24px",
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingTop: "60px",
-          marginBottom: "75px",
+          fontSize: "clamp(18px, 4vw, 24px)",
         }}
       >
-        <div className="flex items-center gap-2 text-[#1D1A1A]">
-          <span>Website Adjustment</span>
+        <div className="flex flex-wrap items-center gap-2 text-[#1D1A1A]">
+          <span className="whitespace-nowrap">Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
-          <Link href="/dashboard-faq" className="hover:underline">
+          <Link href="/dashboard-faq" className="hover:underline whitespace-nowrap">
             FAQ
           </Link>
           <span className="text-[#1D1A1A]">/</span>
-          <span>Edit FAQ</span>
+          <span className="whitespace-nowrap">Edit FAQ</span>
         </div>
       </div>
 
       {/* Edit FAQ Form - Centered */}
-      <div
-        style={{
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingBottom: "40px",
-        }}
-      >
+      <div className="px-4 md:px-[45px] pb-10">
         {/* Section Title - Centered */}
         <h2
-          className="text-center"
+          className="text-center text-xl md:text-2xl mb-6 md:mb-[35px]"
           style={{
             fontFamily: "Poppins, sans-serif",
             fontWeight: "500",
-            fontSize: "24px",
             color: "#1D1A1A",
-            marginBottom: "35px",
           }}
         >
           Edit Frequently Asked Question
@@ -411,7 +400,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -428,7 +417,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             />
@@ -439,7 +428,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -456,7 +445,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 minHeight: "150px",
               }}
@@ -468,7 +457,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -485,7 +474,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             />
@@ -496,7 +485,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -513,14 +502,14 @@ export default function EditFaqDashboard({ id }: { id: string }) {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             />
             <p
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "14px",
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 color: "#999",
                 marginTop: "8px",
               }}
@@ -534,7 +523,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -554,7 +543,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
                 <span
                   style={{
                     fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
+                    fontSize: "clamp(16px, 3vw, 18px)",
                     color: "#1D1A1A",
                   }}
                 >
@@ -572,7 +561,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
                 <span
                   style={{
                     fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
+                    fontSize: "clamp(16px, 3vw, 18px)",
                     color: "#1D1A1A",
                   }}
                 >
@@ -583,7 +572,7 @@ export default function EditFaqDashboard({ id }: { id: string }) {
             <p
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "14px",
+                fontSize: "clamp(12px, 2.5vw, 14px)",
                 color: "#999",
                 marginTop: "8px",
               }}
@@ -593,28 +582,28 @@ export default function EditFaqDashboard({ id }: { id: string }) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex justify-between mt-8 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between mt-8 gap-3 sm:gap-4">
             <button
               onClick={handleDeleteClick}
               disabled={loading || deleting}
-              className="px-8 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-8 bg-red-500 text-white rounded hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed order-3 sm:order-1"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 height: "45px",
                 minWidth: "150px",
               }}
             >
               Delete
             </button>
-            <div className="flex gap-4">
-              <Link href="/dashboard-faq">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 order-1 sm:order-2">
+              <Link href="/dashboard-faq" className="w-full sm:w-auto">
                 <button
                   disabled={loading || deleting}
-                  className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     fontFamily: "Helvetica Neue, sans-serif",
-                    fontSize: "18px",
+                    fontSize: "clamp(16px, 3vw, 18px)",
                     height: "45px",
                     minWidth: "150px",
                   }}
@@ -625,10 +614,10 @@ export default function EditFaqDashboard({ id }: { id: string }) {
               <button
                 onClick={handleSubmit}
                 disabled={loading || deleting}
-                className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
-                  fontSize: "18px",
+                  fontSize: "clamp(16px, 3vw, 18px)",
                   height: "45px",
                   minWidth: "150px",
                 }}

@@ -100,10 +100,10 @@ export default function AddRamenDashboard() {
       formData.append('name', name.trim());
       formData.append('description', description.trim());
       formData.append('price', price);
-      formData.append('category', 'ramen'); // TAMBAH INI - Line 103
+      formData.append('category', 'ramen');
       formData.append('image', image);
 
-      // Call server action - HAPUS parameter 'ramen'
+      // Call server action
       const result = await addMenuItemAction(formData);
 
       if (result.error) {
@@ -129,8 +129,8 @@ export default function AddRamenDashboard() {
 
   return (
     <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
+      className="min-h-screen lg:ml-64 ml-0"
+      style={{ backgroundColor: "#FFFDF7" }}
     >
       {/* Toast Error Notification */}
       {error && (
@@ -242,14 +242,11 @@ export default function AddRamenDashboard() {
 
       {/* Navigator */}
       <div
+        className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
-          fontSize: "24px",
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingTop: "60px",
-          marginBottom: "75px",
+          fontSize: "clamp(18px, 4vw, 24px)",
         }}
       >
         <div className="flex items-center gap-2 text-[#1D1A1A]">
@@ -264,22 +261,14 @@ export default function AddRamenDashboard() {
       </div>
 
       {/* Add Ramen Form - Centered */}
-      <div
-        style={{
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingBottom: "40px",
-        }}
-      >
+      <div className="px-4 md:px-[45px] pb-10">
         {/* Section Title - Centered */}
         <h2
-          className="text-center"
+          className="text-center text-xl md:text-2xl mb-6 md:mb-[35px]"
           style={{
             fontFamily: "Poppins, sans-serif",
             fontWeight: "500",
-            fontSize: "24px",
             color: "#1D1A1A",
-            marginBottom: "35px",
           }}
         >
           Add Ramen Menu
@@ -292,7 +281,7 @@ export default function AddRamenDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -309,7 +298,7 @@ export default function AddRamenDashboard() {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             />
@@ -320,7 +309,7 @@ export default function AddRamenDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -338,7 +327,7 @@ export default function AddRamenDashboard() {
                   : "border-[#EAEAEA] bg-white"
               } ${loading ? "opacity-50 pointer-events-none" : ""}`}
               style={{
-                height: "330px",
+                height: "clamp(250px, 50vw, 330px)",
                 transition: "all 0.3s ease",
               }}
             >
@@ -371,9 +360,10 @@ export default function AddRamenDashboard() {
                     className="mb-4"
                   />
                   <p
+                    className="text-center px-4"
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
+                      fontSize: "clamp(14px, 3vw, 18px)",
                       color: "#1D1A1A",
                       fontWeight: "500",
                       marginBottom: "8px",
@@ -382,9 +372,10 @@ export default function AddRamenDashboard() {
                     Choose a file or drag & drop it here
                   </p>
                   <p
+                    className="text-center px-4"
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "14px",
+                      fontSize: "clamp(12px, 2.5vw, 14px)",
                       color: "#999",
                       marginBottom: "20px",
                     }}
@@ -408,7 +399,7 @@ export default function AddRamenDashboard() {
                     }`}
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "16px",
+                      fontSize: "clamp(14px, 2.5vw, 16px)",
                       color: "#1D1A1A",
                     }}
                   >
@@ -424,7 +415,7 @@ export default function AddRamenDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -441,7 +432,7 @@ export default function AddRamenDashboard() {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 minHeight: "150px",
               }}
@@ -453,7 +444,7 @@ export default function AddRamenDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -472,21 +463,21 @@ export default function AddRamenDashboard() {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             />
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end mt-8 gap-4">
-            <Link href="/dashboard-menu">
+          <div className="flex flex-col sm:flex-row justify-end mt-8 gap-3 sm:gap-4">
+            <Link href="/dashboard-menu" className="w-full sm:w-auto">
               <button
                 disabled={loading}
-                className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
-                  fontSize: "18px",
+                  fontSize: "clamp(16px, 3vw, 18px)",
                   height: "45px",
                   minWidth: "150px",
                 }}
@@ -497,10 +488,10 @@ export default function AddRamenDashboard() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 height: "45px",
                 minWidth: "150px",
               }}

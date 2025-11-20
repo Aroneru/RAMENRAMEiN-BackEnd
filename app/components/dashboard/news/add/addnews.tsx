@@ -153,8 +153,8 @@ export default function AddNewsDashboard() {
 
   return (
     <div
-      className="min-h-screen"
-      style={{ backgroundColor: "#FFFDF7", marginLeft: "256px" }}
+      className="min-h-screen lg:ml-64 ml-0"
+      style={{ backgroundColor: "#FFFDF7" }}
     >
       {/* Toast Error Notification */}
       {error && (
@@ -266,43 +266,32 @@ export default function AddNewsDashboard() {
 
       {/* Navigator */}
       <div
+        className="px-4 md:px-[45px] pt-20 md:pt-[60px] mb-8 md:mb-[75px]"
         style={{
           fontFamily: "Poppins, sans-serif",
           fontWeight: "700",
-          fontSize: "24px",
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingTop: "60px",
-          marginBottom: "75px",
+          fontSize: "clamp(18px, 4vw, 24px)",
         }}
       >
-        <div className="flex items-center gap-2 text-[#1D1A1A]">
-          <span>Website Adjustment</span>
+        <div className="flex flex-wrap items-center gap-2 text-[#1D1A1A]">
+          <span className="whitespace-nowrap">Website Adjustment</span>
           <span className="text-[#1D1A1A]">/</span>
-          <Link href="/dashboard-news" className="hover:underline">
+          <Link href="/dashboard-news" className="hover:underline whitespace-nowrap">
             News
           </Link>
           <span className="text-[#1D1A1A]">/</span>
-          <span>Add News</span>
+          <span className="whitespace-nowrap">Add News</span>
         </div>
       </div>
 
       {/* Add News Form - Centered */}
-      <div
-        style={{
-          paddingLeft: "45px",
-          paddingRight: "45px",
-          paddingBottom: "40px",
-        }}
-      >
+      <div className="px-4 md:px-[45px] pb-10">
         <h2
-          className="text-center"
+          className="text-center text-xl md:text-2xl mb-6 md:mb-[35px]"
           style={{
             fontFamily: "Poppins, sans-serif",
             fontWeight: "500",
-            fontSize: "24px",
             color: "#1D1A1A",
-            marginBottom: "35px",
           }}
         >
           Add News
@@ -314,7 +303,7 @@ export default function AddNewsDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -332,7 +321,7 @@ export default function AddNewsDashboard() {
                   : "border-[#EAEAEA] bg-white"
               } ${loading ? "opacity-50 pointer-events-none" : ""}`}
               style={{
-                height: "330px",
+                height: "clamp(250px, 50vw, 330px)",
                 transition: "all 0.3s ease",
               }}
             >
@@ -365,9 +354,10 @@ export default function AddNewsDashboard() {
                     className="mb-4"
                   />
                   <p
+                    className="text-center px-4"
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "18px",
+                      fontSize: "clamp(14px, 3vw, 18px)",
                       color: "#1D1A1A",
                       fontWeight: "500",
                       marginBottom: "8px",
@@ -376,9 +366,10 @@ export default function AddNewsDashboard() {
                     Choose a file or drag & drop it here
                   </p>
                   <p
+                    className="text-center px-4"
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "14px",
+                      fontSize: "clamp(12px, 2.5vw, 14px)",
                       color: "#999",
                       marginBottom: "20px",
                     }}
@@ -402,7 +393,7 @@ export default function AddNewsDashboard() {
                     }`}
                     style={{
                       fontFamily: "Helvetica Neue, sans-serif",
-                      fontSize: "16px",
+                      fontSize: "clamp(14px, 2.5vw, 16px)",
                       color: "#1D1A1A",
                     }}
                   >
@@ -418,7 +409,7 @@ export default function AddNewsDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -435,7 +426,7 @@ export default function AddNewsDashboard() {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             />
@@ -446,7 +437,7 @@ export default function AddNewsDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -463,7 +454,7 @@ export default function AddNewsDashboard() {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white resize-y disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 minHeight: "80px",
               }}
@@ -475,7 +466,7 @@ export default function AddNewsDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -491,7 +482,7 @@ export default function AddNewsDashboard() {
                   type="button"
                   onClick={() => editor.chain().focus().toggleBold().run()}
                   disabled={!editor.can().chain().focus().toggleBold().run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive('bold') ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -502,7 +493,7 @@ export default function AddNewsDashboard() {
                   type="button"
                   onClick={() => editor.chain().focus().toggleItalic().run()}
                   disabled={!editor.can().chain().focus().toggleItalic().run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive('italic') ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -512,7 +503,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleUnderline().run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive('underline') ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -522,7 +513,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleStrike().run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive('strike') ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -533,7 +524,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
                     editor.isActive('heading', { level: 1 }) ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -543,7 +534,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
                     editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -553,7 +544,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
                     editor.isActive('heading', { level: 3 }) ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -564,7 +555,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleBulletList().run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
                     editor.isActive('bulletList') ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -574,7 +565,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
                     editor.isActive('orderedList') ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -585,7 +576,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive({ textAlign: 'left' }) ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -595,7 +586,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive({ textAlign: 'center' }) ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -605,7 +596,7 @@ export default function AddNewsDashboard() {
                 <button
                   type="button"
                   onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                  className={`px-3 py-1 rounded hover:bg-gray-200 ${
+                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
                     editor.isActive({ textAlign: 'right' }) ? 'bg-gray-300' : ''
                   }`}
                   style={{ color: '#1D1A1A' }}
@@ -626,7 +617,7 @@ export default function AddNewsDashboard() {
             <label
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
                 display: "block",
                 marginBottom: "12px",
@@ -641,7 +632,7 @@ export default function AddNewsDashboard() {
               className="w-full border border-[#EAEAEA] rounded px-4 py-3 bg-white disabled:opacity-50"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 color: "#1D1A1A",
               }}
             >
@@ -658,12 +649,12 @@ export default function AddNewsDashboard() {
                 checked={isPublished}
                 onChange={(e) => setIsPublished(e.target.checked)}
                 disabled={loading}
-                className="w-5 h-5 rounded border-[#EAEAEA] text-[#4A90E2] focus:ring-[#4A90E2]"
+                className="w-4 h-4 sm:w-5 sm:h-5 rounded border-[#EAEAEA] text-[#4A90E2] focus:ring-[#4A90E2]"
               />
               <span
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
-                  fontSize: "18px",
+                  fontSize: "clamp(14px, 3vw, 18px)",
                   color: "#1D1A1A",
                 }}
               >
@@ -673,14 +664,14 @@ export default function AddNewsDashboard() {
           </div>
 
           {/* Submit Buttons */}
-          <div className="flex justify-end mt-8 gap-4">
-            <Link href="/dashboard-news">
+          <div className="flex flex-col sm:flex-row justify-end mt-8 gap-3 sm:gap-4">
+            <Link href="/dashboard-news" className="w-full sm:w-auto">
               <button
                 disabled={loading}
-                className="px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto px-8 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{
                   fontFamily: "Helvetica Neue, sans-serif",
-                  fontSize: "18px",
+                  fontSize: "clamp(16px, 3vw, 18px)",
                   height: "45px",
                   minWidth: "150px",
                 }}
@@ -691,10 +682,10 @@ export default function AddNewsDashboard() {
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-8 bg-[#4A90E2] text-white rounded hover:bg-[#357ABD] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 fontFamily: "Helvetica Neue, sans-serif",
-                fontSize: "18px",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 height: "45px",
                 minWidth: "150px",
               }}
