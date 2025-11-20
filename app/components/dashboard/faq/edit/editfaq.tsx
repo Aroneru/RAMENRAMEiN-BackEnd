@@ -49,9 +49,9 @@ export default function EditFaqDashboard({ id }: { id: string }) {
       }
 
       setLoadingData(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading FAQ:", err);
-      setError(err.message || "Failed to load FAQ");
+      setError((err as Error).message || "Failed to load FAQ");
       setLoadingData(false);
     }
   };
@@ -92,9 +92,9 @@ export default function EditFaqDashboard({ id }: { id: string }) {
       setTimeout(() => {
         router.push('/dashboard-faq');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating FAQ:", err);
-      setError(err.message || "Failed to update FAQ");
+      setError((err as Error).message || "Failed to update FAQ");
       setLoading(false);
     }
   };
@@ -133,9 +133,9 @@ export default function EditFaqDashboard({ id }: { id: string }) {
       setTimeout(() => {
         router.push('/dashboard-faq');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting FAQ:", err);
-      setError(err.message || "Failed to delete FAQ");
+      setError((err as Error).message || "Failed to delete FAQ");
       setDeleting(false);
       setShowDeleteModal(false);
     }

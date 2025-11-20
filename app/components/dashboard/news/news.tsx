@@ -30,7 +30,7 @@ export default function NewsDashboard() {
       setNewsData(data);
       setError(null);
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "Failed to load news";
+      const errorMessage = err instanceof Error ? (err as Error).message : "Failed to load news";
       setError(errorMessage);
       console.error("Error loading news:", err);
     } finally {
@@ -77,9 +77,9 @@ export default function NewsDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting news:", err);
-      setError(err.message || "Failed to delete news");
+      setError((err as Error).message || "Failed to delete news");
       setDeleting(false);
       setShowDeleteModal(false);
       setDeleteId(null);

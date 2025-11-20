@@ -69,8 +69,8 @@ export default function MenuDashboard() {
 
       setMenuData(sections);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || "Failed to load menu");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Failed to load menu");
       console.error("Error loading menu:", err);
     } finally {
       setLoading(false);
@@ -118,9 +118,9 @@ export default function MenuDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting menu:", err);
-      setError(err.message || "Failed to delete menu");
+      setError((err as Error).message || "Failed to delete menu");
       setDeleting(false);
       setShowDeleteModal(false);
       setItemToDelete(null);

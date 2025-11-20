@@ -33,7 +33,7 @@ export default function HomeDashboard() {
       if (result.data) {
         setMenuPopupEnabled(result.data.value === 'true');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading menu popup setting:", err);
     }
   };
@@ -44,7 +44,7 @@ export default function HomeDashboard() {
       if (result.data) {
         setShowPrice(result.data.value === 'true');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading show price setting:", err);
     }
   };
@@ -71,9 +71,9 @@ export default function HomeDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating menu popup setting:", err);
-      setError(err.message || "Failed to update menu popup setting");
+      setError((err as Error).message || "Failed to update menu popup setting");
       setLoadingPopupSetting(false);
     }
   };
@@ -100,9 +100,9 @@ export default function HomeDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating show price setting:", err);
-      setError(err.message || "Failed to update show price setting");
+      setError((err as Error).message || "Failed to update show price setting");
       setLoadingPriceSetting(false);
     }
   };
@@ -123,9 +123,9 @@ export default function HomeDashboard() {
       }
 
       setLoadingData(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading hero section:", err);
-      setError(err.message || "Failed to load hero section");
+      setError((err as Error).message || "Failed to load hero section");
       setLoadingData(false);
     }
   };
@@ -215,9 +215,9 @@ export default function HomeDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error uploading hero section:", err);
-      setError(err.message || "Failed to upload hero section");
+      setError((err as Error).message || "Failed to upload hero section");
       setLoading(false);
     }
   };
@@ -251,9 +251,9 @@ export default function HomeDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting hero section:", err);
-      setError(err.message || "Failed to delete hero section");
+      setError((err as Error).message || "Failed to delete hero section");
       setDeleting(false);
       setShowDeleteModal(false);
     }

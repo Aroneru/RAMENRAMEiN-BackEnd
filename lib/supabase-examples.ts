@@ -69,7 +69,7 @@ export async function fetchBeritaByIdFromSupabase(id: string) {
 }
 
 // Example: Insert new berita
-export async function insertBerita(berita: any) {
+export async function insertBerita(berita: Record<string, unknown>) {
   const { data, error } = await supabase
     .from('berita')
     .insert(berita)
@@ -81,7 +81,7 @@ export async function insertBerita(berita: any) {
 }
 
 // Example: Update berita
-export async function updateBerita(id: string, updates: any) {
+export async function updateBerita(id: string, updates: Record<string, unknown>) {
   const { data, error } = await supabase
     .from('berita')
     .update(updates)
@@ -141,7 +141,7 @@ export async function deleteFile(path: string, bucket: string = 'images') {
 // ============================================
 
 // Subscribe to table changes
-export function subscribeToBerita(callback: (payload: any) => void) {
+export function subscribeToBerita(callback: (payload: unknown) => void) {
   const subscription = supabase
     .channel('berita-changes')
     .on(

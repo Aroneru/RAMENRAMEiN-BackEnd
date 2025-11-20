@@ -26,7 +26,7 @@ export default function ToppingsSection() {
       const response = await fetch('/api/settings/menu-popup');
       const data = await response.json();
       setPopupEnabled(data.enabled === true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading popup setting:', err);
       setPopupEnabled(true);
     }
@@ -37,7 +37,7 @@ export default function ToppingsSection() {
       const response = await fetch('/api/settings/menu-show-price');
       const data = await response.json();
       setShowPrice(data.showPrice === true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading show price setting:', err);
       setShowPrice(true);
     }
@@ -49,7 +49,7 @@ export default function ToppingsSection() {
       const data = await fetchMenuByCategory("topping");
       setToppings(data);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading toppings:", err);
       setError(err.message || "Failed to load toppings");
     } finally {

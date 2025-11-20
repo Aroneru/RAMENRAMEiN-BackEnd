@@ -120,9 +120,9 @@ export default function AddMinumanDashboard() {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error adding minuman:", err);
-      setError(err.message || "Failed to add minuman");
+      setError((err as Error).message || "Failed to add minuman");
       setLoading(false);
     }
   };

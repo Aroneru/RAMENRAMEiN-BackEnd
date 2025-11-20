@@ -55,9 +55,9 @@ export default function EditNyemilDashboard({ id }: { id: string }) {
       }
 
       setLoadingData(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading menu:", err);
-      setError(err.message || "Failed to load menu");
+      setError((err as Error).message || "Failed to load menu");
       setLoadingData(false);
     }
   };
@@ -173,9 +173,9 @@ export default function EditNyemilDashboard({ id }: { id: string }) {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating nyemil:", err);
-      setError(err.message || "Failed to update nyemil");
+      setError((err as Error).message || "Failed to update nyemil");
       setLoading(false);
     }
   };
@@ -214,9 +214,9 @@ export default function EditNyemilDashboard({ id }: { id: string }) {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting nyemil:", err);
-      setError(err.message || "Failed to delete nyemil");
+      setError((err as Error).message || "Failed to delete nyemil");
       setDeleting(false);
       setShowDeleteModal(false);
     }

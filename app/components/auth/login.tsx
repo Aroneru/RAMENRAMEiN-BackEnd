@@ -32,7 +32,7 @@ export default function LoginForm() {
         router.push('/dashboard-home');
         router.refresh(); // Refresh to update auth state
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
       setError("An unexpected error occurred");
       setLoading(false);

@@ -25,7 +25,7 @@ export default function HeroSection() {
       }
       
       setLoading(false);
-    } catch (error: any) {
+    } catch {
       // Jika error atau tidak ada data, gunakan default video
       console.log("No custom hero image, using default video");
       setHeroImageUrl(null);

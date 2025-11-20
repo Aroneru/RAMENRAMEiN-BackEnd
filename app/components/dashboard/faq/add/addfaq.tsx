@@ -56,9 +56,9 @@ export default function AddFaqDashboard() {
       setTimeout(() => {
         router.push('/dashboard-faq');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error adding FAQ:", err);
-      setError(err.message || "Failed to add FAQ");
+      setError((err as Error).message || "Failed to add FAQ");
       setLoading(false);
     }
   };

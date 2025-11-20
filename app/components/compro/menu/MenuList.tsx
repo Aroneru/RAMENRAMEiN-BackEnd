@@ -30,6 +30,7 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
     loadToppings();
     loadPopupSetting();
     loadShowPriceSetting();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [category]);
 
   // Open popup when openMenuId is provided
@@ -48,7 +49,7 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
       const data = await response.json();
       console.log('Popup setting loaded:', data);
       setPopupEnabled(data.enabled === true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading popup setting:', err);
       setPopupEnabled(true);
     }
@@ -59,7 +60,7 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
       const response = await fetch('/api/settings/menu-show-price');
       const data = await response.json();
       setShowPrice(data.showPrice === true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading show price setting:', err);
       setShowPrice(true);
     }
@@ -69,7 +70,7 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
     try {
       const data = await fetchMenuByCategory('topping');
       setToppings(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error loading toppings:', err);
     }
   };
@@ -93,7 +94,7 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
       
       setMenuItems(sortedData);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(`Error loading ${category} menu:`, err);
       setError(err.message || `Failed to load ${category} menu`);
     } finally {

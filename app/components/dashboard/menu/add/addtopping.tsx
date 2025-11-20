@@ -120,9 +120,9 @@ export default function AddToppingDashboard() {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error adding topping:", err);
-      setError(err.message || "Failed to add topping");
+      setError((err as Error).message || "Failed to add topping");
       setLoading(false);
     }
   };

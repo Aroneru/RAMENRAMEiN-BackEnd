@@ -55,9 +55,9 @@ export default function EditToppingDashboard({ id }: { id: string }) {
       }
 
       setLoadingData(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading menu:", err);
-      setError(err.message || "Failed to load menu");
+      setError((err as Error).message || "Failed to load menu");
       setLoadingData(false);
     }
   };
@@ -173,9 +173,9 @@ export default function EditToppingDashboard({ id }: { id: string }) {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating topping:", err);
-      setError(err.message || "Failed to update topping");
+      setError((err as Error).message || "Failed to update topping");
       setLoading(false);
     }
   };
@@ -214,9 +214,9 @@ export default function EditToppingDashboard({ id }: { id: string }) {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting topping:", err);
-      setError(err.message || "Failed to delete topping");
+      setError((err as Error).message || "Failed to delete topping");
       setDeleting(false);
       setShowDeleteModal(false);
     }

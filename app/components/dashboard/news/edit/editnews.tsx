@@ -96,9 +96,9 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       }
 
       setLoadingData(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error loading news:", err);
-      setError(err.message || "Failed to load news");
+      setError((err as Error).message || "Failed to load news");
       setLoadingData(false);
     }
   };
@@ -211,9 +211,9 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       setTimeout(() => {
         router.push('/dashboard-news');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error updating news:", err);
-      setError(err.message || "Failed to update news");
+      setError((err as Error).message || "Failed to update news");
       setLoading(false);
     }
   };
@@ -250,9 +250,9 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
       setTimeout(() => {
         router.push('/dashboard-news');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting news:", err);
-      setError(err.message || "Failed to delete news");
+      setError((err as Error).message || "Failed to delete news");
       setDeleting(false);
       setShowDeleteModal(false);
     }

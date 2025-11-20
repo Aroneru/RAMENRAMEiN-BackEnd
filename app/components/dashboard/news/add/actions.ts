@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { uploadImage, deleteImage } from "@/lib/storage";
 
 export async function addNewsItemAction(formData: FormData) {
@@ -15,10 +15,10 @@ export async function addNewsItemAction(formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -69,9 +69,9 @@ export async function addNewsItemAction(formData: FormData) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error adding news:", error);
-    return { error: error.message || "Failed to add news" };
+    return { error: (error as Error).message || "Failed to add news" };
   }
 }
 
@@ -100,9 +100,9 @@ export async function getNewsItemAction(id: string) {
     if (error) throw error;
 
     return { data };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching news:", error);
-    return { error: error.message || "Failed to load news item" };
+    return { error: (error as Error).message || "Failed to load news item" };
   }
 }
 
@@ -117,10 +117,10 @@ export async function updateNewsItemAction(formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -187,9 +187,9 @@ export async function updateNewsItemAction(formData: FormData) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating news:", error);
-    return { error: error.message || "Failed to update news" };
+    return { error: (error as Error).message || "Failed to update news" };
   }
 }
 
@@ -204,10 +204,10 @@ export async function deleteNewsItemAction(id: string) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -251,8 +251,8 @@ export async function deleteNewsItemAction(id: string) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting news:", error);
-    return { error: error.message || "Failed to delete news" };
+    return { error: (error as Error).message || "Failed to delete news" };
   }
 }

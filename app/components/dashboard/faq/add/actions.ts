@@ -1,7 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 
 export async function addFaqItemAction(formData: FormData) {
   const cookieStore = await cookies();
@@ -14,10 +14,10 @@ export async function addFaqItemAction(formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -60,8 +60,8 @@ export async function addFaqItemAction(formData: FormData) {
     }
 
     return { success: true };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error adding FAQ item:', err);
-    return { error: err.message || 'Failed to add FAQ item' };
+    return { error: (err as Error).message || 'Failed to add FAQ item' };
   }
 }

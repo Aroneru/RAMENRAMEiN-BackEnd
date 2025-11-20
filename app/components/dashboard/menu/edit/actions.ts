@@ -1,7 +1,7 @@
 'use server';
 
 import { cookies } from 'next/headers';
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { uploadImage, deleteImage } from '@/lib/storage';
 
 export async function getMenuItemAction(id: string) {
@@ -38,8 +38,8 @@ export async function getMenuItemAction(id: string) {
     if (!data) return { error: 'Menu item not found' };
 
     return { data };
-  } catch (err: any) {
-    return { error: err.message || 'Failed to load menu item' };
+  } catch (err: unknown) {
+    return { error: (err as Error).message || 'Failed to load menu item' };
   }
 }
 
@@ -54,10 +54,10 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -190,9 +190,9 @@ export async function updateMenuItemAction(id: string, formData: FormData) {
     }
 
     return { success: true };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error updating menu item:', err);
-    return { error: err.message || 'Failed to update menu item' };
+    return { error: (err as Error).message || 'Failed to update menu item' };
   }
 }
 
@@ -207,10 +207,10 @@ export async function deleteMenuItemAction(id: string) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -265,8 +265,8 @@ export async function deleteMenuItemAction(id: string) {
     }
 
     return { success: true };
-  } catch (err: any) {
+  } catch (err: unknown) {
     console.error('Error deleting menu item:', err);
-    return { error: err.message || 'Failed to delete menu item' };
+    return { error: (err as Error).message || 'Failed to delete menu item' };
   }
 }

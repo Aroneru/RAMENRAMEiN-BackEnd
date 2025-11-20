@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { uploadImage, deleteImage } from "@/lib/storage";
 
 export async function getHeroSectionAction() {
@@ -31,9 +31,9 @@ export async function getHeroSectionAction() {
     }
 
     return { data };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error fetching hero section:", error);
-    return { error: error.message || "Failed to load hero section" };
+    return { error: (error as Error).message || "Failed to load hero section" };
   }
 }
 
@@ -48,10 +48,10 @@ export async function updateHeroSectionAction(formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -115,9 +115,9 @@ export async function updateHeroSectionAction(formData: FormData) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating hero section:", error);
-    return { error: error.message || "Failed to update hero section" };
+    return { error: (error as Error).message || "Failed to update hero section" };
   }
 }
 
@@ -132,10 +132,10 @@ export async function deleteHeroSectionAction(currentHeroUrl: string) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -177,8 +177,8 @@ export async function deleteHeroSectionAction(currentHeroUrl: string) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error deleting hero section:", error);
-    return { error: error.message || "Failed to delete hero section" };
+    return { error: (error as Error).message || "Failed to delete hero section" };
   }
 }

@@ -27,8 +27,8 @@ export default function FAQDashboard() {
       const data = await fetchAllFAQList();
       setFaqData(data);
       setError(null);
-    } catch (err: any) {
-      setError(err.message || "Failed to load FAQ");
+    } catch (err: unknown) {
+      setError((err as Error).message || "Failed to load FAQ");
       console.error("Error loading FAQ:", err);
     } finally {
       setLoading(false);
@@ -71,9 +71,9 @@ export default function FAQDashboard() {
       setTimeout(() => {
         setSuccess(null);
       }, 3000);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error deleting FAQ:", err);
-      setError(err.message || "Failed to delete FAQ");
+      setError((err as Error).message || "Failed to delete FAQ");
       setDeleting(false);
       setShowDeleteModal(false);
       setDeleteId(null);
@@ -597,7 +597,7 @@ export default function FAQDashboard() {
                 {faqData.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="text-center py-8" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "18px" }}>
-                      No FAQ found. Click "Add FAQ" to create one.
+                      No FAQ found. Click &ldquo;Add FAQ&rdquo; to create one.
                     </td>
                   </tr>
                 ) : (
@@ -703,11 +703,11 @@ export default function FAQDashboard() {
             {faqData.length === 0 ? (
               <div className="text-center py-8 bg-white rounded-lg border border-[#EAEAEA]">
                 <p style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#666" }}>
-                  No FAQ found. Click "+" to create one.
+                  No FAQ found. Click &ldquo;+&rdquo; to create one.
                 </p>
               </div>
             ) : (
-              getPaginatedItems().map((item, idx) => (
+              getPaginatedItems().map((item, _idx) => (
                 <div key={item.id} className="bg-white rounded-lg shadow-sm p-4 border border-[#EAEAEA]">
                   <div className="mb-3">
                     <h3 className="font-semibold text-[#1D1A1A] text-base mb-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>

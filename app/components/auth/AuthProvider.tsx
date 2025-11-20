@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           try {
             // Use server action to ensure httpOnly cookies are cleared
             await logoutAction();
-          } catch (e) {
+          } catch {
             // Fallback: clear client session
             await handleSignOut();
             // Hard redirect to login to avoid any stale state
@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       document.removeEventListener('visibilitychange', handleVisibility);
       if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
     };
-  }, [user]);
+  }, [user, IDLE_LIMIT_MS]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {

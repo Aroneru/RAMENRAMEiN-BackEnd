@@ -144,9 +144,9 @@ export default function AddNewsDashboard() {
       setTimeout(() => {
         router.push('/dashboard-news');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error adding news:", err);
-      setError(err.message || "Failed to add news");
+      setError((err as Error).message || "Failed to add news");
       setLoading(false);
     }
   };

@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { insertMenu } from "@/lib/menu";
 import { uploadImage } from "@/lib/storage";
 
@@ -16,10 +16,10 @@ export async function addMenuItemAction(formData: FormData) {
         get(name: string) {
           return cookieStore.get(name)?.value;
         },
-        set(name: string, value: string, options: any) {
+        set(name: string, value: string, options: CookieOptions) {
           cookieStore.set({ name, value, ...options });
         },
-        remove(name: string, options: any) {
+        remove(name: string, options: CookieOptions) {
           cookieStore.set({ name, value: '', ...options });
         },
       },
@@ -106,8 +106,8 @@ export async function addMenuItemAction(formData: FormData) {
     }
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error adding menu:", error);
-    return { error: error.message || "Failed to add menu item" };
+    return { error: (error as Error).message || "Failed to add menu item" };
   }
 }

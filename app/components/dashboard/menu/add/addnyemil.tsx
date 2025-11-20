@@ -120,9 +120,9 @@ export default function AddNyemilDashboard() {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error adding nyemil:", err);
-      setError(err.message || "Failed to add nyemil");
+      setError((err as Error).message || "Failed to add nyemil");
       setLoading(false);
     }
   };

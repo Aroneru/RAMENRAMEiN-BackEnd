@@ -171,9 +171,9 @@ export default function AddRamenDashboard() {
       setTimeout(() => {
         router.push('/dashboard-menu');
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error adding ramen:", err);
-      setError(err.message || "Failed to add ramen");
+      setError((err as Error).message || "Failed to add ramen");
       setLoading(false);
     }
   };
