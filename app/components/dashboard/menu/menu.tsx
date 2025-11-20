@@ -113,6 +113,11 @@ export default function MenuDashboard() {
       
       // Reload menu data
       await loadMenu();
+      
+      // Auto-close success toast after 3 seconds
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
     } catch (err: any) {
       console.error("Error deleting menu:", err);
       setError(err.message || "Failed to delete menu");
@@ -121,7 +126,7 @@ export default function MenuDashboard() {
       setItemToDelete(null);
     }
   };
-
+  
   const truncateDescription = (text: string, maxLength: number = 50) => {
     if (text.length <= maxLength) return text;
     return text.substring(0, maxLength) + "...";

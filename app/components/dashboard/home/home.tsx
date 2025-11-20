@@ -67,6 +67,10 @@ export default function HomeDashboard() {
       setMenuPopupEnabled(newValue);
       setSuccess(`Menu popup ${newValue ? 'enabled' : 'disabled'} successfully!`);
       setLoadingPopupSetting(false);
+      
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
     } catch (err: any) {
       console.error("Error updating menu popup setting:", err);
       setError(err.message || "Failed to update menu popup setting");
@@ -92,13 +96,17 @@ export default function HomeDashboard() {
       setShowPrice(newValue);
       setSuccess(`Menu prices ${newValue ? 'shown' : 'hidden'} successfully!`);
       setLoadingPriceSetting(false);
+      
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
     } catch (err: any) {
       console.error("Error updating show price setting:", err);
       setError(err.message || "Failed to update show price setting");
       setLoadingPriceSetting(false);
     }
   };
-
+  
   const loadHeroSection = async () => {
     try {
       const result = await getHeroSectionAction();

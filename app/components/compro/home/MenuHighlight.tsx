@@ -104,7 +104,7 @@ export default function MenuHighlight() {
           onClick={closePopup}
         >
           <div 
-            className={`relative bg-white h-full md:h-auto rounded-3xl shadow-2xl p-6 md:p-8 max-w-md w-full overflow-y-auto transform transition-all duration-500 ${
+            className={`relative bg-white rounded-3xl shadow-2xl p-6 md:p-8 max-w-md w-full max-h-[90vh] overflow-y-auto transform transition-all duration-500 ${
               popup.position === 'left' 
                 ? 'animate-slideInLeft origin-left' 
                 : 'animate-slideInRight origin-right'
