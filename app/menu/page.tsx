@@ -1,12 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import MenuHeader from "../components/compro/menu/MenuHeroSection";
 import MenuTabs from "../components/compro/menu/MenuTabs";
 import MenuList from "../components/compro/menu/MenuList";
 import ToppingsSection from "../components/compro/menu/ToppingsSection";
 
-export default function MenuPage() {
+function MenuContent() {
   const [activeTab, setActiveTab] = useState("ramen");
   const searchParams = useSearchParams();
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
@@ -20,7 +20,7 @@ export default function MenuPage() {
   }, [searchParams]);
 
   return (
-    <main className="bg-black text-white min-h-screen pb-20">
+    <>
       <MenuHeader />
       <MenuTabs activeTab={activeTab} setActiveTab={setActiveTab} />
       
@@ -38,6 +38,16 @@ export default function MenuPage() {
       {activeTab === "minuman" && (
         <MenuList category="minuman" />
       )}
+    </>
+  );
+}
+
+export default function MenuPage() {
+  return (
+    <main className="bg-black text-white min-h-screen pb-20">
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+        <MenuContent />
+      </Suspense>
     </main>
   );
 }
