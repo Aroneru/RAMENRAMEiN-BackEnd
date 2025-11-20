@@ -63,7 +63,7 @@ export async function fetchFAQByCategory(category: string) {
 }
 
 // Insert new FAQ
-export async function insertFAQ(faq: any) {
+export async function insertFAQ(faq: Partial<FAQ>) {
   const { data, error } = await supabase
     .from('faq')
     .insert(faq)
@@ -75,7 +75,7 @@ export async function insertFAQ(faq: any) {
 }
 
 // Update FAQ
-export async function updateFAQ(id: string, updates: any) {
+export async function updateFAQ(id: string, updates: Partial<FAQ>) {
   const { data, error } = await supabase
     .from('faq')
     .update(updates)

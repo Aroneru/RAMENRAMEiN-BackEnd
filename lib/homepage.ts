@@ -42,7 +42,7 @@ export async function fetchHomepageById(id: string) {
 }
 
 // Insert new homepage section
-export async function insertHomepage(homepage: any) {
+export async function insertHomepage(homepage: Partial<Homepage>) {
   const { data, error } = await supabase
     .from('homepage')
     .insert(homepage)
@@ -54,7 +54,7 @@ export async function insertHomepage(homepage: any) {
 }
 
 // Update homepage section
-export async function updateHomepage(id: string, updates: any) {
+export async function updateHomepage(id: string, updates: Partial<Homepage>) {
   const { data, error } = await supabase
     .from('homepage')
     .update(updates)
@@ -67,7 +67,7 @@ export async function updateHomepage(id: string, updates: any) {
 }
 
 // Update homepage section by section name
-export async function updateHomepageBySection(section: HomepageSection, updates: any) {
+export async function updateHomepageBySection(section: HomepageSection, updates: Partial<Homepage>) {
   const { data, error } = await supabase
     .from('homepage')
     .update(updates)

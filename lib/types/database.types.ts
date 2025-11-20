@@ -45,6 +45,7 @@ export interface MenuInsert extends Partial<BaseTimestamps>, Partial<BaseUserTra
   image_for_max_price?: string | null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MenuUpdate extends Partial<MenuInsert> {}
 
 // ============================================
@@ -76,6 +77,7 @@ export interface NewsInsert extends Partial<BaseTimestamps>, Partial<BaseUserTra
   views_count?: number;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NewsUpdate extends Partial<NewsInsert> {}
 
 // For display purposes (matching your current Berita interface)
@@ -141,6 +143,7 @@ export interface FAQInsert extends Partial<BaseTimestamps>, Partial<BaseUserTrac
   is_active?: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface FAQUpdate extends Partial<FAQInsert> {}
 
 // For display purposes (matching your current FAQData interface)
@@ -183,7 +186,7 @@ export interface Homepage extends BaseTimestamps, BaseUserTracking {
   button_link: string | null;
   display_order: number;
   is_active: boolean;
-  metadata: Record<string, any> | null; // JSONB field
+  metadata: Record<string, unknown> | null; // JSONB field
 }
 
 export interface HomepageInsert extends Partial<BaseTimestamps>, Partial<BaseUserTracking> {
@@ -198,9 +201,10 @@ export interface HomepageInsert extends Partial<BaseTimestamps>, Partial<BaseUse
   button_link?: string | null;
   display_order?: number;
   is_active?: boolean;
-  metadata?: Record<string, any> | null;
+  metadata?: Record<string, unknown> | null;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface HomepageUpdate extends Partial<HomepageInsert> {}
 
 // ============================================

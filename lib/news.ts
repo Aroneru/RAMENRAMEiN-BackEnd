@@ -116,7 +116,7 @@ export async function fetchPrevNextNews(currentId: string, currentDate: string) 
 }
 
 // Insert new news
-export async function insertNews(news: any) {
+export async function insertNews(news: Partial<News>) {
   const { data, error } = await supabase
     .from('news')
     .insert(news)
@@ -128,7 +128,7 @@ export async function insertNews(news: any) {
 }
 
 // Update news
-export async function updateNews(id: string, updates: any) {
+export async function updateNews(id: string, updates: Partial<News>) {
   const { data, error } = await supabase
     .from('news')
     .update(updates)
