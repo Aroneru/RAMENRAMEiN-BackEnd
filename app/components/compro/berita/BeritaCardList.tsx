@@ -81,11 +81,9 @@ export default function BeritaCardList({ beritaList }: BeritaCardListProps) {
             <p className="text-gray-300 text-sm mb-2 line-clamp-3">
               {berita.deskripsi}
             </p>
-            <div className="mt-auto">
-              <span className="text-xs text-gray-400">
-                {berita.tanggal}
-              </span>
-            </div>
+            <span className="text-xs text-gray-400 mt-auto block">
+              {berita.tanggal}
+            </span>
           </div>
         </Link>
           ))

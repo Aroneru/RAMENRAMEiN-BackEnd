@@ -86,7 +86,6 @@ export interface Berita {
   deskripsi: string;
   tanggal: string;
   gambar: string;
-  views_count?: number;
 }
 
 // Helper to convert News to Berita format (for list view - uses description/summary)
@@ -95,14 +94,13 @@ export function newsToBerita(news: News): Berita {
     id: news.id,
     kategori: news.category,
     judul: news.title,
-    deskripsi: news.description, // Use description for list view
+    deskripsi: news.description,
     tanggal: new Date(news.published_at || news.created_at).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     }),
-    gambar: news.image_url,
-    views_count: news.views_count
+    gambar: news.image_url
   };
 }
 
@@ -118,8 +116,7 @@ export function newsToBeritaDetail(news: News): Berita {
       month: 'long',
       day: 'numeric'
     }),
-    gambar: news.image_url,
-    views_count: news.views_count
+    gambar: news.image_url
   };
 }
 
