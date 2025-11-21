@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Disable all Next.js image optimization to serve images directly from Supabase Storage
     unoptimized: true,
   },
   eslint: {
