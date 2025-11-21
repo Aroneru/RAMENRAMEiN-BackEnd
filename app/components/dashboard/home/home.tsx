@@ -440,75 +440,101 @@ export default function HomeDashboard() {
       <div className="px-4 md:px-[45px] pb-8">
         <div className="bg-white rounded-lg shadow-sm border border-[#EAEAEA] divide-y divide-gray-200">
           {/* Menu Popup Toggle */}
-          <div className="p-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-lg font-semibold mb-1" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
-                  Menu Popup
-                </h3>
-                <p className="text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
-                  Enable or disable popup details when clicking menu items on the company profile menu page
-                </p>
+          <div className="p-4 md:p-6">
+            <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
+              Menu Popup
+            </h3>
+            <p className="text-sm mb-6" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
+              Control popup behavior when users click on menu items.
+            </p>
+            
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center shrink-0 ${
+                    menuPopupEnabled ? 'bg-blue-100' : 'bg-gray-200'
+                  }`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 md:w-6 md:h-6 ${
+                      menuPopupEnabled ? 'text-[#4A90E2]' : 'text-gray-400'
+                    }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#1D1A1A" }}>
+                      Menu Details Popup
+                    </p>
+                    <p className="text-xs text-gray-500 truncate" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      {menuPopupEnabled ? 'Popup enabled for menu items' : 'Popup disabled'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleMenuPopupToggle}
+                  disabled={loadingPopupSetting}
+                  className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
+                    menuPopupEnabled ? 'bg-[#4A90E2]' : 'bg-gray-300'
+                  } ${loadingPopupSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
+                      menuPopupEnabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
               </div>
-              <button
-                onClick={handleMenuPopupToggle}
-                disabled={loadingPopupSetting}
-                className={`relative inline-flex h-10 w-20 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
-                  menuPopupEnabled ? 'bg-[#4A90E2]' : 'bg-gray-300'
-                } ${loadingPopupSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-              >
-                <span
-                  className={`inline-block h-8 w-8 transform rounded-full bg-white shadow-lg transition-transform ${
-                    menuPopupEnabled ? 'translate-x-11' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-            <div className="mt-3 flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                menuPopupEnabled ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-              }`} style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
-                {menuPopupEnabled ? 'Enabled' : 'Disabled'}
-              </span>
             </div>
           </div>
 
           {/* Show Price Toggle */}
-          <div className="p-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="text-lg font-semibold mb-1" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
-                  Show Menu Prices
-                </h3>
-                <p className="text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
-                  Display or hide prices for menu items on the company profile menu page
-                </p>
+          <div className="p-4 md:p-6">
+            <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
+              Menu Prices
+            </h3>
+            <p className="text-sm mb-6" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
+              Control price visibility on the menu page.
+            </p>
+            
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center shrink-0 ${
+                    showPrice ? 'bg-green-100' : 'bg-gray-200'
+                  }`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 md:w-6 md:h-6 ${
+                      showPrice ? 'text-green-600' : 'text-gray-400'
+                    }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#1D1A1A" }}>
+                      Price Display
+                    </p>
+                    <p className="text-xs text-gray-500 truncate" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      {showPrice ? 'Prices are visible to customers' : 'Prices are hidden'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleShowPriceToggle}
+                  disabled={loadingPriceSetting}
+                  className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
+                    showPrice ? 'bg-[#4A90E2]' : 'bg-gray-300'
+                  } ${loadingPriceSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
+                      showPrice ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
               </div>
-              <button
-                onClick={handleShowPriceToggle}
-                disabled={loadingPriceSetting}
-                className={`relative inline-flex h-10 w-20 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
-                  showPrice ? 'bg-[#4A90E2]' : 'bg-gray-300'
-                } ${loadingPriceSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-              >
-                <span
-                  className={`inline-block h-8 w-8 transform rounded-full bg-white shadow-lg transition-transform ${
-                    showPrice ? 'translate-x-11' : 'translate-x-1'
-                  }`}
-                />
-              </button>
-            </div>
-            <div className="mt-3 flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                showPrice ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-              }`} style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
-                {showPrice ? 'Visible' : 'Hidden'}
-              </span>
             </div>
           </div>
 
           {/* Instagram Gallery Settings */}
-          <div className="p-6 border-t border-gray-200">
+          <div className="p-4 md:p-6">
             <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
               Instagram Gallery
             </h3>
@@ -518,30 +544,30 @@ export default function HomeDashboard() {
             
             {/* Enable/Disable Toggle */}
             <div className="bg-gray-50 rounded-lg p-4 mb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center shrink-0 ${
                     instagramEnabled ? 'bg-blue-100' : 'bg-gray-200'
                   }`}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className={`w-6 h-6 ${
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`w-5 h-5 md:w-6 md:h-6 ${
                       instagramEnabled ? 'text-[#4A90E2]' : 'text-gray-400'
                     }`} fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
                     </svg>
                   </div>
-                  <div>
-                    <p className="font-medium text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#1D1A1A" }}>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#1D1A1A" }}>
                       Instagram Feed
                     </p>
-                    <p className="text-xs text-gray-500" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
-                      {instagramEnabled ? 'Showing live Instagram posts' : 'Using default images'}
+                    <p className="text-xs text-gray-500 truncate" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      {instagramEnabled ? 'Showing live posts' : 'Using default images'}
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={handleInstagramToggle}
                   disabled={loadingInstagramSetting}
-                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
+                  className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
                     instagramEnabled ? 'bg-[#4A90E2]' : 'bg-gray-300'
                   } ${loadingInstagramSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                 >
