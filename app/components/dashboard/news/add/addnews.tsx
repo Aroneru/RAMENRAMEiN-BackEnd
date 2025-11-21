@@ -3,12 +3,10 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import LinkExtension from '@tiptap/extension-link';
+import dynamic from "next/dynamic";
 import { addNewsItemAction } from "./actions";
+
+const TipTapEditor = dynamic(() => import('../TipTapEditor'), { ssr: false });
 
 export default function AddNewsDashboard() {
   const router = useRouter();
@@ -22,32 +20,7 @@ export default function AddNewsDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Ensure component is mounted (client-side only)
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // TipTap Editor
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      TextAlign.configure({
-        types: ['heading', 'paragraph'],
-      }),
-      LinkExtension.configure({
-        openOnClick: false,
-      }),
-    ],
-    content: '<p>Insert full news content</p>',
-    editorProps: {
-      attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] px-4 py-3',
-      },
-    },
-  });
+  const [content, setContent] = useState('<p>Insert full news content</p>');
 
   const handleThumbnailChange = (file: File) => {
     if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
@@ -98,8 +71,6 @@ export default function AddNewsDashboard() {
   };
 
   const handleSubmit = async () => {
-    const body = editor?.getHTML() || '';
-    
     // Validation
     if (!title.trim()) {
       setError("Please enter news title");
@@ -111,7 +82,7 @@ export default function AddNewsDashboard() {
       setSuccess(null);
       return;
     }
-    if (!body.trim() || body === '<p>Insert full news content</p>' || body === '<p></p>') {
+    if (!content.trim() || content === '<p>Insert full news content</p>' || content === '<p></p>') {
       setError("Please enter news content");
       setSuccess(null);
       return;
@@ -130,7 +101,7 @@ export default function AddNewsDashboard() {
       const formData = new FormData();
       formData.append("title", title.trim());
       formData.append("description", description.trim());
-      formData.append("body", body.trim());
+      formData.append("body", content.trim());
       formData.append("category", category.trim());
       formData.append("thumbnail", thumbnail);
       formData.append('isPublished', isPublished.toString());
@@ -480,147 +451,7 @@ export default function AddNewsDashboard() {
               Content <span className="text-red-500">*</span>
             </label>
             
-            {/* Toolbar */}
-            {editor && (
-              <div className="border border-[#EAEAEA] rounded-t-lg bg-gray-50 p-2 flex flex-wrap gap-1">
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleBold().run()}
-                  disabled={!editor.can().chain().focus().toggleBold().run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive('bold') ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  <strong>B</strong>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleItalic().run()}
-                  disabled={!editor.can().chain().focus().toggleItalic().run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive('italic') ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  <em>I</em>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleUnderline().run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive('underline') ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  <u>U</u>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleStrike().run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive('strike') ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  <s>S</s>
-                </button>
-                <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
-                    editor.isActive('heading', { level: 1 }) ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  H1
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
-                    editor.isActive('heading', { level: 2 }) ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  H2
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
-                    editor.isActive('heading', { level: 3 }) ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  H3
-                </button>
-                <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleBulletList().run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
-                    editor.isActive('bulletList') ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  • List
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-xs sm:text-sm ${
-                    editor.isActive('orderedList') ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  1. List
-                </button>
-                <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign('left').run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive({ textAlign: 'left' }) ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  ⬅
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign('center').run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive({ textAlign: 'center' }) ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  ↔
-                </button>
-                <button
-                  type="button"
-                  onClick={() => editor.chain().focus().setTextAlign('right').run()}
-                  className={`px-2 sm:px-3 py-1 rounded hover:bg-gray-200 text-sm ${
-                    editor.isActive({ textAlign: 'right' }) ? 'bg-gray-300' : ''
-                  }`}
-                  style={{ color: '#1D1A1A' }}
-                >
-                  ➡
-                </button>
-              </div>
-            )}
-            
-            {/* Editor */}
-            <div className="border border-[#EAEAEA] border-t-0 rounded-b-lg bg-white">
-              {isMounted && editor ? (
-                <EditorContent editor={editor} />
-              ) : (
-                <div className="px-4 py-3 min-h-[200px] text-gray-400">
-                  Loading editor...
-                </div>
-              )}
-            </div>
+            <TipTapEditor content={content} onChange={setContent} />
           </div>
 
           {/* 5. Category Field */}
