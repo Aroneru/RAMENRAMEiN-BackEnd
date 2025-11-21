@@ -2,6 +2,10 @@ import { notFound } from "next/navigation";
 import BeritaDetailContent from "../../components/compro/berita/BeritaDetailContent";
 import { fetchBeritaById, fetchNewsById, fetchPrevNextNews } from "@/lib/news";
 
+// Disable caching to always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // This is now a Server Component
 export default async function BeritaDetailPage({
   params,
