@@ -86,6 +86,7 @@ export interface Berita {
   kategori: string;
   judul: string;
   deskripsi: string;
+  content: string;
   tanggal: string;
   gambar: string;
 }
@@ -97,6 +98,7 @@ export function newsToBerita(news: News): Berita {
     kategori: news.category,
     judul: news.title,
     deskripsi: news.description,
+    content: news.content,
     tanggal: new Date(news.published_at || news.created_at).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',
@@ -112,7 +114,8 @@ export function newsToBeritaDetail(news: News): Berita {
     id: news.id,
     kategori: news.category,
     judul: news.title,
-    deskripsi: news.content, // Use full content for detail view
+    deskripsi: news.description, // Use description as summary
+    content: news.content, // Full TipTap HTML content
     tanggal: new Date(news.published_at || news.created_at).toLocaleDateString('id-ID', {
       year: 'numeric',
       month: 'long',

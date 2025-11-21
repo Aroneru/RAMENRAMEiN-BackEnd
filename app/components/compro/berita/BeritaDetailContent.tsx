@@ -50,14 +50,14 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
         />
       </div>
 
-      {/* Content - paragraphs justified */}
-      <div className="text-gray-300 text-base leading-relaxed text-justify">
-        {berita.deskripsi.split('\n\n').map((paragraph, idx) => (
-          <p key={idx} className="mb-4">
-            {paragraph}
-          </p>
-        ))}
-      </div>
+      {/* Content - TipTap HTML rendered */}
+      <div 
+        className="text-gray-300 text-base leading-relaxed prose prose-invert prose-lg max-w-none"
+        dangerouslySetInnerHTML={{ __html: berita.content }}
+        style={{
+          textAlign: 'justify'
+        }}
+      />
 
       {/* Previous & Next Navigation */}
       {(prevNews || nextNews) && (
