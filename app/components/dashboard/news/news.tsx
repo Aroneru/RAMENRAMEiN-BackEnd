@@ -700,6 +700,7 @@ export default function NewsDashboard() {
                           style={{ width: "100px", height: "100px" }}
                         >
                           {item.image_url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img
                               src={item.image_url}
                               alt={item.title}
@@ -810,6 +811,7 @@ export default function NewsDashboard() {
                   <div className="flex gap-4">
                     <div className="w-20 h-20 bg-gray-200 rounded overflow-hidden shrink-0">
                       {item.image_url ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
