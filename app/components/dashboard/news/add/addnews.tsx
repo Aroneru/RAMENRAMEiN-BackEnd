@@ -36,7 +36,6 @@ export default function AddNewsDashboard() {
       }),
     ],
     content: '<p>Insert full news content</p>',
-    immediatelyRender: false,
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl focus:outline-none min-h-[200px] px-4 py-3',
