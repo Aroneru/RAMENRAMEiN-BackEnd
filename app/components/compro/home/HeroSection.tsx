@@ -1,7 +1,6 @@
 "use client"; 
 
 import { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
 import { fetchHomepageBySection } from '@/lib/homepage';
 import styles from './styles/HeroSection.module.css';
 
@@ -56,13 +55,11 @@ export default function HeroSection() {
       {heroImageUrl ? (
         // Tampilkan image jika ada
         <div className={styles.heroImage}>
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={heroImageUrl}
             alt="Hero Section"
-            fill
-            priority
-            className="object-cover"
-            sizes="100vw"
+            className="object-cover w-full h-full"
           />
         </div>
       ) : (
