@@ -2,8 +2,13 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    // Disable all Next.js image optimization to serve images directly from Supabase Storage
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'atcgkvybzbmlrqpkrqeb.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
