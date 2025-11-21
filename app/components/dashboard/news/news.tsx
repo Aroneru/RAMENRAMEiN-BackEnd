@@ -700,11 +700,9 @@ export default function NewsDashboard() {
                           style={{ width: "100px", height: "100px" }}
                         >
                           {item.image_url ? (
-                            <Image
+                            <img
                               src={item.image_url}
                               alt={item.title}
-                              width={100}
-                              height={100}
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -812,11 +810,9 @@ export default function NewsDashboard() {
                   <div className="flex gap-4">
                     <div className="w-20 h-20 bg-gray-200 rounded overflow-hidden shrink-0">
                       {item.image_url ? (
-                        <Image
+                        <img
                           src={item.image_url}
                           alt={item.title}
-                          width={80}
-                          height={80}
                           className="w-full h-full object-cover"
                         />
                       ) : (
