@@ -20,15 +20,69 @@ export default function GallerySection() {
   const [posts, setPosts] = useState<InstagramPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [useDefault, setUseDefault] = useState(false);
+  const [instagramEnabled, setInstagramEnabled] = useState(true);
+  const [postCount, setPostCount] = useState(5);
 
   useEffect(() => {
-    fetchInstagramPosts();
+    loadSettings();
+    
+    // Poll for settings changes every 3 seconds
+    const interval = setInterval(() => {
+      loadSettings();
+    }, 3000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const fetchInstagramPosts = async () => {
+  const loadSettings = async () => {
+    try {
+      // Add timestamp to prevent caching
+      const timestamp = new Date().getTime();
+      
+      // Fetch Instagram enabled setting
+      const enabledResponse = await fetch(`/api/settings/instagram-gallery?t=${timestamp}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      });
+      const enabledData = await enabledResponse.json();
+      const isEnabled = enabledData.enabled === true;
+      console.log('Instagram enabled:', isEnabled);
+      setInstagramEnabled(isEnabled);
+
+      // Fetch post count setting
+      const countResponse = await fetch(`/api/settings/instagram-post-count?t=${timestamp}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+        }
+      });
+      const countData = await countResponse.json();
+      const count = countData.count || 5;
+      console.log('Instagram post count:', count);
+      setPostCount(count);
+
+      // Only fetch Instagram posts if enabled
+      if (isEnabled) {
+        console.log('Fetching Instagram posts...');
+        await fetchInstagramPosts(count);
+      } else {
+        console.log('Using default images');
+        setUseDefault(true);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error loading settings:', error);
+      setUseDefault(true);
+      setLoading(false);
+    }
+  };
+
+  const fetchInstagramPosts = async (limit: number) => {
     try {
       const response = await fetch(
-        `https://graph.instagram.com/me/media?fields=id,media_url,media_type,permalink,caption&access_token=${INSTAGRAM_TOKEN}&limit=10`
+        `https://graph.instagram.com/me/media?fields=id,media_url,media_type,permalink,caption&access_token=${INSTAGRAM_TOKEN}&limit=${limit * 2}`
       );
       
       if (!response.ok) {
@@ -43,7 +97,7 @@ export default function GallerySection() {
       ) || [];
 
       if (imagePosts.length > 0) {
-        setPosts(imagePosts.slice(0, 5)); // Take first 5 posts
+        setPosts(imagePosts.slice(0, limit));
         setUseDefault(false);
       } else {
         setUseDefault(true);

@@ -20,11 +20,16 @@ export default function HomeDashboard() {
   const [loadingPopupSetting, setLoadingPopupSetting] = useState(false);
   const [showPrice, setShowPrice] = useState(true);
   const [loadingPriceSetting, setLoadingPriceSetting] = useState(false);
+  const [instagramEnabled, setInstagramEnabled] = useState(true);
+  const [loadingInstagramSetting, setLoadingInstagramSetting] = useState(false);
+  const [instagramPostCount, setInstagramPostCount] = useState(5);
+  const [loadingInstagramCount, setLoadingInstagramCount] = useState(false);
 
   useEffect(() => {
     loadHeroSection();
     loadMenuPopupSetting();
     loadShowPriceSetting();
+    loadInstagramSettings();
   }, []);
 
   const loadMenuPopupSetting = async () => {
@@ -46,6 +51,22 @@ export default function HomeDashboard() {
       }
     } catch (err: unknown) {
       console.error("Error loading show price setting:", err);
+    }
+  };
+
+  const loadInstagramSettings = async () => {
+    try {
+      const enabledResult = await getSettingAction('instagram_gallery_enabled');
+      if (enabledResult.data) {
+        setInstagramEnabled(enabledResult.data.value === 'true');
+      }
+
+      const countResult = await getSettingAction('instagram_post_count');
+      if (countResult.data) {
+        setInstagramPostCount(parseInt(countResult.data.value) || 5);
+      }
+    } catch (err: unknown) {
+      console.error("Error loading Instagram settings:", err);
     }
   };
 
@@ -104,6 +125,65 @@ export default function HomeDashboard() {
       console.error("Error updating show price setting:", err);
       setError((err as Error).message || "Failed to update show price setting");
       setLoadingPriceSetting(false);
+    }
+  };
+
+  const handleInstagramToggle = async () => {
+    setLoadingInstagramSetting(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const newValue = !instagramEnabled;
+      const result = await updateSettingAction('instagram_gallery_enabled', newValue.toString());
+
+      if (result.error) {
+        setError(result.error);
+        setLoadingInstagramSetting(false);
+        return;
+      }
+
+      setInstagramEnabled(newValue);
+      setSuccess(`Instagram gallery ${newValue ? 'enabled' : 'disabled'} successfully!`);
+      setLoadingInstagramSetting(false);
+      
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
+    } catch (err: unknown) {
+      console.error("Error updating Instagram setting:", err);
+      setError((err as Error).message || "Failed to update Instagram setting");
+      setLoadingInstagramSetting(false);
+    }
+  };
+
+  const handleInstagramCountChange = async (count: number) => {
+    if (count < 1 || count > 10) return;
+    
+    setLoadingInstagramCount(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const result = await updateSettingAction('instagram_post_count', count.toString());
+
+      if (result.error) {
+        setError(result.error);
+        setLoadingInstagramCount(false);
+        return;
+      }
+
+      setInstagramPostCount(count);
+      setSuccess(`Instagram post count updated to ${count}!`);
+      setLoadingInstagramCount(false);
+      
+      setTimeout(() => {
+        setSuccess(null);
+      }, 3000);
+    } catch (err: unknown) {
+      console.error("Error updating Instagram count:", err);
+      setError((err as Error).message || "Failed to update Instagram count");
+      setLoadingInstagramCount(false);
     }
   };
   
@@ -425,6 +505,90 @@ export default function HomeDashboard() {
                 {showPrice ? 'Visible' : 'Hidden'}
               </span>
             </div>
+          </div>
+
+          {/* Instagram Gallery Settings */}
+          <div className="p-6 border-t border-gray-200">
+            <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: "Poppins, sans-serif", color: "#1D1A1A" }}>
+              Instagram Gallery
+            </h3>
+            <p className="text-sm mb-6" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#666" }}>
+              Control how Instagram posts appear in the gallery section on your homepage.
+            </p>
+            
+            {/* Enable/Disable Toggle */}
+            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                    instagramEnabled ? 'bg-blue-100' : 'bg-gray-200'
+                  }`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className={`w-6 h-6 ${
+                      instagramEnabled ? 'text-[#4A90E2]' : 'text-gray-400'
+                    }`} fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="font-medium text-sm" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#1D1A1A" }}>
+                      Instagram Feed
+                    </p>
+                    <p className="text-xs text-gray-500" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      {instagramEnabled ? 'Showing live Instagram posts' : 'Using default images'}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleInstagramToggle}
+                  disabled={loadingInstagramSetting}
+                  className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-[#4A90E2] focus:ring-offset-2 ${
+                    instagramEnabled ? 'bg-[#4A90E2]' : 'bg-gray-300'
+                  } ${loadingInstagramSetting ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                >
+                  <span
+                    className={`inline-block h-6 w-6 transform rounded-full bg-white shadow-lg transition-transform ${
+                      instagramEnabled ? 'translate-x-7' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
+            
+            {/* Post Count Slider */}
+            {instagramEnabled && (
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-medium" style={{ fontFamily: "Helvetica Neue, sans-serif", color: "#1D1A1A" }}>
+                    Number of Posts
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl font-bold text-[#4A90E2]" style={{ fontFamily: "Poppins, sans-serif" }}>
+                      {instagramPostCount}
+                    </span>
+                    <span className="text-xs text-gray-500" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                      posts
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="10"
+                  value={instagramPostCount}
+                  onChange={(e) => handleInstagramCountChange(parseInt(e.target.value))}
+                  disabled={loadingInstagramCount}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  style={{ 
+                    accentColor: '#4A90E2',
+                    background: `linear-gradient(to right, #4A90E2 0%, #4A90E2 ${((instagramPostCount - 1) / 9) * 100}%, #E5E7EB ${((instagramPostCount - 1) / 9) * 100}%, #E5E7EB 100%)`
+                  }}
+                />
+                <div className="flex justify-between text-xs text-gray-400 mt-2" style={{ fontFamily: "Helvetica Neue, sans-serif" }}>
+                  <span>1</span>
+                  <span>10</span>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

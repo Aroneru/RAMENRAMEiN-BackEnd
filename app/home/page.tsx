@@ -5,6 +5,10 @@ import LocationSection from "../components/compro/home/LocationSection";
 import AccessSection from "../components/compro/home/AccessSection";
 import GallerySection from "../components/compro/home/GallerySection";
 
+// Disable caching to always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function Home() {
   return (
     <main>

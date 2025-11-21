@@ -66,11 +66,13 @@ export async function updateSettingAction(key: string, value: string) {
   try {
     const { error } = await supabase
       .from('settings')
-      .update({
+      .upsert({
+        key: key,
         value: value,
         updated_by: user.id
-      })
-      .eq('key', key);
+      }, {
+        onConflict: 'key'
+      });
 
     if (error) throw new Error(error.message);
 
