@@ -484,7 +484,8 @@ export default function HomeDashboard() {
             </div>
           ) : (
             <>
-              <Image src="/dashboard/upload.svg" alt="Upload" width={60} height={60} className="mb-4" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/dashboard/upload.svg" alt="Upload" width={60} height={60} className="mb-4" />
               <p className="text-center px-4" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#1D1A1A", fontWeight: "500", marginBottom: "8px" }}>Choose a file or drag & drop it here</p>
               <p className="text-center px-4" style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "14px", color: "#999", marginBottom: "20px" }}>JPEG, JPG, and PNG formats, up to 10MB</p>
               <label htmlFor="heroFileInput" className={`px-6 py-2 border border-[#EAEAEA] rounded transition-colors ${loading || deleting ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:bg-gray-50"}`} style={{ fontFamily: "Helvetica Neue, sans-serif", fontSize: "16px", color: "#1D1A1A" }}>Browse File</label>
