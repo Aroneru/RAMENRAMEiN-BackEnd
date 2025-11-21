@@ -162,7 +162,6 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
                 }}
                 quality={85}
                 sizes="(max-width: 768px) 100vw, 50vw"
-                unoptimized={true}
               />
               {item.is_special_ramen && (
                 <div className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
@@ -206,7 +205,6 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
                   className="object-cover"
                   priority
                   quality={90}
-                  unoptimized={true}
                   onError={(e) => {
                     console.error(`Failed to load modal image for ${selectedItem.name}`);
                     e.currentTarget.src = "/placeholder-menu.png";
@@ -262,7 +260,6 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
                             className="object-contain"
                             priority
                             quality={85}
-                            unoptimized={true}
                             onError={(e) => {
                               console.error(`Failed to load base variant image for ${selectedItem.name}`);
                               e.currentTarget.src = "/placeholder-menu.png";
@@ -285,7 +282,6 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
                             className="object-contain"
                             priority
                             quality={85}
-                            unoptimized={true}
                             onError={(e) => {
                               console.error(`Failed to load premium variant image for ${selectedItem.name}`);
                               e.currentTarget.src = "/placeholder-menu.png";

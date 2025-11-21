@@ -86,7 +86,6 @@ export default function BeritaCardList({ beritaList }: BeritaCardListProps) {
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 25vw"
               priority={false}
-              unoptimized={true}
             />
           </div>
           <div className="p-4 flex flex-col flex-1">
