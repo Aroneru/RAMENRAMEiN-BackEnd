@@ -46,6 +46,7 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
           height={720}
           className="w-full h-auto"
           priority
+          unoptimized={true}
         />
       </div>
 
@@ -202,6 +203,7 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
                         fill
                         className="object-cover"
                         sizes="80px"
+                        unoptimized={true}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -241,6 +243,7 @@ export default function BeritaDetailContent({ berita, prevNews, nextNews }: Beri
                         fill
                         className="object-cover"
                         sizes="80px"
+                        unoptimized={true}
                       />
                     </div>
                   </div>
