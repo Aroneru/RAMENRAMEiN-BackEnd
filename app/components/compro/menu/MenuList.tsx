@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useScrollReveal } from "../../../hooks/useScrollReveal";
 import { fetchMenuByCategory } from "@/lib/menu";
 import type { Menu, MenuCategory } from "@/lib/types/database.types";
@@ -148,21 +147,16 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
             } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
           >
             <div className="bg-[url('/images/wood-texture.jpg')] bg-cover bg-center rounded-xl overflow-hidden relative">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={item.image_for_max_price || item.image_url || "/placeholder-menu.png"}
                 alt={`Foto ${item.name}`}
-                width={500}
-                height={350}
                 className="object-cover w-full h-auto"
-                priority={idx < 2}
                 loading={idx < 2 ? "eager" : "lazy"}
                 onError={(e) => {
                   console.error(`Failed to load image for ${item.name}:`, item.image_for_max_price || item.image_url);
                   e.currentTarget.src = "/placeholder-menu.png";
                 }}
-                quality={85}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                unoptimized={true}
               />
               {item.is_special_ramen && (
                 <div className="absolute top-3 right-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
@@ -199,14 +193,11 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
 
               {/* Image */}
               <div className="relative w-full h-80 bg-[url('/images/wood-texture.jpg')] bg-cover bg-center">
-                <Image
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={selectedItem.image_for_max_price || selectedItem.image_url || "/placeholder-menu.png"}
                   alt={selectedItem.name}
-                  fill
-                  className="object-cover"
-                  priority
-                  quality={90}
-                  unoptimized={true}
+                  className="w-full h-full object-cover"
                   onError={(e) => {
                     console.error(`Failed to load modal image for ${selectedItem.name}`);
                     e.currentTarget.src = "/placeholder-menu.png";
@@ -255,14 +246,11 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
                       <div className="md:border-r border-gray-700 md:pr-4">
                         <p className="text-sm text-gray-400 mb-2">Base Variant</p>
                         <div className="relative h-48 md:h-64 rounded-lg overflow-hidden bg-[url('/images/wood-texture.jpg')] bg-cover">
-                          <Image
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={selectedItem.image_url}
                             alt={`${selectedItem.name} - Base`}
-                            fill
-                            className="object-contain"
-                            priority
-                            quality={85}
-                            unoptimized={true}
+                            className="w-full h-full object-contain"
                             onError={(e) => {
                               console.error(`Failed to load base variant image for ${selectedItem.name}`);
                               e.currentTarget.src = "/placeholder-menu.png";
@@ -278,14 +266,11 @@ export default function MenuList({ category, openMenuId }: MenuListProps) {
                       <div className="md:pl-4">
                         <p className="text-sm text-gray-400 mb-2">Premium Variant</p>
                         <div className="relative h-48 md:h-64 rounded-lg overflow-hidden bg-[url('/images/wood-texture.jpg')] bg-cover">
-                          <Image
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={selectedItem.image_for_max_price}
                             alt={`${selectedItem.name} - Premium`}
-                            fill
-                            className="object-contain"
-                            priority
-                            quality={85}
-                            unoptimized={true}
+                            className="w-full h-full object-contain"
                             onError={(e) => {
                               console.error(`Failed to load premium variant image for ${selectedItem.name}`);
                               e.currentTarget.src = "/placeholder-menu.png";
