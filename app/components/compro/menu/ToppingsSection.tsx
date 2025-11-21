@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useScrollReveal } from "../../../hooks/useScrollReveal";
 import { fetchMenuByCategory } from "@/lib/menu";
 import type { Menu } from "@/lib/types/database.types";
@@ -102,12 +101,11 @@ export default function ToppingsSection() {
                 } ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}
               >
                 <div className="relative w-[150px] h-[150px] rounded-md overflow-hidden">
-                  <Image
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={item.image_url || "/placeholder-topping.png"}
                     alt={`Foto ${item.name}`}
-                    fill
-                    className="object-cover"
-                    sizes="150px"
+                    className="w-full h-full object-cover"
                   />
                 </div>
                 <h3 className="mt-4 font-semibold">{item.name}</h3>
@@ -139,11 +137,11 @@ export default function ToppingsSection() {
 
             {/* Image */}
             <div className="relative w-full h-80 bg-[url('/images/wood-texture.jpg')] bg-cover bg-center">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={selectedTopping.image_url || "/placeholder-topping.png"}
                 alt={selectedTopping.name}
-                fill
-                className="object-cover"
+                className="w-full h-full object-cover"
               />
             </div>
 
