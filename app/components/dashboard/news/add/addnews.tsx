@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -22,6 +22,12 @@ export default function AddNewsDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure component is mounted (client-side only)
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // TipTap Editor
   const editor = useEditor({
@@ -607,7 +613,13 @@ export default function AddNewsDashboard() {
             
             {/* Editor */}
             <div className="border border-[#EAEAEA] border-t-0 rounded-b-lg bg-white">
-              <EditorContent editor={editor} />
+              {isMounted && editor ? (
+                <EditorContent editor={editor} />
+              ) : (
+                <div className="px-4 py-3 min-h-[200px] text-gray-400">
+                  Loading editor...
+                </div>
+              )}
             </div>
           </div>
 

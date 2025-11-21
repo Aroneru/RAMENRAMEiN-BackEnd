@@ -31,6 +31,12 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
   const [success, setSuccess] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [newsContent, setNewsContent] = useState<string>("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Ensure component is mounted (client-side only)
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // TipTap Editor
   const editor = useEditor({
@@ -830,7 +836,13 @@ export default function EditNewsDashboard({ id }: EditNewsProps) {
             
             {/* Editor */}
             <div className="border border-[#EAEAEA] border-t-0 rounded-b-lg bg-white">
-              <EditorContent editor={editor} />
+              {isMounted && editor ? (
+                <EditorContent editor={editor} />
+              ) : (
+                <div className="px-4 py-3 min-h-[200px] text-gray-400">
+                  Loading editor...
+                </div>
+              )}
             </div>
           </div>
 
